@@ -10,13 +10,27 @@ A sticky note cannot listen for the moment you need it. Stopping to paste every 
 
 Tell it what to watch for in plain language. Speak Chinese, English, or both in the same sentence. It transcribes locally, checks finalized speech with a small on-device language model, and shows a reminder when your rule matches. Otherwise, it stays quiet.
 
-**Fast speech previews · Custom contextual alerts · Chinese + English mixed speech · Offline on Apple Silicon**
+**Multiple independent rules · One-click floating control · Chinese + English mixed speech · Offline on Apple Silicon**
+
+## New in 0.3.0
+
+Write **one rule per line**: mention banana, speak badly of Tom, or another condition you choose. Each line is checked independently; any match can trigger a reminder. Alerts follow the language of your current speech. Only the current finalized segment is evaluated—conversation history does not accumulate in the model prompt.
+
+Start or stop microphone capture from a **draggable desktop button**. It stays available across Spaces, shows listening activity, and keeps your session when you stop capture. You can hide it in settings.
+
+<table>
+<tr><td><strong>Ready to listen</strong></td><td><strong>Listening · click to stop</strong></td></tr>
+<tr><td><img src="docs/assets/floating-idle-en.png" width="244" alt="Current floating desktop control with a microphone button and Click to start label"></td><td><img src="docs/assets/floating-listening-en.png" width="244" alt="Current floating desktop control showing the stop button and Listening state"></td></tr>
+</table>
+
+*These images render the current production UI with synthetic state. See [the current settings and session views](#a-look-at-the-app), [update instructions](#updating-an-existing-build), and [the changelog](CHANGELOG.md).*
+
 
 ## Chinese. English. Both in the same sentence.
 
 **No recognition-language switch. No need to stick to one language.** Speak Chinese, English, or switch between them naturally—even within a sentence. The display language is a separate setting.
 
-This is how Speech Wingman actually appears on the desktop. These are complete, uncropped screenshots from actual use, showing the settings and floating alert together. The visible images are unchanged; only embedded metadata was removed.
+These complete, uncropped screenshots record actual use of the earlier 0.2.1 interface, showing settings and a floating alert together. They are retained as observed bilingual examples; the current 0.3.0 controls are shown above and below. The visible images are unchanged; only embedded metadata was removed.
 
 ### English speech → an English reminder
 
@@ -38,7 +52,7 @@ The quote reads “香蕉的英文叫做banana，你知道吗?”—Chinese and 
 
 [![Core checks](https://github.com/AmethystineAlpaca/speech-wingman/actions/workflows/core-checks.yml/badge.svg)](https://github.com/AmethystineAlpaca/speech-wingman/actions/workflows/core-checks.yml)
 
-**[Try the source preview](https://github.com/AmethystineAlpaca/speech-wingman/releases/tag/v0.2.1) · [Share an alert recipe](https://github.com/AmethystineAlpaca/speech-wingman/discussions) · [Report a bug](https://github.com/AmethystineAlpaca/speech-wingman/issues/new/choose)**
+**[Build the current source](#getting-started) · [Earlier v0.2.1 source release](https://github.com/AmethystineAlpaca/speech-wingman/releases/tag/v0.2.1) · [Share an alert recipe](https://github.com/AmethystineAlpaca/speech-wingman/discussions) · [Report a bug](https://github.com/AmethystineAlpaca/speech-wingman/issues/new/choose)**
 
 **English UI by default · 中文界面可选 · Apple Silicon · No cloud inference**
 
@@ -49,15 +63,15 @@ The quote reads “香蕉的英文叫做banana，你知道吗?”—Chinese and 
 | Highlight | What you get |
 | --- | --- |
 | **Fast feedback** | First transcript preview in about **1 second** in short local tests; evaluation runs separately from the visible transcript |
-| **Quick local judgments** | Short-clip decisions typically arrived **1.5–3.3 seconds after speech ended**, without a cloud round trip |
+| **Independent checks** | Rules run separately, stopping at the first match; more rules can increase latency |
 | **Chinese + English, mixed naturally** | Speak either language or mix them within the same conversation; no recognition-language switch |
-| **Your own alert rulebook** | Serious, niche, or wonderfully odd: describe custom triggers and exceptions in natural language. Combine several conditions in one policy |
+| **Your own alert rulebook** | Serious, niche, or wonderfully odd: describe custom triggers and exceptions in natural language. Write one independent rule per line, with its exceptions on the same line |
 | **Evidence you can inspect** | Each accepted alert includes a quote from the actual transcript and a short suggestion; malformed responses are rejected |
-| **Promising early results** | **13 of 14 synthetic regression cases** matched expected decisions in a local run; known failures remain documented |
+| **Tested behavior** | **28/28 synthetic text cases** and **14 core test groups** pass for this update; earlier audio results and known limitations are documented |
 | **Private by design** | On-device audio and inference, no runtime account or API key, and explicit session export |
 | **Quiet by default** | No alert unless the rule matches and alert controls allow it; pause, mute, or clear at any time |
 
-*Measurements are from small synthetic clips on an Apple M4 / 16 GB Mac, with models already loaded. They are not a general accuracy benchmark or a latency guarantee. Long uninterrupted speech can delay alerts; see [limitations](#limitations).*
+*The text suite does not measure transcription accuracy. Earlier audio tests and the new text tests use small synthetic fixtures on an Apple M4 / 16 GB Mac, with models already loaded. They are not general accuracy benchmarks or latency guarantees; see [validation](docs/validation.md).*
 
 ![On-device pipeline](docs/assets/pipeline.svg)
 
@@ -66,7 +80,7 @@ The quote reads “香蕉的英文叫做banana，你知道吗?”—Chinese and 
 
 ## Your rules can be practical. Or delightfully specific.
 
-A small local language model evaluates meaning, so you can describe situations beyond a fixed list of built-in alerts. Use Chinese or English, add exceptions, and combine several conditions in the same policy. Recognition and reasoning still have limits; these examples are starting points to test.
+A small local language model evaluates meaning, so you can describe situations beyond a fixed list of built-in alerts. Use Chinese or English and put each rule, with its exceptions, on its own line. Recognition and reasoning still have limits; these examples are starting points to test.
 
 ### 1. The scope guardian
 
@@ -82,7 +96,7 @@ A small local language model evaluates meaning, so you can describe situations b
 
 **Use it for:** explaining technical work to a nontechnical audience.
 
-> Alert when I use a technical acronym without explaining it in the current statement or recent context. Stay quiet if I already gave a plain-language explanation.
+> Alert when I use a technical acronym without explaining it in the current statement. Stay quiet if the current statement includes a plain-language explanation.
 
 **Example:** “The ETL pipeline feeds our OLAP layer.” → a reminder to explain the acronyms.
 
@@ -100,13 +114,19 @@ A small local language model evaluates meaning, so you can describe situations b
 
 *All three pictures show actual app views populated with fictional demonstration data. They illustrate possible rules and presentation, not verified model responses to those examples.*
 
-### Several triggers, one policy
+### Multiple independent rules
 
-For example, you can combine the practical rules:
+Write one rule per line, including that rule’s exceptions on the same line:
 
-> Alert if any of these happen: (1) I make a firm commitment without a deadline or delivery scope; (2) I use an unexplained technical acronym. Do not alert for conditional commitments, complete commitments, or acronyms explained in recent context. Give one short suggestion for the matching condition.
+```text
+Alert when I say banana.
+Alert if I speak badly of Tom; stay quiet when I praise him.
+Alert if I reveal a numeric password.
+```
 
-The current interface has one policy editor (up to 4,000 characters), not independent switches for multiple saved alerts. Multiple conditions share the same sensitivity, mute state, cooldown, and rate limit. Clear, focused rules are easier to validate than a long list of conflicting conditions.
+Any matching line can trigger an alert; the conditions do not all need to match. Rules are checked independently; the first match produces one concise reminder per speech segment. More rules can increase latency. Rules share the sensitivity and mute controls, with a total limit of 4,000 characters. Suggestions and popup labels follow the current speech language, independently of the rule and interface languages. Mixed speech uses an estimated dominant language.
+
+The floating desktop button starts listening with one click and stops capture with the next. Stopping with this button keeps the session for resuming. Drag its background to move it; hide or restore it using **Floating desktop button** in the menu-bar panel or settings. **Stop and clear** still erases the session.
 
 ## What you can use it for
 
@@ -115,14 +135,15 @@ The current interface has one policy editor (up to 4,000 characters), not indepe
 - **Technical explanations:** experiment with rules about unexplained jargon or audience-specific terminology.
 - **Private rehearsal:** review a pitch or interview answer without uploading speech to a service.
 
-These are example rules to try, not individually certified capabilities. You describe the behavior in natural language, including exceptions. One natural-language policy is active at a time. That policy can combine several triggers and exceptions; it is not limited to a built-in category list. There is currently one policy editor, rather than separate per-rule switches.
+These are example rules to try, not individually certified capabilities. You describe the behavior in natural language, including exceptions. Each nonempty line is an independent rule; rules are not limited to a built-in category list. There is one editor, without separate per-rule switches.
 
 ## Features
 
 - **Local inference:** Silero VAD, SenseVoiceSmall ASR, and a quantized Qwen3 4B text model run on the Mac. No runtime API key, account, model download, or cloud fallback.
 - **Automatic bilingual speech recognition:** Chinese, English, and mixed speech use the same recognizer. Switching the interface language does not change recognition.
 - **A live transcript:** the current preview is replaced as recognition improves; finalized segments enter the session history.
-- **Contextual alerts:** short recent context helps evaluate your rule. Alert quotes must occur verbatim in the ASR text; malformed model output is rejected.
+- **Current-speech alerts:** only the current finalized segment is evaluated, without conversation history; rules are checked in separate requests. Alert quotes must occur verbatim in the ASR text; malformed model output is rejected.
+- **Floating desktop control:** one click starts capture, another stops it while preserving the session. Drag to move; hide or restore it in settings.
 - **A quiet menu-bar app:** start manually, pause/resume, dismiss an alert, mute for an hour, or stop and clear the session.
 - **English and Chinese UI:** select **Settings → Display language → English / 中文**. The change is immediate and saved across launches.
 - **Explicit export:** export the current session to JSON only when you choose to. Audio is not recorded to a file by the app.
@@ -133,7 +154,7 @@ The following images render the actual app views with **fictional English demons
 
 <table>
 <tr><td width="50%"><strong>Session and reminder</strong></td><td width="50%"><strong>Settings</strong></td></tr>
-<tr><td><img src="docs/assets/session-en.png" alt="English session view showing a fictional commitment and a reminder" width="470"></td><td><img src="docs/assets/settings-en.png" alt="English settings view with display language, a fictional rule, and sensitivity" width="620"></td></tr>
+<tr><td><img src="docs/assets/session-en.png" alt="English session view showing a fictional commitment and a reminder" width="470"></td><td><img src="docs/assets/settings-en.png" alt="English settings view with display language, three independent fictional rules, a floating-control toggle, and sensitivity" width="620"></td></tr>
 </table>
 
 <details>
@@ -188,14 +209,24 @@ open 'build/Speech Wingman.app'
 
 `bootstrap-dev.sh` installs a pinned CMake into the project-local `.tools/` directory. Alternatively, set `WINGMAN_CMAKE` to an existing compatible CMake executable, run `python3 Scripts/setup-asr-runtime.py`, and then build. The native build pins its llama.cpp revision.
 
-The build script replaces the generated app and closes a running Speech Wingman instance. Export any session you want to retain before rebuilding. The app is locally ad hoc signed and **not Developer ID notarized**.
+If Speech Wingman is not running, the build script replaces the generated app at `build/Speech Wingman.app`. If it is running, the new bundle is staged at `build/Speech Wingman.next.app` and the current session stays open. The app is locally ad hoc signed and **not Developer ID notarized**.
+
+### Updating an existing build
+
+```bash
+git pull --ff-only
+bash Scripts/build-app.sh
+```
+
+If the script reports a staged update, export any session you want to keep, quit the running app, and run `bash Scripts/build-app.sh` once more to replace the main bundle. Then open `build/Speech Wingman.app`. The new build keeps saved rules and interface preferences; microphone capture starts only when you click. Existing multiline rules now treat each nonempty line as an independent rule, so keep a rule’s exceptions on the same line. Checks use only the current finalized speech segment; rules that rely on earlier conversation need to be rewritten.
+
 
 ### 2. Set your rule
 
 1. Click the microphone icon in the macOS menu bar.
-2. Open **Settings** and describe when to alert, including when to stay quiet. Rules may be written in Chinese or English.
+2. Open **Settings** and enter one rule per line, keeping each rule’s exceptions on that same line. Rules may be written in Chinese or English.
 3. Choose **Low**, **Medium**, or **High** sensitivity, then **Save and apply**.
-4. Select **Start listening** and grant microphone permission when macOS asks.
+4. Click the floating microphone button or select **Start listening**, and grant microphone permission when macOS asks.
 5. Speak normally. No speech-language selector is required.
 
 Example rule to experiment with:
@@ -206,6 +237,7 @@ The built-in rule retains its original Chinese text. The display-language switch
 
 ### 3. Control the session
 
+- **Floating microphone / stop button:** start or stop capture without clearing the session. Drag the background to reposition it.
 - **Pause / Resume:** stop collection and restart local processing when ready.
 - **Stop and clear:** stop listening and clear this session's transcript and alerts.
 - **Mute for one hour:** suppress reminders while transcription continues.
@@ -219,8 +251,8 @@ All voices picked up by the microphone can affect the result. The app does not i
 1. **Audio capture:** AVAudioEngine provides microphone audio, converted to 16 kHz mono.
 2. **Voice activity detection:** Silero VAD identifies speech and silence.
 3. **Transcription:** SenseVoiceSmall runs through sherpa-onnx/ONNX Runtime on CPU. The active short window is re-decoded roughly once a second; this is incremental previewing around a non-streaming ASR model.
-4. **Semantic evaluation:** finalized text, recent context, and your rule are sent to Qwen3-4B-Instruct-2507 (Q4_K_M), using llama.cpp with Metal acceleration.
-5. **Validation and alert controls:** a constrained JSON response is validated; matching evidence may produce a floating reminder, subject to mute, deduplication, and rate limits.
+4. **Semantic evaluation:** the latest finalized segment, independent rules, and the requested alert language are sent to Qwen3-4B-Instruct-2507 (Q4_K_M), using llama.cpp with Metal acceleration.
+5. **Validation and alert controls:** a constrained JSON response is validated; matching evidence may produce a floating reminder, subject to mute, event deduplication, and freshness checks.
 
 There is no runtime HTTP service or cloud fallback. Source, model revisions, sizes, and SHA-256 hashes are recorded in `Models/manifest-*.json` and `Resources/asr-runtime.json`.
 
@@ -229,7 +261,7 @@ There is no runtime HTTP service or cloud fallback. Source, model revisions, siz
 ## Privacy
 
 - Microphone audio and the live session stay in local process memory during normal operation; the app does not write audio files or automatically save session transcripts.
-- Alert rules, sensitivity, and display-language preferences are stored locally in macOS preferences.
+- Alert rules, sensitivity, display language, floating-control visibility, and panel position are stored locally in macOS preferences.
 - A session export writes potentially sensitive transcript content to your chosen location. Share it deliberately.
 - The app and its packaged helper processes use App Sandbox without client/server network entitlements. Dependency/model downloads happen in separate developer setup scripts.
 - This source repository excludes local recordings, session exports, evaluation logs, user preferences, downloaded models, native binaries, and machine-specific development notes.
@@ -238,13 +270,13 @@ These statements describe the app's behavior. They do not claim to control macOS
 
 ## Limitations
 
-- **Near-real-time previews, segment-based judgments.** Silence of roughly 650 ms normally finalizes a segment. Long speech is bounded into approximately 12–15 second windows; continued speech can postpone or cause re-evaluation of an alert. This is not continuous word-by-word semantic detection.
+- **Near-real-time previews, segment-based judgments.** Silence of roughly 650 ms normally finalizes a segment. Long speech is bounded into approximately 12–15 second windows; newer finalized speech supersedes older pending checks. This is not continuous word-by-word semantic detection.
 - **Recognition and reasoning can be wrong.** Product names, accents, overlapping voices, negation, rule translations, and complex exceptions are imperfect. A mixed-language “alert on any English word” example is a known semantic miss.
-- **Alerts are rate-limited:** the current default is a 30-second cooldown and at most three alerts in ten minutes. Muted, repeated, or rate-limited matches do not pop up.
-- **Session limits:** the UI retains up to 1,000 finalized segments. Excessive classification backlog stops listening with an error instead of growing indefinitely.
-- **Small synthetic evaluation only:** 8/8 existing cases and 5/6 additional cases matched expected decisions in one local replay run. This is a development regression check, not a representative accuracy score.
+- **Alerts stay current:** newer finalized speech supersedes pending work; results older than 20 seconds are skipped. There is no default cooldown or three-alert cap. Manual mute and event deduplication still apply. Slow inference can skip intermediate segments.
+- **Session limits:** the UI retains up to 1,000 finalized segments and 1,000 alerts. Only one segment waits for evaluation; newer speech replaces it. Segments over 1,500 characters are skipped whole rather than truncated.
+- **Small synthetic evaluation only:** this update passes 28/28 text cases, 14 core test groups, UI checks, and a packaged audio smoke test. A 10,000-segment simulation verifies bounded waiting work; it is not a multi-hour microphone test. Earlier audio replays scored 8/8 and 5/6. These are distinct development checks, not a representative accuracy score.
 
-In the short synthetic replay set, the first preview typically appeared in about one second; judgments often arrived roughly 1.5–3.3 seconds after the audio ended. Timing depends on audio, rule, hardware, and system load. Startup/model-loading time is separate.
+Earlier short audio replays produced a first preview at about one second and decisions roughly 1.5–3.3 seconds after speech ended. In this update’s text-only suite, example early-rule matches took about 2–4 seconds and later matches in a five-rule list about 5–8 seconds, excluding ASR and loading. These timings measure different stages and should not be compared directly. Hardware, competing processes, and rule count affect latency.
 
 ## Development and checks
 
@@ -264,6 +296,11 @@ python3 Scripts/generate-fixtures.py
 # Replay synthetic audio at microphone speed with network access denied
 python3 Scripts/evaluate-streaming.py --realtime
 python3 Scripts/evaluate-streaming.py --realtime --cases Tests/Evaluation/heldout.json
+
+# Evaluate current independent-rule behavior using the production Swift backend
+swift run WingmanPolicyCheck build/native/bin/text-worker \
+  Models/Qwen3-4B-Instruct-2507-Q4_K_M.gguf \
+  Tests/Evaluation/cases.json Tests/Evaluation/multiple-rules.json
 
 # Verify the actual bundled workers under an App Sandbox parent
 bash Scripts/evaluate-bundle.sh
@@ -312,25 +349,33 @@ The application source is MIT licensed. Third-party code and model weights keep 
 
 **这就是 Speech Wingman：你来定义规则，它在本机听懂并提醒。中文、英文、中英混说，都可以自然开口。**
 
-**Speech Wingman 是一个完全在本机处理语音的 macOS 菜单栏提醒助手。** 它会转录麦克风听到的发言，用本地小语言模型判断是否符合你写下的提醒条件。命中条件且未被静音、去重或限流时弹出简短建议；其他情况下保持安静。
+**Speech Wingman 是一个完全在本机处理语音的 macOS 菜单栏提醒助手。** 它会转录麦克风听到的发言，用本地小语言模型判断是否符合你写下的提醒条件。命中条件且未被静音、去重或判定过期时弹出简短建议；其他情况下保持安静。
 
 ### 快速反馈，中英自然混说
 
-短句本地测试中，**约 1 秒出现转录预览**，通常在**说完后约 1.5–3.3 秒完成判断**。你可以说中文、英文，也可以在同一段话里混用两种语言，不需要切换识别模式。提醒依据自然语言规则和上下文，引用实际转录中的原话，并给出简短建议。
+早期短句音频测试中，**约 1 秒出现转录预览**。新版逐条检查规则，规则越多可能越慢；本次纯文本测试中，靠前规则命中约需 2–4 秒，五条规则中靠后命中约需 5–8 秒，不含转录与模型加载时间。你可以说中文、英文，也可以在同一段话里混用两种语言，不需要切换识别模式。提醒依据逐行配置的独立规则和当前定稿发言，引用实际转录中的原话，并给出简短建议。
 
 **中文、英文、中英混搭，都用同一个识别器，开口就说。** [页面前面的两张实际使用截图](#chinese-english-both-in-the-same-sentence)分别展示了英文发言触发英文提醒，以及英文规则识别“香蕉的英文叫做banana，你知道吗?”这句中英混合发言。界面语言、发言语言和规则语言不必一致。
 
-目前 **14 条合成语音回归用例中有 13 条判断符合预期**。这是有明确范围的早期结果，不代表真实场景准确率保证；已知漏报仍公开记录。所有数字来自 Apple M4 / 16 GB、本地模型已加载后的短句测试，长发言可能有更长延迟。
+本次更新通过 **28/28 条合成文本用例、14 组核心测试、界面检查和打包音频冒烟测试**。一万段连续输入模拟验证了等待队列有界，并非数小时真实录音测试。早期合成语音回放为 13/14；文本测试与语音测试不能当成同一个准确率指标，已知限制仍公开记录。
 
 ### 规则可以很实用，也可以很有脑洞
 
 本地小语言模型按语义判断，不局限于固定提醒类别。你可以尝试：
 
 1. **承诺守门员：** 明确保证会完成，却没有说明截止时间或交付范围时提醒；条件承诺和信息完整的承诺不提醒。
-2. **术语检查员：** 面向非技术听众，使用了未解释的技术缩写时提醒；近期已经解释过的词不提醒。
+2. **术语检查员：** 面向非技术听众，使用了未解释的技术缩写时提醒；当前片段已经解释过的词不提醒。
 3. **宇宙猫船长警报：** 认真提议让猫驾驶宇宙飞船时提醒；否定、引用和虚构故事不提醒。
 
-也可以把多项触发条件组合在同一段规则里，例如“缺少时间范围的承诺，或者未解释的术语，任一出现就提醒”。当前是一个最多 4,000 字的规则编辑框，多项条件共用敏感度、静音与提醒限流；没有多个独立开关的规则管理器。上述英文图示使用虚构内容展示界面，并非这些例子的模型准确性证明。
+**每行一条规则，任意一条命中即可提醒。** 例如：
+
+```text
+说到 banana 就提醒。
+说汤姆的坏话就提醒，赞扬他不提醒。
+透露数字密码时提醒。
+```
+
+每条规则独立检查，例外条件写在同一行；首次命中后给出一条提醒。编辑框总计最多 4,000 字，规则共用敏感度和静音设置。默认不再限制为十分钟三条。上述英文界面演示使用虚构内容，并非这些例子的模型准确性证明。
 
 ### 适用场景与特点
 
@@ -338,7 +383,8 @@ The application source is MIT licensed. Third-party code and model weights keep 
 
 - **运行完全离线：** 模型随本机构建的应用打包，不需要账号、API key 或云端服务。首次下载源码、依赖和模型需要联网。
 - **中文、英文及中英混合自动识别：** 不需要手动切换录音语言。界面默认英文，可在 **Settings → Display language → 中文** 切换并保存。
-- **自然语言规则：** 写清楚何时提醒、哪些情况应保持安静，一次启用一条规则。界面语言切换不会翻译原有规则、转录或生成的建议。
+- **自然语言规则：** 每行写一条独立规则和它的例外条件。界面语言切换不会翻译原有规则、转录或生成的建议。
+- **桌面悬浮按钮：** 可拖动、跨桌面显示，点一下开始监听，再点一下停止收音并保留会话；可在设置中隐藏。
 - **可控的会话：** 手动开始、暂停/继续、停止并清空、静音一小时，或主动导出 JSON。应用不默认保存录音或转录。
 
 ### 系统要求与安装
@@ -347,12 +393,12 @@ The application source is MIT licensed. Third-party code and model weights keep 
 
 本仓库发布源码和固定版本的下载清单，不包含模型权重或公证安装包。按上方 **Getting started** 命令克隆仓库、运行 `bootstrap-dev.sh`、下载模型，再执行 `build-app.sh`。生成的应用约 2.78 GB，使用本机 ad hoc 签名，未做 Developer ID 公证。
 
-打开应用后，点击菜单栏麦克风图标，在设置中填写提醒条件，保存后点击 **Start listening / 开始监听**，并允许麦克风访问。麦克风拾取到的其他人声也会参与判断，应用不区分说话人。停止会清空当前会话；如需保留，请先主动导出。
+打开应用后，点击菜单栏麦克风图标，在设置中填写提醒条件，保存后点击 **Start listening / 开始监听**，并允许麦克风访问。麦克风拾取到的其他人声也会参与判断，应用不区分说话人。悬浮按钮停止收音会保留会话；“停止并清空”和退出应用会丢弃会话，如需持久保留，请主动导出。更新时运行 `git pull --ff-only` 和 `bash Scripts/build-app.sh`；若旧版仍在运行，新版会暂存为 `build/Speech Wingman.next.app`，不会自动关闭当前会话。导出并退出旧版后，再运行一次构建脚本，随后打开 `build/Speech Wingman.app`。
 
 ### 工作方式与边界
 
 处理链路为 **Silero VAD → SenseVoiceSmall 转录 → Qwen3 4B 文本判断**。当前预览约每秒更新，约 650 ms 静音后定稿；语义判断处理定稿片段。连续长发言会按约 12–15 秒窗口处理，继续说话也可能延后提醒，因此不承诺逐字即时判断。
 
-默认提醒冷却时间为 30 秒，十分钟最多三条。专有名词、口音、多人重叠、复杂规则和中英混合都可能出现错误。小规模合成语音回放中，基础组 8/8、补充组 5/6 符合预期；仍存在“中文中出现英文词就提醒”的漏报，不能把这一结果当作真实场景准确率。
+每行一条独立规则，任意一条命中即可提醒；提醒语言跟随当前发言。默认不再限制为十分钟三条。模型只判断当前定稿片段，慢推理会跳过中间片段，过期结果不会弹出。桌面悬浮按钮可点击开始／停止收音、拖动位置，并可在设置中隐藏。专有名词、口音、多人重叠、复杂规则和中英混合都可能出现错误。小规模合成语音回放中，基础组 8/8、补充组 5/6 符合预期；仍存在“中文中出现英文词就提醒”的漏报，不能把这一结果当作真实场景准确率。
 
-应用源码采用 MIT；模型和依赖适用各自许可证，尤其 SenseVoiceSmall 使用 FunASR 模型协议。详细依赖许可、架构和测试方法见上方英文说明及对应文档。页面开头两张配图为开发者提供的实际使用截图；其余标注为演示的界面图片使用虚构内容。
+应用源码采用 MIT；模型和依赖适用各自许可证，尤其 SenseVoiceSmall 使用 FunASR 模型协议。详细依赖许可、架构和测试方法见上方英文说明及对应文档。双语示例的两张完整配图为开发者提供的早期版本实际使用截图；其余标注为演示的界面图片使用虚构内容。

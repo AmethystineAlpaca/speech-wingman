@@ -2,15 +2,30 @@ import SwiftUI
 import AppKit
 import WingmanCore
 
+@MainActor
+private enum AppSession {
+    static let controller = SessionController()
+}
+
+@MainActor
+final class WingmanAppDelegate: NSObject, NSApplicationDelegate {
+    private let floatingControl = FloatingControlPresenter()
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        floatingControl.install(controller: AppSession.controller)
+    }
+    func applicationWillTerminate(_ notification: Notification) { floatingControl.close() }
+}
+
 @main
 struct WingmanApp: App {
-    @StateObject private var controller = SessionController()
+    @NSApplicationDelegateAdaptor(WingmanAppDelegate.self) private var delegate
+    @StateObject private var controller = AppSession.controller
     var body: some Scene {
         MenuBarExtra("Speech Wingman", systemImage: controller.state == .listening ? "mic.fill" : "mic") {
             SessionView(controller: controller)
         }.menuBarExtraStyle(.window)
         Window(Text(controller.t("提醒设置")), id: "settings") { SettingsView(controller: controller) }
-            .defaultSize(width: 620, height: 680)
+            .defaultSize(width: 620, height: 760)
     }
 }
 
@@ -53,13 +68,14 @@ struct SessionView: View {
                 Button(controller.t("设置")) { openWindow(id: "settings"); NSApp.activate(ignoringOtherApps: true) }
             }
             if let alert = controller.activeAlert {
+                let alertLanguage = controller.activeAlertLanguage
                 VStack(alignment: .leading, spacing: 8) {
-                    Text(controller.t("提醒")).font(.headline)
-                    Text(controller.language.format("原话：%@", alert.quote)).textSelection(.enabled)
+                    Text(alertLanguage.text("提醒")).font(.headline)
+                    Text(alertLanguage.format("原话：%@", alert.quote)).textSelection(.enabled)
                     Text(alert.suggestion).fontWeight(.medium)
                     HStack {
-                        Button(controller.t("关闭")) { controller.dismissAlert() }
-                        Button(controller.t("静音一小时")) { controller.mute() }
+                        Button(alertLanguage.text("关闭")) { controller.dismissAlert() }
+                        Button(alertLanguage.text("静音一小时")) { controller.mute() }
                     }
                 }.padding().background(.yellow.opacity(0.12), in: RoundedRectangle(cornerRadius: 10))
             }
@@ -69,6 +85,7 @@ struct SessionView: View {
                     Button(controller.t("取消静音")) { controller.unmute() }
                 }
             }
+            Toggle(controller.t("桌面悬浮按钮"), isOn: $controller.floatingControlVisible)
             Text(controller.t("当前会话转写")).font(.subheadline)
             ScrollView {
                 VStack(alignment: .leading, spacing: 10) {
@@ -96,7 +113,7 @@ struct SessionView: View {
                 Text(controller.language.format("转录定稿后 %.1f 秒完成判断（排队 %.1f 秒）", controller.resultDelay, controller.queueDelay))
                     .font(.caption2).foregroundStyle(.secondary)
             }
-            Text(controller.t("默认不保存音频。停止后清空本次转写与提醒。")).font(.caption2).foregroundStyle(.secondary)
+            Text(controller.t("默认不保存音频。选择“停止并清空”会清空本次转写与提醒。")).font(.caption2).foregroundStyle(.secondary)
             Divider()
             Button(controller.t("退出")) { Task { await controller.stop(); NSApp.terminate(nil) } }
         }.padding(18).frame(width: 470)
@@ -115,6 +132,7 @@ struct SettingsView: View {
             }
             Text(controller.t("只改变界面显示；录音始终自动识别中文、英文和中英混合。"))
                 .font(.caption).foregroundStyle(.secondary)
+            Toggle(controller.t("桌面悬浮按钮"), isOn: $controller.floatingControlVisible)
             Divider()
             Text(controller.t("本地语音处理")).font(.title2)
             Text(controller.t("中英自动 ASR + Qwen3 4B 文本判断"))
@@ -122,7 +140,9 @@ struct SettingsView: View {
                 .font(.caption).foregroundStyle(.secondary)
             Divider()
             Text(controller.t("提醒条件")).font(.title2)
-            Text(controller.t("用自然语言说明什么时候提醒，以及哪些情况应保持安静。一次启用一段条件。")).foregroundStyle(.secondary)
+            Text(controller.t("每行一条规则，命中任意一条就提醒。每条的例外条件写在同一行。提醒语言跟随当前发言。")).foregroundStyle(.secondary)
+            Text(controller.t("例如：说到 banana 就提醒。\n说汤姆的坏话就提醒，赞扬他不提醒。"))
+                .font(.caption).foregroundStyle(.secondary)
             TextEditor(text: $controller.prompt).font(.body)
                 .padding(8).overlay(RoundedRectangle(cornerRadius: 8).stroke(.gray.opacity(0.3)))
             Picker(controller.t("敏感度"), selection: $controller.sensitivity) {

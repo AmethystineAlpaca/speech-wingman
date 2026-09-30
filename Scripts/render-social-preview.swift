@@ -19,14 +19,14 @@ let white = color(248,250,252), muted = color(203,213,225), accent = color(94,23
 text("Speech Wingman", x:72, y:520, size:54, color:white, bold:true)
 text("ON-DEVICE SPEECH + CUSTOM AI REMINDERS", x:74, y:483, size:17, color:accent, bold:true)
 text("Your voice. Your rules.", x:72, y:359, size:58, color:white, bold:true)
-text("Chinese + English. One conversation.", x:74, y:302, size:30, color:muted)
-for (x, label) in [(CGFloat(72), "OFFLINE INFERENCE"), (CGFloat(446), "MIXED-LANGUAGE SPEECH"), (CGFloat(820), "CUSTOM ALERT RULES")] {
+text("Multiple rules. One floating button.", x:74, y:302, size:30, color:muted)
+for (x, label) in [(CGFloat(72), "OFFLINE INFERENCE"), (CGFloat(446), "MIXED-LANGUAGE SPEECH"), (CGFloat(820), "ONE-CLICK LISTENING")] {
     color(30,41,59).setFill()
     NSBezierPath(roundedRect: NSRect(x:x,y:203,width:344,height:56), xRadius:12,yRadius:12).fill()
     text(label, x:x+20, y:221, size:18, color:accent, bold:true)
 }
 text("For meetings, rehearsals, and wonderfully specific ideas.", x:74, y:119, size:25, color:muted)
-text("macOS  ·  Apple Silicon  ·  Open source", x:74, y:64, size:20, color:muted)
+text("v0.3.0  ·  macOS  ·  Apple Silicon  ·  Open source", x:74, y:64, size:20, color:muted)
 NSGraphicsContext.restoreGraphicsState()
 let url = URL(fileURLWithPath: CommandLine.arguments[1])
 let encoded = NSMutableData()

@@ -4,7 +4,7 @@ import WingmanCore
 
 @main
 struct UILayoutCheck {
-    @MainActor static func main() throws {
+    @MainActor static func main() async throws {
         let app = NSApplication.shared
         app.setActivationPolicy(.accessory)
         app.appearance = NSAppearance(named: .aqua)
@@ -15,7 +15,11 @@ struct UILayoutCheck {
         precondition(controller.language == .english)
         let publicDemo = CommandLine.arguments.contains("--public-demo")
         if publicDemo {
-            controller.prompt = "Alert when I make a firm commitment without a clear deadline or delivery scope. Stay quiet for conditional statements or complete commitments."
+            controller.prompt = """
+            Alert when I say banana.
+            Alert if I speak badly of Tom; stay quiet when I praise him.
+            Alert when I make a firm commitment without a clear deadline or delivery scope. Stay quiet for conditional statements or complete commitments.
+            """
         }
         let originalPrompt = controller.prompt
         controller.transcript = [TranscriptEntry(id: UUID(), date: Date(), text: "我们用 BigQuery 做 reconciliation. Let's check the deadline.", decision: .noAlert, configurationVersion: 1)]
@@ -48,12 +52,34 @@ struct UILayoutCheck {
             precondition(controller.prompt == originalPrompt && controller.transcript.map(\.text) == originalTranscript)
             let restored = SessionController(preferences: preferences)
             precondition(restored.language == language)
-            try snapshot(SettingsView(controller: controller), width: 620, height: 680, to: output.appendingPathComponent("settings-\(language.rawValue).png"))
+            try snapshot(SettingsView(controller: controller), width: 620, height: 760, to: output.appendingPathComponent("settings-\(language.rawValue).png"))
             try snapshot(SessionView(controller: controller), width: 470, height: 720, to: output.appendingPathComponent("session-\(language.rawValue).png"))
+            try snapshot(FloatingControlView(controller: controller), width: 244, height: 80, to: output.appendingPathComponent(publicDemo ? "floating-listening-en.png" : "floating-\(language.rawValue).png"))
             panel.displayIfNeeded()
-            RunLoop.current.run(until: Date().addingTimeInterval(0.15))
+            try await Task.sleep(for: .milliseconds(150))
             if let view = panel.contentView { try save(view, to: output.appendingPathComponent("alert-\(language.rawValue).png")) }
         }
+        let floating = FloatingControlPresenter()
+        floating.install(controller: controller)
+        let floatingPanel = app.windows.first { $0 is NSPanel && $0.title == "Speech Wingman" }!
+        precondition(floatingPanel.isVisible && floatingPanel.level == .floating)
+        controller.floatingControlVisible = false
+        precondition(!floatingPanel.isVisible)
+        precondition(!SessionController(preferences: preferences).floatingControlVisible)
+        controller.floatingControlVisible = true
+        precondition(floatingPanel.isVisible)
+        for state in (publicDemo ? [SessionController.State.idle] : [.idle, .loading, .paused, .failed]) {
+            controller.state = state
+            try snapshot(FloatingControlView(controller: controller), width: 244, height: 80, to: output.appendingPathComponent(publicDemo ? "floating-idle-en.png" : "floating-\(state).png"))
+        }
+        controller.state = .listening
+        await controller.toggleListening()
+        precondition(controller.state == .paused && controller.preview.isEmpty)
+        precondition(controller.transcript.map(\.text) == originalTranscript)
+        controller.state = .loading
+        await controller.toggleListening()
+        precondition(controller.state == .idle && controller.transcript.isEmpty)
+        floating.close()
         if publicDemo {
             // README-only examples. These are rendered UI illustrations, not inference results.
             let examples = [
@@ -65,7 +91,7 @@ struct UILayoutCheck {
                 let example = AlertEntry(id: UUID(), date: Date(), quote: quote, suggestion: suggestion, configurationVersion: 1)
                 presenter.present(example, language: .english, dismiss: {}, mute: {})
                 let examplePanel = app.windows.first { $0 is NSPanel && $0.title == "Speech Wingman Alert" && $0.isVisible }!
-                RunLoop.current.run(until: Date().addingTimeInterval(0.15))
+                try await Task.sleep(for: .milliseconds(150))
                 examplePanel.displayIfNeeded()
                 try save(examplePanel.contentView!, to: output.appendingPathComponent("example-\(name)-en.png"))
                 presenter.close()
@@ -73,7 +99,7 @@ struct UILayoutCheck {
         }
         presenter.close()
         precondition(!panel.isVisible)
-        print("PASS: language preference reload, preserved transcript/policy/listening state, and existing alert panel update. Saved \(publicDemo ? 5 : 6) rendered layouts with synthetic content.")
+        print("PASS: language preference reload, preserved transcript/policy/listening state, and existing alert panel update. Floating panel visibility and toggle stop/cancel passed; rendered layouts use synthetic content.")
     }
     @MainActor static func snapshot<V: View>(_ view: V, width: CGFloat, height: CGFloat, to url: URL) throws {
         let host = NSHostingView(rootView: view.background(Color(nsColor: .windowBackgroundColor)))

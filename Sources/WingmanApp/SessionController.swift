@@ -7,13 +7,17 @@ import WingmanCore
 final class SessionController: ObservableObject {
     enum State: Equatable { case idle, loading, listening, paused, failed }
     @Published var language: DisplayLanguage {
-        didSet { language.save(to: preferences); presenter.updateLanguage(language) }
+        didSet { language.save(to: preferences) }
     }
     func t(_ key: String) -> String { language.text(key) }
+    @Published var floatingControlVisible: Bool {
+        didSet { preferences.set(floatingControlVisible, forKey: "floatingControlVisible") }
+    }
     @Published var state: State = .idle
     @Published var status = "已停止"
     @Published var transcript: [TranscriptEntry] = []
     @Published var alerts: [AlertEntry] = []
+    @Published private(set) var activeAlertLanguage: DisplayLanguage = .english
     @Published var activeAlert: AlertEntry?
     @Published var preview = ""
     @Published var processing = false
@@ -32,8 +36,7 @@ final class SessionController: ObservableObject {
     private let capture = AudioCapture()
     private let presenter = AlertPresenter()
     private var gate = AlertGate()
-    private var pending: [TranscriptEntry] = []
-    private var context: [TranscriptEntry] = []
+    private var pending = CurrentSpeechWindow()
     private var configuration: SessionConfiguration
     private var epoch = UUID()
     private var sessionID = UUID()
@@ -41,12 +44,14 @@ final class SessionController: ObservableObject {
     private var debounce: Task<Void, Never>?
     private var observations: [NSObjectProtocol] = []
     private var lastFinalizedSegment = -1
+    private var shuttingDown = false
     private var levelUpdatedAt = Date.distantPast
 
     init(preferences: UserDefaults = .standard) {
         self.preferences = preferences
         language = DisplayLanguage.load(from: preferences)
-        let savedPrompt = preferences.string(forKey: "alertPrompt") ?? "当当前发言作出强确定性承诺，但当前发言或近期上下文缺少明确截止时间或交付范围时提醒。否定自己能保证、愿望和条件完整的承诺不提醒。"
+        floatingControlVisible = preferences.object(forKey: "floatingControlVisible") as? Bool ?? true
+        let savedPrompt = preferences.string(forKey: "alertPrompt") ?? "当当前发言作出强确定性承诺，但当前发言缺少明确截止时间或交付范围时提醒。否定自己能保证、愿望和条件完整的承诺不提醒。"
         let savedSensitivity = Sensitivity(rawValue: preferences.string(forKey: "sensitivity") ?? "medium") ?? .medium
         prompt = savedPrompt; sensitivity = savedSensitivity
         configuration = SessionConfiguration(prompt: savedPrompt, sensitivity: savedSensitivity)
@@ -75,9 +80,9 @@ final class SessionController: ObservableObject {
     }
 
     func start() async {
-        guard state == .idle || state == .failed, validSettings() else { return }
+        guard !shuttingDown, state == .idle || state == .failed, validSettings() else { return }
         saveSettings()
-        transcript.removeAll(); alerts.removeAll(); context.removeAll(); dismissAlert()
+        transcript.removeAll(); alerts.removeAll(); dismissAlert()
         failures = 0; elapsed = 0; queueDelay = 0; resultDelay = 0; gate.resetSession(); sessionID = UUID()
         await beginListening()
     }
@@ -127,36 +132,41 @@ final class SessionController: ObservableObject {
         guard state == .listening else { return }
         state = .paused; status = "已暂停"
         invalidate()
+        shuttingDown = true
         await backend.shutdown()
+        shuttingDown = false
     }
     func resume() async {
-        guard state == .paused else { return }
+        guard !shuttingDown, state == .paused else { return }
         await beginListening()
     }
     func stop() async {
         state = .idle; status = "已停止"
         invalidate()
-        transcript.removeAll(); alerts.removeAll(); context.removeAll(); dismissAlert()
+        transcript.removeAll(); alerts.removeAll(); dismissAlert()
+        shuttingDown = true
         await backend.shutdown()
+        shuttingDown = false
     }
     func applySettings() async {
         guard state != .loading, validSettings() else { return }
         let wasListening = state == .listening
         if wasListening { await pause() }
         guard !wasListening || state == .paused else { return }
-        saveSettings(); context.removeAll(); dismissAlert()
+        saveSettings(); dismissAlert()
         if wasListening { await resume() }
         else { status = "提醒条件已保存\(state == .paused ? "；已暂停" : "")" }
     }
     private func invalidate() {
         epoch = UUID(); capture.stop(); speech.stop()
         task?.cancel(); task = nil; debounce?.cancel(); debounce = nil
-        pending.removeAll(); processing = false; processingStartedAt = nil; inputLevel = 0; preview = ""
+        pending.reset(); processing = false; processingStartedAt = nil; inputLevel = 0; preview = ""
     }
     private func fail(_ message: String) {
         state = .failed; status = message; failures += 1
         invalidate()
-        Task { await backend.shutdown() }
+        shuttingDown = true
+        Task { await backend.shutdown(); shuttingDown = false }
     }
 
     private func receiveText(_ text: String, segment: Int, final: Bool, seconds: Double) {
@@ -165,12 +175,9 @@ final class SessionController: ObservableObject {
         lastFinalizedSegment = segment; preview = ""
         let entry = TranscriptEntry(id: UUID(), date: Date(), text: text, decision: .deferDecision, configurationVersion: configuration.version)
         // ASR text is displayed immediately, independently of classification or classifier errors.
+        task?.cancel() // A newer final supersedes any remaining rules for the old segment.
         transcript.append(entry); pending.append(entry)
         if transcript.count > 1000 { transcript.removeFirst(transcript.count - 1000) }
-        if pending.reduce(0, { $0 + $1.text.count }) > 6000 {
-            fail("判断积压过多，已停止监听；转录已保留，请继续重试")
-            return
-        }
         debounce?.cancel()
         let current = epoch
         debounce = Task { [weak self] in
@@ -181,59 +188,58 @@ final class SessionController: ObservableObject {
     }
 
     private func pump() {
-        guard task == nil, state == .listening, preview.isEmpty, !pending.isEmpty else { return }
-        var batch: [TranscriptEntry] = []
-        while let next = pending.first, batch.reduce(0, { $0 + $1.text.count }) + next.text.count <= 3000 {
-            batch.append(pending.removeFirst())
-        }
-        guard !batch.isEmpty else { fail("单段转录超出判断容量"); return }
-        let text = batch.map(\.text).joined(separator: "\n")
-        let eventID = batch.last!.id
+        guard task == nil, state == .listening, let entry = pending.take(now: Date()) else { return }
+        let text = entry.text, eventID = entry.id
         let current = epoch, config = configuration, started = Date()
-        context.removeAll { started.timeIntervalSince($0.date) > 90 }
-        let recent = context
-        queueDelay = started.timeIntervalSince(batch[0].date)
+        queueDelay = started.timeIntervalSince(entry.date)
         processing = true; processingStartedAt = started
         task = Task { [weak self] in
             guard let self else { return }
-            do {
-                let evaluation = try await self.backend.evaluate(text: text, configuration: config, context: recent)
-                guard self.epoch == current, self.state == .listening, !Task.isCancelled else { return }
-                let result = evaluation.result
-                let stale = !self.preview.isEmpty || !self.pending.isEmpty
-                if result.decision == .alert && stale && text.count + self.pending.reduce(0, { $0 + $1.text.count }) <= 3000 {
-                    // Speech continued during inference. Re-evaluate the combined meaning before showing a stale alert.
-                    self.pending.insert(contentsOf: batch, at: 0)
+            defer {
+                if self.epoch == current {
                     self.task = nil; self.processing = false; self.processingStartedAt = nil
                     self.pump()
-                    return
                 }
+            }
+            do {
+                let evaluation = try await self.backend.evaluate(text: text, configuration: config, context: [])
+                guard self.epoch == current, self.state == .listening, !Task.isCancelled else { return }
+                let result = evaluation.result
                 self.elapsed = evaluation.elapsedSeconds
-                self.resultDelay = Date().timeIntervalSince(batch[0].date)
-                let ids = Set(batch.map(\.id))
+                self.resultDelay = Date().timeIntervalSince(entry.date)
                 self.transcript = self.transcript.map { entry in
-                    guard ids.contains(entry.id) else { return entry }
+                    guard entry.id == eventID else { return entry }
                     return TranscriptEntry(id: entry.id, date: entry.date, text: entry.text, decision: result.decision, configurationVersion: entry.configurationVersion)
                 }
-                self.context.append(contentsOf: batch)
-                self.context = Array(self.context.suffix(20))
-                if !stale && self.gate.admit(result, eventID: eventID, isFinal: true, now: Date()) {
+                if self.pending.canPresent(entry, now: Date()) && self.gate.admit(result, eventID: eventID, isFinal: true, now: Date()) {
                     let alert = AlertEntry(id: eventID, date: Date(), quote: result.quote, suggestion: result.suggestion, configurationVersion: config.version)
                     self.alerts.append(alert); self.activeAlert = alert
-                    self.presenter.present(alert, language: self.language, dismiss: { [weak self] in self?.dismissAlert() }, mute: { [weak self] in self?.mute() })
+                    if self.alerts.count > 1000 { self.alerts.removeFirst(self.alerts.count - 1000) }
+                    self.activeAlertLanguage = SpeechLanguage.detect(text).displayLanguage
+                    self.presenter.present(alert, language: self.activeAlertLanguage, dismiss: { [weak self] in self?.dismissAlert() }, mute: { [weak self] in self?.mute() })
                 }
-                self.status = "正在本机监听 · 中英自动识别"
+                if result.decision == .inconclusive {
+                    self.failures += 1
+                    self.status = "当前片段未能完成判断，已跳过提醒"
+                } else { self.status = "正在本机监听 · 中英自动识别" }
             } catch {
                 guard self.epoch == current, !Task.isCancelled else { return }
                 self.failures += 1
                 if case WingmanError.invalidResult = error {
                     self.status = "转录正常；上一条判断无效，已跳过提醒"
-                    self.context.append(contentsOf: batch); self.context = Array(self.context.suffix(20))
                 } else { self.fail(error.localizedDescription); return }
             }
-            guard self.epoch == current else { return }
-            self.task = nil; self.processing = false; self.processingStartedAt = nil
-            self.pump()
+        }
+    }
+
+    /// The desktop button stops capture without deleting the session; a second click resumes.
+    func toggleListening() async {
+        guard !shuttingDown else { return }
+        switch state {
+        case .idle, .failed: await start()
+        case .paused: await resume()
+        case .listening: await pause()
+        case .loading: await stop()
         }
     }
 

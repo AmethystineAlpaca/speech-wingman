@@ -1,0 +1,123 @@
+[
+  {
+    "id": "banana-order-0",
+    "speech": "我今天买了一个 banana。",
+    "expected": "alert",
+    "policy": "说到 banana 就提醒。\n如果我说汤姆的坏话，就提醒我；赞扬他不提醒。\n透露数字密码时提醒。\n做出没有截止时间的强确定性承诺时提醒。\n说自己很疲惫时提醒。"
+  },
+  {
+    "id": "tom-order-0",
+    "speech": "汤姆真是个自私的混蛋。",
+    "expected": "alert",
+    "policy": "说到 banana 就提醒。\n如果我说汤姆的坏话，就提醒我；赞扬他不提醒。\n透露数字密码时提醒。\n做出没有截止时间的强确定性承诺时提醒。\n说自己很疲惫时提醒。"
+  },
+  {
+    "id": "banana-order-1",
+    "speech": "我今天买了一个 banana。",
+    "expected": "alert",
+    "policy": "如果我说汤姆的坏话，就提醒我；赞扬他不提醒。\n透露数字密码时提醒。\n做出没有截止时间的强确定性承诺时提醒。\n说自己很疲惫时提醒。\n说到 banana 就提醒。"
+  },
+  {
+    "id": "tom-order-1",
+    "speech": "汤姆真是个自私的混蛋。",
+    "expected": "alert",
+    "policy": "如果我说汤姆的坏话，就提醒我；赞扬他不提醒。\n透露数字密码时提醒。\n做出没有截止时间的强确定性承诺时提醒。\n说自己很疲惫时提醒。\n说到 banana 就提醒。"
+  },
+  {
+    "id": "banana-order-2",
+    "speech": "我今天买了一个 banana。",
+    "expected": "alert",
+    "policy": "透露数字密码时提醒。\n做出没有截止时间的强确定性承诺时提醒。\n说自己很疲惫时提醒。\n说到 banana 就提醒。\n如果我说汤姆的坏话，就提醒我；赞扬他不提醒。"
+  },
+  {
+    "id": "tom-order-2",
+    "speech": "汤姆真是个自私的混蛋。",
+    "expected": "alert",
+    "policy": "透露数字密码时提醒。\n做出没有截止时间的强确定性承诺时提醒。\n说自己很疲惫时提醒。\n说到 banana 就提醒。\n如果我说汤姆的坏话，就提醒我；赞扬他不提醒。"
+  },
+  {
+    "id": "third-rule",
+    "speech": "我的密码是 582146。",
+    "expected": "alert",
+    "policy": "说到 banana 就提醒。\n如果我说汤姆的坏话，就提醒我；赞扬他不提醒。\n透露数字密码时提醒。\n做出没有截止时间的强确定性承诺时提醒。\n说自己很疲惫时提醒。"
+  },
+  {
+    "id": "fourth-rule",
+    "speech": "我保证把所有工作都完成。",
+    "expected": "alert",
+    "policy": "说到 banana 就提醒。\n如果我说汤姆的坏话，就提醒我；赞扬他不提醒。\n透露数字密码时提醒。\n做出没有截止时间的强确定性承诺时提醒。\n说自己很疲惫时提醒。"
+  },
+  {
+    "id": "last-rule",
+    "speech": "我现在特别疲惫。",
+    "expected": "alert",
+    "policy": "说到 banana 就提醒。\n如果我说汤姆的坏话，就提醒我；赞扬他不提醒。\n透露数字密码时提醒。\n做出没有截止时间的强确定性承诺时提醒。\n说自己很疲惫时提醒。"
+  },
+  {
+    "id": "english-speech-chinese-rules",
+    "speech": "Tom is a selfish idiot.",
+    "expected": "alert",
+    "policy": "说到 banana 就提醒。\n如果我说汤姆的坏话，就提醒我；赞扬他不提醒。\n透露数字密码时提醒。\n做出没有截止时间的强确定性承诺时提醒。\n说自己很疲惫时提醒。"
+  },
+  {
+    "id": "english-banana",
+    "speech": "I ate a banana.",
+    "expected": "alert",
+    "policy": "说到 banana 就提醒。\n如果我说汤姆的坏话，就提醒我；赞扬他不提醒。\n透露数字密码时提醒。\n做出没有截止时间的强确定性承诺时提醒。\n说自己很疲惫时提醒。"
+  },
+  {
+    "id": "single-word",
+    "speech": "banana",
+    "expected": "alert",
+    "policy": "说到 banana 就提醒。\n如果我说汤姆的坏话，就提醒我；赞扬他不提醒。\n透露数字密码时提醒。\n做出没有截止时间的强确定性承诺时提醒。\n说自己很疲惫时提醒。"
+  },
+  {
+    "id": "positive-tom",
+    "speech": "汤姆非常善良，他今天帮助了我。",
+    "expected": "no_alert",
+    "policy": "说到 banana 就提醒。\n如果我说汤姆的坏话，就提醒我；赞扬他不提醒。\n透露数字密码时提醒。\n做出没有截止时间的强确定性承诺时提醒。\n说自己很疲惫时提醒。"
+  },
+  {
+    "id": "negative-negation",
+    "speech": "Tom is not an idiot. He is very kind.",
+    "expected": "no_alert",
+    "policy": "说到 banana 就提醒。\n如果我说汤姆的坏话，就提醒我；赞扬他不提醒。\n透露数字密码时提醒。\n做出没有截止时间的强确定性承诺时提醒。\n说自己很疲惫时提醒。"
+  },
+  {
+    "id": "no-match",
+    "speech": "今天天气晴朗，我准备出去散步。",
+    "expected": "no_alert",
+    "policy": "说到 banana 就提醒。\n如果我说汤姆的坏话，就提醒我；赞扬他不提醒。\n透露数字密码时提醒。\n做出没有截止时间的强确定性承诺时提醒。\n说自己很疲惫时提醒。"
+  },
+  {
+    "id": "old-trigger",
+    "speech": "现在我们讨论明天的天气。",
+    "expected": "no_alert",
+    "policy": "说到 banana 就提醒。\n如果我说汤姆的坏话，就提醒我；赞扬他不提醒。\n透露数字密码时提醒。\n做出没有截止时间的强确定性承诺时提醒。\n说自己很疲惫时提醒。",
+    "history": "汤姆是个混蛋。banana。我的密码是 123456。"
+  },
+  {
+    "id": "two-matches",
+    "speech": "汤姆真是个混蛋，他拿走了我的 banana。",
+    "expected": "alert",
+    "policy": "说到 banana 就提醒。\n如果我说汤姆的坏话，就提醒我；赞扬他不提醒。\n透露数字密码时提醒。\n做出没有截止时间的强确定性承诺时提醒。\n说自己很疲惫时提醒。"
+  },
+  {
+    "id": "exception-does-not-veto",
+    "speech": "Tom is very kind and gave me a banana.",
+    "expected": "alert",
+    "policy": "说到 banana 就提醒。\n如果我说汤姆的坏话，就提醒我；赞扬他不提醒。\n透露数字密码时提醒。\n做出没有截止时间的强确定性承诺时提醒。\n说自己很疲惫时提醒。"
+  },
+  {
+    "id": "chinese-speech-english-rules",
+    "speech": "汤姆就是个自私的混蛋。",
+    "expected": "alert",
+    "policy": "Alert when I say banana.\nAlert if I speak badly of Tom; do not alert when I praise him.\nAlert if I reveal a numeric password."
+  },
+  {
+    "id": "chinese-banana-english-rules",
+    "speech": "我刚刚吃了 banana。",
+    "expected": "alert",
+    "policy": "Alert when I say banana.\nAlert if I speak badly of Tom; do not alert when I praise him.\nAlert if I reveal a numeric password."
+  }
+]

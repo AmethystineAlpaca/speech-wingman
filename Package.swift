@@ -12,6 +12,7 @@ let package = Package(
         .target(name: "WingmanCore"),
         .executableTarget(name: "WingmanApp", dependencies: ["WingmanCore"]),
         .executableTarget(name: "WingmanEvaluate", dependencies: ["WingmanCore"]),
+        .executableTarget(name: "WingmanPolicyCheck", dependencies: ["WingmanCore"], path: "Tests/PolicyEvaluation"),
         .executableTarget(name: "WingmanCoreTests", dependencies: ["WingmanCore"], path: "Tests/WingmanCoreTests")
     ]
 )

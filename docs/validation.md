@@ -29,6 +29,21 @@ A separately tested English translation of the built-in Chinese rule produced an
 
 In short realtime clips, first text appeared at roughly one second, and decisions often arrived about 1.5–3.3 seconds after the clip ended. Model loading is excluded. These are illustrative measurements from small synthetic fixtures, not latency guarantees or representative accuracy estimates. macOS voice versions can alter regenerated fixtures.
 
+## Multiple rules and current-speech update
+
+- The final production prompt/backend passed 28/28 synthetic text cases: the existing eight cases plus twenty multiple-rule cases in `Tests/Evaluation/multiple-rules.json`. These exercise banana, negative remarks about Tom, rule-order permutations, matches in later lines, praise/negation, independent exceptions, speech/rule language mismatch, and old history that must not trigger a new alert. Language validation and verbatim-quote validation run on every alert. This does not measure ASR accuracy or guarantee wording quality.
+- Fourteen core test groups pass, including independent model requests, cancelling superseded rule checks and reusing the worker, language validation, history exclusion, and a simulation of 10,000 successive segments. Waiting work stays bounded to the latest segment; expired results cannot be presented. This is a scheduling simulation, not a multi-hour microphone endurance run.
+- The production UI harness passes floating visibility/persistence, stop/cancel state transitions, session preservation on pause, and English/Chinese rendered layouts. A native UI check also clicked the floating control to enter listening and clicked it again to stop microphone capture.
+- The rebuilt signed bundle passed the runtime/signature audit and a realtime synthetic-audio replay through the packaged ASR and text workers. The unrelated password rule stayed quiet for the commitment fixture.
+- Independent rule evaluation increases latency. In the final text run, two example rules took roughly 2–4 seconds for a match, and examples reaching later rules in a five-rule list took roughly 5–8 seconds, excluding model loading and ASR. Competing model processes can be much slower and may time out. New finalized speech cancels remaining old rule checks; skipped or expired speech is not replayed later.
+- A decision regression on complete commitments was found during prompt development and corrected before the final 28-case run. Earlier experimental prompt results are not the shipped results. Suggestions can still include unnecessary advice; passing a decision/language check does not certify every generated sentence.
+
+Run the text suite against an unsigned local development worker (or a disposable worker copy without inherited App Sandbox entitlements):
+
+```bash
+swift run WingmanPolicyCheck build/native/bin/text-worker Models/Qwen3-4B-Instruct-2507-Q4_K_M.gguf Tests/Evaluation/cases.json Tests/Evaluation/multiple-rules.json
+```
+
 ## Reproducing checks
 
 Follow the README setup/build instructions first. Then run:

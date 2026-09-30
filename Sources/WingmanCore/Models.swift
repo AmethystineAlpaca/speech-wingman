@@ -24,6 +24,11 @@ public enum Sensitivity: String, Codable, Sendable, CaseIterable {
 
 public struct SessionConfiguration: Codable, Sendable {
     public var prompt: String
+    /// Each nonempty line is one independent rule, including its own exclusions.
+    public var rules: [String] {
+        prompt.components(separatedBy: .newlines)
+            .map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
+    }
     public var sensitivity: Sensitivity
     public var version: Int
     public init(prompt: String, sensitivity: Sensitivity = .medium, version: Int = 1) {

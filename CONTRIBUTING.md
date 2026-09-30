@@ -17,7 +17,7 @@ Follow the README build instructions. Core checks need no model weights:
 swift run WingmanCoreTests
 ```
 
-For UI changes, run `bash Scripts/check-ui-language.sh` in a desktop session. For inference changes, also run the offline audit and audio replays described in `docs/validation.md`. Preserve known failures; do not tune a hardcoded keyword rule to make a semantic test appear to pass.
+For UI changes, run `bash Scripts/check-ui-language.sh` in a desktop session. Refresh public UI illustrations with `bash Scripts/check-ui-language.sh --public-demo` and inspect every changed image; that mode uses isolated preferences and fictional English examples. Regenerate the project card with `swift Scripts/render-social-preview.swift docs/assets/social-preview.png`. For inference changes, also run the offline audit and audio replays described in `docs/validation.md`. Use the production `WingmanPolicyCheck` text suite for independent-rule and language regressions; its invocation is in `docs/validation.md`. Preserve known failures; do not tune a hardcoded keyword rule to make a semantic test appear to pass.
 
 Explain the behavior change and checks in your PR. If you have not tested live audio, another macOS version, or an English/Chinese rule, say so. Discuss large architecture changes before implementing them.
 

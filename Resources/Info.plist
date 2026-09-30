@@ -4,8 +4,8 @@
   <key>CFBundleName</key><string>Speech Wingman</string>
   <key>CFBundleDisplayName</key><string>Speech Wingman</string>
   <key>CFBundleIdentifier</key><string>local.speechwingman.app</string>
-  <key>CFBundleVersion</key><string>3</string>
-  <key>CFBundleShortVersionString</key><string>0.2.1</string>
+  <key>CFBundleVersion</key><string>4</string>
+  <key>CFBundleShortVersionString</key><string>0.3.0</string>
   <key>CFBundleExecutable</key><string>SpeechWingman</string>
   <key>CFBundlePackageType</key><string>APPL</string>
   <key>LSMinimumSystemVersion</key><string>14.0</string>

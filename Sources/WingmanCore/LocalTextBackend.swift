@@ -41,6 +41,7 @@ public actor LocalTextBackend {
     private var texts: [String: String] = [:]
     private var generation = UUID()
     private var loaded = false
+    private var evaluating = false
     public init() {}
 
     public func load(paths: BackendPaths) async throws {
@@ -81,17 +82,50 @@ public actor LocalTextBackend {
 
     public func evaluate(text: String, configuration: SessionConfiguration,
                          context: [TranscriptEntry]) async throws -> Evaluation {
-        guard loaded, let input, process?.isRunning == true else { throw WingmanError.unavailable("本地模型未就绪") }
+        guard loaded, input != nil, process?.isRunning == true else { throw WingmanError.unavailable("本地模型未就绪") }
         guard pending.isEmpty else { throw WingmanError.worker("worker 忙，不能并行提交判断") }
         guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty, text.count <= 4_000,
               !configuration.prompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
               configuration.prompt.count <= 4_000 else { throw WingmanError.worker("文本或 prompt 无效") }
+        guard !evaluating else { throw WingmanError.worker("worker 忙，不能并行提交判断") }
+        evaluating = true
+        let current = generation, started = Date()
+        defer { if generation == current { evaluating = false } }
+        var elapsed: Double = 0
+        var quietDecision = Decision.noAlert
+        // Independent requests prevent one rule's exclusions from changing another rule.
+        // Stop at the first match: one speech segment produces at most one reminder.
+        for rule in configuration.rules {
+            try Task.checkCancellation()
+            guard generation == current else { throw WingmanError.cancelled }
+            guard Date().timeIntervalSince(started) < CurrentSpeechWindow.maximumAge else {
+                return Evaluation(result: VoiceResult(transcript: text, decision: .inconclusive, quote: "", suggestion: ""), elapsedSeconds: elapsed)
+            }
+            let single = SessionConfiguration(prompt: rule, sensitivity: configuration.sensitivity, version: configuration.version)
+            let evaluation: Evaluation
+            do { evaluation = try await evaluateRule(text: text, configuration: single) }
+            catch WingmanError.invalidResult {
+                // One malformed answer must not hide a valid match to a later rule.
+                quietDecision = .inconclusive
+                continue
+            }
+            try Task.checkCancellation()
+            elapsed += evaluation.elapsedSeconds
+            if evaluation.result.decision == .alert { return Evaluation(result: evaluation.result, elapsedSeconds: elapsed) }
+            if evaluation.result.decision == .deferDecision && quietDecision != .inconclusive { quietDecision = .deferDecision }
+            if evaluation.result.decision == .inconclusive { quietDecision = .inconclusive }
+        }
+        return Evaluation(result: VoiceResult(transcript: text, decision: quietDecision, quote: "", suggestion: ""), elapsedSeconds: elapsed)
+    }
+
+    private func evaluateRule(text: String, configuration: SessionConfiguration) async throws -> Evaluation {
+        guard loaded, let input else { throw WingmanError.unavailable("本地模型未就绪") }
         let id = UUID().uuidString, current = generation
         texts[id] = text
         let request: [String: Any] = [
             "type": "evaluate", "id": id,
             "system": PromptBuilder.system,
-            "user": PromptBuilder.user(text: text, configuration: configuration, context: context)
+            "user": PromptBuilder.user(text: text, configuration: configuration, context: [])
         ]
         var data = try JSONSerialization.data(withJSONObject: request, options: [.sortedKeys])
         data.append(10)
@@ -107,7 +141,7 @@ public actor LocalTextBackend {
     }
 
     public func shutdown() {
-        generation = UUID(); loaded = false
+        generation = UUID(); loaded = false; evaluating = false
         ready?.resume(throwing: WingmanError.cancelled); ready = nil
         let continuations = pending.values; pending.removeAll(); texts.removeAll()
         for continuation in continuations { continuation.resume(throwing: WingmanError.cancelled) }

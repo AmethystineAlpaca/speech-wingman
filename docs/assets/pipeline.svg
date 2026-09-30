@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="470" viewBox="0 0 1200 470" role="img" aria-labelledby="title desc">
-<title id="title">Speech Wingman — on-device speech to contextual alerts</title>
+<title id="title">Speech Wingman — on-device speech alerts</title>
 <desc id="desc">Microphone audio passes through Silero voice activity detection and SenseVoice transcription. Final text and the user's rule go to a local Qwen3 text model. A match can show an alert; other results stay quiet. Everything runs on the Mac.</desc>
 <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/></marker></defs>
 <rect width="1200" height="470" rx="24" fill="#0f172a"/>
@@ -27,5 +27,5 @@
 </g>
 <rect x="42" y="338" width="1116" height="91" rx="14" fill="#172554"/>
 <text x="64" y="372" fill="#bfdbfe" font-size="18" font-weight="600">Chinese, English, and mixed speech — no recognition-language switch</text>
-<text x="64" y="404" fill="#cbd5e1" font-size="16">Preview updates as you speak. Evaluation uses finalized text. Alerts respect mute, cooldown, and rate limits.</text>
+<text x="64" y="404" fill="#cbd5e1" font-size="16">Live speech previews. Only current finalized text is evaluated. Alerts respect mute and event deduplication.</text>
 </g></svg>

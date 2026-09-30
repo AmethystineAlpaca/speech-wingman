@@ -19,7 +19,7 @@ else
   TASK_OBJECTS=("$TASK_BIN"/WingmanCore.build/*.o)
 fi
 xcrun swiftc -parse-as-library -I "$TASK_MODULE" "${TASK_OBJECTS[@]}" \
-  Sources/WingmanApp/SessionController.swift Sources/WingmanApp/AlertPresenter.swift Sources/WingmanApp/AudioCapture.swift \
+  Sources/WingmanApp/SessionController.swift Sources/WingmanApp/AlertPresenter.swift Sources/WingmanApp/AudioCapture.swift Sources/WingmanApp/FloatingControl.swift \
   "$TASK_CHECK/Views.swift" Tests/UILayout/main.swift -o "$TASK_CHECK/language-ui-check"
 TASK_OUTPUT="$PWD/local-evaluation/language-ui"
 if [ "${1:-}" = "--public-demo" ]; then TASK_OUTPUT="$PWD/docs/assets"; fi

@@ -11,7 +11,14 @@ public enum ResultValidator {
         object["transcript"] = transcript
         if decision != "alert" { object["quote"] = ""; object["suggestion"] = "" }
         let full = try JSONSerialization.data(withJSONObject: object)
-        return try decode(String(decoding: full, as: UTF8.self))
+        let result = try decode(String(decoding: full, as: UTF8.self))
+        if result.decision == .alert {
+            let wantsChinese = SpeechLanguage.detect(transcript) == .chinese
+            guard (SpeechLanguage.detect(result.suggestion) == .chinese) == wantsChinese else {
+                throw WingmanError.invalidResult("提醒语言与当前发言不符")
+            }
+        }
+        return result
     }
     public static func decode(_ raw: String) throws -> VoiceResult {
         guard let data = raw.data(using: .utf8), data.count <= 32_768,

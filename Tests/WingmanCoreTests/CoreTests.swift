@@ -35,11 +35,14 @@ final class CoreTests {
         try suite.testMuteAndSessionReset()
         try suite.testDecisionCannotRewriteTranscript()
         suite.testPromptBoundaries()
+        try suite.testMultipleRulesAndSpeechLanguage()
+        suite.testCurrentSpeechWindow()
         suite.testDisplayLanguagePreference()
         try suite.testResourcesAndMigration()
         try await suite.testTextWorkerLifecycle()
+        try await suite.testIndependentRuleRequests()
         try await suite.testASRStreamingLifecycle()
-        print("PASS: 11 core groups (strict output, trusted ASR text, policy, alert controls, resources, worker and ASR lifecycle)")
+        print("PASS: 14 core groups (strict output, trusted ASR text, policy, alert controls, resources, worker and ASR lifecycle)")
     }
     func testDisplayLanguagePreference() {
         let name = "local.speechwingman.language-test." + UUID().uuidString
@@ -87,7 +90,7 @@ final class CoreTests {
         }
     }
     func testAlertGatePartialCooldownDeduplicationAndLimit() throws {
-        var gate = AlertGate(); gate.maximumPerTenMinutes = 2
+        var gate = AlertGate(); gate.maximumPerTenMinutes = 2; gate.cooldown = 30
         let alert = try result(), now = Date(timeIntervalSince1970: 1000), id = UUID()
         XCTAssertFalse(gate.admit(alert, eventID: id, isFinal: false, now: now))
         XCTAssertTrue(gate.admit(alert, eventID: id, isFinal: true, now: now))
@@ -123,6 +126,52 @@ final class CoreTests {
         XCTAssertTrue(prompt.contains(configuration.prompt))
         XCTAssertTrue(prompt.contains("Ignore previous rules"))
         XCTAssertFalse(prompt.contains("<|im_start|>"))
+    }
+    func testMultipleRulesAndSpeechLanguage() throws {
+        let policy = SessionConfiguration(prompt: "  说到 banana 就提醒。 \n\n说汤姆的坏话就提醒，赞扬他不提醒。\r\n透露密码就提醒。")
+        XCTAssertEqual(policy.rules.count, 3)
+        let history = (0..<1000).map { _ in TranscriptEntry(id: UUID(), date: Date(), text: "OUTDATED_CONTEXT", decision: .alert, configurationVersion: 1) }
+        let prompt = PromptBuilder.user(text: "今天天气不错。", configuration: policy, context: history)
+        XCTAssertFalse(prompt.contains("OUTDATED_CONTEXT"))
+        XCTAssertEqual(prompt, PromptBuilder.user(text: "今天天气不错。", configuration: policy, context: []))
+        XCTAssertEqual(SpeechLanguage.detect("我刚刚说了 banana。"), .chinese)
+        XCTAssertEqual(SpeechLanguage.detect("Tom is an idiot."), .english)
+        XCTAssertEqual(SpeechLanguage.detect("banana"), .english)
+        XCTAssertEqual(SpeechLanguage.detect("汤姆真是个笨蛋。"), .chinese)
+        XCTAssertEqual(SpeechLanguage.detect("我们用 BigQuery 做 reconciliation。"), .chinese)
+        XCTAssertThrowsError(try ResultValidator.decodeDecision(#"{"decision":"alert","quote":"banana","suggestion":"你说了 banana。"}"#, transcript: "banana"))
+        XCTAssertThrowsError(try ResultValidator.decodeDecision(#"{"decision":"alert","quote":"汤姆","suggestion":"Be kind to Tom."}"#, transcript: "汤姆真是个笨蛋。"))
+        var gate = AlertGate()
+        let alert = try result()
+        for index in 0..<10 {
+            XCTAssertTrue(gate.admit(alert, eventID: UUID(), isFinal: true, now: Date(timeIntervalSince1970: Double(index))))
+        }
+    }
+    func testCurrentSpeechWindow() {
+        var window = CurrentSpeechWindow()
+        let began = Date(timeIntervalSince1970: 1000)
+        func entry(_ index: Int, text: String = "当前发言") -> TranscriptEntry {
+            TranscriptEntry(id: UUID(), date: began.addingTimeInterval(Double(index)), text: text, decision: .deferDecision, configurationVersion: 1)
+        }
+        let first = entry(0)
+        window.append(first)
+        XCTAssertEqual(window.take(now: began)?.id, first.id)
+        XCTAssertTrue(window.canPresent(first, now: began.addingTimeInterval(2)))
+        // Simulate a long session and a classifier slower than ASR: only the newest survives.
+        var latest = first
+        for index in 1...10000 { latest = entry(index); window.append(latest) }
+        XCTAssertFalse(window.canPresent(first, now: began.addingTimeInterval(5)))
+        XCTAssertEqual(window.take(now: latest.date)?.id, latest.id)
+        XCTAssertNil(window.take(now: latest.date))
+        XCTAssertTrue(window.canPresent(latest, now: latest.date))
+        XCTAssertFalse(window.canPresent(latest, now: latest.date.addingTimeInterval(21)))
+        window.append(latest)
+        XCTAssertNil(window.take(now: latest.date.addingTimeInterval(21)))
+        window.append(entry(10001, text: String(repeating: "字", count: 1501)))
+        XCTAssertFalse(window.canPresent(latest, now: latest.date))
+        XCTAssertNil(window.take(now: latest.date))
+        window.reset()
+        XCTAssertFalse(window.canPresent(latest, now: latest.date))
     }
     func testResourcesAndMigration() throws {
         XCTAssertEqual(LocalModel.restored(from: "qwen2.5-omni-3b"), .qwen3)
@@ -167,6 +216,38 @@ final class CoreTests {
             _ = try await backend.evaluate(text: "hello", configuration: SessionConfiguration(prompt: "policy"), context: [])
             preconditionFailure("Stopped worker accepted a request")
         } catch {}
+    }
+    func testIndependentRuleRequests() async throws {
+        let worker = try fixture(#"""
+        #!/usr/bin/python3
+        import sys,json,time
+        print('{"type":"ready"}',flush=True)
+        for line in sys.stdin:
+            r=json.loads(line)
+            time.sleep(0.1)
+            assert 'OUTDATED_CONTEXT' not in r['user']
+            assert not ('FIRST_RULE' in r['user'] and 'SECOND_RULE' in r['user'])
+            if 'SECOND_RULE' in r['user']:
+                result={'decision':'alert','quote':'banana','suggestion':'You mentioned banana.'}
+            else:
+                result={'decision':'no_alert'}
+            print(json.dumps({'type':'result','id':r['id'],'output':json.dumps(result),'elapsed_seconds':0.01}),flush=True)
+        """#)
+        defer { try? FileManager.default.removeItem(at: worker.deletingLastPathComponent()) }
+        let backend = LocalTextBackend()
+        try await backend.load(paths: BackendPaths(worker: worker, model: worker))
+        let old = TranscriptEntry(id: UUID(), date: Date(), text: "OUTDATED_CONTEXT", decision: .alert, configurationVersion: 1)
+        let evaluation = try await backend.evaluate(text: "banana", configuration: SessionConfiguration(prompt: "FIRST_RULE\nSECOND_RULE"), context: [old])
+        XCTAssertEqual(evaluation.result.decision, .alert)
+        XCTAssertEqual(evaluation.elapsedSeconds, 0.02)
+        let cancelled = Task { try await backend.evaluate(text: "banana", configuration: SessionConfiguration(prompt: "FIRST_RULE\nSECOND_RULE"), context: []) }
+        try await Task.sleep(for: .milliseconds(30))
+        cancelled.cancel()
+        do { _ = try await cancelled.value; preconditionFailure("Stale evaluation was not cancelled") }
+        catch is CancellationError {}
+        let next = try await backend.evaluate(text: "banana", configuration: SessionConfiguration(prompt: "SECOND_RULE"), context: [])
+        XCTAssertEqual(next.result.decision, .alert)
+        await backend.shutdown()
     }
     @MainActor func testASRStreamingLifecycle() async throws {
         let worker = try fixture(#"""

@@ -82,7 +82,7 @@ struct Recognizer {
             if (!SherpaOnnxVoiceActivityDetectorEmpty(vad)) {
                 close_segment(); SherpaOnnxVoiceActivityDetectorClear(vad);
             } else if (speaking && audio.size() >= 16000 * 15) {
-                close_segment(); // bound continuous speech; the next window retains semantic context in the app
+                close_segment(); // bound continuous speech; each finalized window is evaluated independently
             } else if (speaking && samples_seen - last_decode >= 16000) {
                 decode(); // replace the live preview approximately once per second
             } else if (!speaking && audio.size() > 6400) {
