@@ -10,7 +10,7 @@ A sticky note cannot listen for the moment you need it. Stopping to paste every 
 
 Tell it what to watch for in plain language. Speak Chinese, English, or both in the same sentence. It transcribes locally, checks finalized speech with a small on-device language model, and shows a reminder when your rule matches. Otherwise, it stays quiet.
 
-**Fast speech previews · Custom speech alerts · Chinese + English mixed speech · Offline on Apple Silicon**
+**Fast speech previews · Custom contextual alerts · Chinese + English mixed speech · Offline on Apple Silicon**
 
 ## Chinese. English. Both in the same sentence.
 
@@ -82,7 +82,7 @@ A small local language model evaluates meaning, so you can describe situations b
 
 **Use it for:** explaining technical work to a nontechnical audience.
 
-> Alert when I use a technical acronym without explaining it in the current statement. Stay quiet if the current statement includes a plain-language explanation.
+> Alert when I use a technical acronym without explaining it in the current statement or recent context. Stay quiet if I already gave a plain-language explanation.
 
 **Example:** “The ETL pipeline feeds our OLAP layer.” → a reminder to explain the acronyms.
 
@@ -100,19 +100,13 @@ A small local language model evaluates meaning, so you can describe situations b
 
 *All three pictures show actual app views populated with fictional demonstration data. They illustrate possible rules and presentation, not verified model responses to those examples.*
 
-### Multiple independent rules
+### Several triggers, one policy
 
-Write one rule per line, including that rule’s exceptions on the same line:
+For example, you can combine the practical rules:
 
-```text
-Alert when I say banana.
-Alert if I speak badly of Tom; stay quiet when I praise him.
-Alert if I reveal a numeric password.
-```
+> Alert if any of these happen: (1) I make a firm commitment without a deadline or delivery scope; (2) I use an unexplained technical acronym. Do not alert for conditional commitments, complete commitments, or acronyms explained in recent context. Give one short suggestion for the matching condition.
 
-Any matching line can trigger an alert; the conditions do not all need to match. Multiple matches in one speech segment produce one concise reminder. Rules share the sensitivity and mute controls, with a total limit of 4,000 characters. Suggestions and popup labels follow the current speech language, independently of the rule and interface languages. Mixed speech uses an estimated dominant language.
-
-The floating desktop button starts listening with one click and stops capture with the next. Stopping with this button keeps the session for resuming. Drag its background to move it; hide or restore it using **Floating desktop button** in the menu-bar panel or settings. **Stop and clear** still erases the session.
+The current interface has one policy editor (up to 4,000 characters), not independent switches for multiple saved alerts. Multiple conditions share the same sensitivity, mute state, cooldown, and rate limit. Clear, focused rules are easier to validate than a long list of conflicting conditions.
 
 ## What you can use it for
 
@@ -121,14 +115,14 @@ The floating desktop button starts listening with one click and stops capture wi
 - **Technical explanations:** experiment with rules about unexplained jargon or audience-specific terminology.
 - **Private rehearsal:** review a pitch or interview answer without uploading speech to a service.
 
-These are example rules to try, not individually certified capabilities. You describe the behavior in natural language, including exceptions. Each nonempty line is an independent rule; rules are not limited to a built-in category list. There is one editor, without separate per-rule switches.
+These are example rules to try, not individually certified capabilities. You describe the behavior in natural language, including exceptions. One natural-language policy is active at a time. That policy can combine several triggers and exceptions; it is not limited to a built-in category list. There is currently one policy editor, rather than separate per-rule switches.
 
 ## Features
 
 - **Local inference:** Silero VAD, SenseVoiceSmall ASR, and a quantized Qwen3 4B text model run on the Mac. No runtime API key, account, model download, or cloud fallback.
 - **Automatic bilingual speech recognition:** Chinese, English, and mixed speech use the same recognizer. Switching the interface language does not change recognition.
 - **A live transcript:** the current preview is replaced as recognition improves; finalized segments enter the session history.
-- **Current-speech alerts:** only the current finalized segment is evaluated, without conversation history. Alert quotes must occur verbatim in the ASR text; malformed model output is rejected.
+- **Contextual alerts:** short recent context helps evaluate your rule. Alert quotes must occur verbatim in the ASR text; malformed model output is rejected.
 - **A quiet menu-bar app:** start manually, pause/resume, dismiss an alert, mute for an hour, or stop and clear the session.
 - **English and Chinese UI:** select **Settings → Display language → English / 中文**. The change is immediate and saved across launches.
 - **Explicit export:** export the current session to JSON only when you choose to. Audio is not recorded to a file by the app.
@@ -225,7 +219,7 @@ All voices picked up by the microphone can affect the result. The app does not i
 1. **Audio capture:** AVAudioEngine provides microphone audio, converted to 16 kHz mono.
 2. **Voice activity detection:** Silero VAD identifies speech and silence.
 3. **Transcription:** SenseVoiceSmall runs through sherpa-onnx/ONNX Runtime on CPU. The active short window is re-decoded roughly once a second; this is incremental previewing around a non-streaming ASR model.
-4. **Semantic evaluation:** the latest finalized segment, independent rules, and the requested alert language are sent to Qwen3-4B-Instruct-2507 (Q4_K_M), using llama.cpp with Metal acceleration.
+4. **Semantic evaluation:** finalized text, recent context, and your rule are sent to Qwen3-4B-Instruct-2507 (Q4_K_M), using llama.cpp with Metal acceleration.
 5. **Validation and alert controls:** a constrained JSON response is validated; matching evidence may produce a floating reminder, subject to mute, deduplication, and rate limits.
 
 There is no runtime HTTP service or cloud fallback. Source, model revisions, sizes, and SHA-256 hashes are recorded in `Models/manifest-*.json` and `Resources/asr-runtime.json`.
@@ -246,7 +240,7 @@ These statements describe the app's behavior. They do not claim to control macOS
 
 - **Near-real-time previews, segment-based judgments.** Silence of roughly 650 ms normally finalizes a segment. Long speech is bounded into approximately 12–15 second windows; continued speech can postpone or cause re-evaluation of an alert. This is not continuous word-by-word semantic detection.
 - **Recognition and reasoning can be wrong.** Product names, accents, overlapping voices, negation, rule translations, and complex exceptions are imperfect. A mixed-language “alert on any English word” example is a known semantic miss.
-- **Alerts stay current:** newer finalized speech supersedes pending work; results older than 20 seconds are skipped. There is no default cooldown or three-alert cap. Manual mute and event deduplication still apply. Slow inference can skip intermediate segments.
+- **Alerts are rate-limited:** the current default is a 30-second cooldown and at most three alerts in ten minutes. Muted, repeated, or rate-limited matches do not pop up.
 - **Session limits:** the UI retains up to 1,000 finalized segments. Excessive classification backlog stops listening with an error instead of growing indefinitely.
 - **Small synthetic evaluation only:** 8/8 existing cases and 5/6 additional cases matched expected decisions in one local replay run. This is a development regression check, not a representative accuracy score.
 
@@ -322,7 +316,7 @@ The application source is MIT licensed. Third-party code and model weights keep 
 
 ### 快速反馈，中英自然混说
 
-短句本地测试中，**约 1 秒出现转录预览**，通常在**说完后约 1.5–3.3 秒完成判断**。你可以说中文、英文，也可以在同一段话里混用两种语言，不需要切换识别模式。提醒依据逐行配置的独立规则和当前定稿发言，引用实际转录中的原话，并给出简短建议。
+短句本地测试中，**约 1 秒出现转录预览**，通常在**说完后约 1.5–3.3 秒完成判断**。你可以说中文、英文，也可以在同一段话里混用两种语言，不需要切换识别模式。提醒依据自然语言规则和上下文，引用实际转录中的原话，并给出简短建议。
 
 **中文、英文、中英混搭，都用同一个识别器，开口就说。** [页面前面的两张实际使用截图](#chinese-english-both-in-the-same-sentence)分别展示了英文发言触发英文提醒，以及英文规则识别“香蕉的英文叫做banana，你知道吗?”这句中英混合发言。界面语言、发言语言和规则语言不必一致。
 
@@ -359,6 +353,6 @@ The application source is MIT licensed. Third-party code and model weights keep 
 
 处理链路为 **Silero VAD → SenseVoiceSmall 转录 → Qwen3 4B 文本判断**。当前预览约每秒更新，约 650 ms 静音后定稿；语义判断处理定稿片段。连续长发言会按约 12–15 秒窗口处理，继续说话也可能延后提醒，因此不承诺逐字即时判断。
 
-每行一条独立规则，任意一条命中即可提醒；提醒语言跟随当前发言。默认不再限制为十分钟三条。模型只判断当前定稿片段，慢推理会跳过中间片段，过期结果不会弹出。桌面悬浮按钮可点击开始／停止收音、拖动位置，并可在设置中隐藏。专有名词、口音、多人重叠、复杂规则和中英混合都可能出现错误。小规模合成语音回放中，基础组 8/8、补充组 5/6 符合预期；仍存在“中文中出现英文词就提醒”的漏报，不能把这一结果当作真实场景准确率。
+默认提醒冷却时间为 30 秒，十分钟最多三条。专有名词、口音、多人重叠、复杂规则和中英混合都可能出现错误。小规模合成语音回放中，基础组 8/8、补充组 5/6 符合预期；仍存在“中文中出现英文词就提醒”的漏报，不能把这一结果当作真实场景准确率。
 
 应用源码采用 MIT；模型和依赖适用各自许可证，尤其 SenseVoiceSmall 使用 FunASR 模型协议。详细依赖许可、架构和测试方法见上方英文说明及对应文档。页面开头两张配图为开发者提供的实际使用截图；其余标注为演示的界面图片使用虚构内容。
