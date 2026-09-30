@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions and alert recipes / 使用问题与提醒规则
+    url: https://github.com/AmethystineAlpaca/speech-wingman/discussions
+    about: Share a fictional rule, ask setup questions, or report your compatibility results.

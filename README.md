@@ -1,5 +1,9 @@
 # Speech Wingman
 
+[![Core checks](https://github.com/AmethystineAlpaca/speech-wingman/actions/workflows/core-checks.yml/badge.svg)](https://github.com/AmethystineAlpaca/speech-wingman/actions/workflows/core-checks.yml)
+
+**[Try the source preview](https://github.com/AmethystineAlpaca/speech-wingman/releases/tag/v0.2.1) · [Share an alert recipe](https://github.com/AmethystineAlpaca/speech-wingman/discussions) · [Report a bug](https://github.com/AmethystineAlpaca/speech-wingman/issues/new/choose)**
+
 **Fast speech previews. Chinese + English in one conversation. Useful reminders, entirely on your Mac.**
 
 Speak Chinese, English, or a mix of both. Speech Wingman transcribes microphone audio on your Mac, evaluates finalized text with a local language model, and shows a short reminder when your rule matches. Otherwise, it stays quiet.
@@ -253,6 +257,12 @@ It accepts up to five minutes of audio and evaluates the combined transcript aft
 | `Models` / `Resources` | Pinned manifests, licenses, app metadata, sandbox entitlements |
 | `Scripts` | Reproducible setup, build, evaluation, and publication checks |
 | `Tests` | Core checks, UI rendering harness, fictional evaluation definitions |
+
+## Join in
+
+Trying it on your Mac? Share your setup and a fictional example in [Discussions](https://github.com/AmethystineAlpaca/speech-wingman/discussions). English and Chinese are welcome. Useful alert recipes, compatibility reports, and reproducible failures help improve the app.
+
+If this project is useful to you, a GitHub star helps others discover it. Watch **Releases** for version announcements. Read the [contribution guide](CONTRIBUTING.md) and [changelog](CHANGELOG.md) before contributing.
 
 ## License
 

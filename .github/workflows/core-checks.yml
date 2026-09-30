@@ -1,0 +1,23 @@
+name: Core checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  core:
+    runs-on: macos-15
+    timeout-minutes: 15
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Show toolchain
+        run: swift --version
+      - name: Build and run core checks
+        run: swift run WingmanCoreTests
+      - name: Check publication surface
+        run: python3 Scripts/audit-publication.py
