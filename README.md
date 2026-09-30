@@ -1,5 +1,13 @@
 # Speech Wingman
 
+**An offline Mac speech assistant that reminds you when your own rules match what you say.**
+
+Write a rule, click the floating microphone, and speak Chinese, English, or both. Speech Wingman checks the current speech segment locally and shows a short reminder with the words that triggered it.
+
+**[See real examples](#chinese-english-both-in-the-same-sentence) · [Build and try it](#getting-started) · [Share a rule or give feedback](https://github.com/AmethystineAlpaca/speech-wingman/discussions)**
+
+*Open-source developer preview · Apple Silicon · macOS 14+ · Build required; no ready-to-install download yet.*
+
 **Imagine a meeting where you catch yourself one sentence too late.**
 
 You promised yourself you would stop making personal digs. Then one slips out. You meant to clarify the deadline before saying “I'll handle it”—but the conversation has already moved on. During an interview rehearsal, you keep forgetting the same point you wanted to watch for. You know what you want to change. Remembering it while speaking is the hard part.
