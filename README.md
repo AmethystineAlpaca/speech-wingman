@@ -1,6 +1,10 @@
 # Speech Wingman
 
-**An offline Mac speech assistant that reminds you when your own rules match what you say.**
+**Private by design. Sandboxed for security. Fully offline at runtime. Fast local speech feedback.**
+
+Speech Wingman keeps speech recognition and AI rule checks on your Mac. The app and its packaged helpers use **macOS App Sandbox without network permissions**. No cloud inference, account, or API key; audio and session transcripts are not automatically saved. Initial developer setup downloads dependencies and models; the built app runs offline.
+
+**See your words in about 1 second:** short local audio tests on an Apple M4 / 16 GB Mac produced a first transcript preview at roughly one second, with models already loaded. Rule-based reminders follow finalized speech and take additional time; more rules can increase latency. See [privacy details](#privacy) and [measured results](docs/validation.md).
 
 Write a rule, click the floating microphone, and speak Chinese, English, or both. Speech Wingman checks the current speech segment locally and shows a short reminder with the words that triggered it.
 
@@ -348,6 +352,12 @@ The application source is MIT licensed. Third-party code and model weights keep 
 ---
 
 ## 中文介绍
+
+**隐私优先，沙盒安全保护，运行完全离线，快速本地语音反馈。**
+
+语音识别和 AI 规则判断都在你的 Mac 上完成。应用及辅助进程使用 **macOS App Sandbox，未授予网络权限**，无需云端推理、账号或 API key，也不会自动保存录音或会话转录。首次开发环境配置需要下载依赖与模型；构建完成后，应用可离线运行。
+
+**约 1 秒看到转录预览：** 在 Apple M4 / 16 GB、模型已加载的短句音频测试中，首段文字约 1 秒出现。规则提醒在发言定稿后继续判断，需要额外时间，规则越多可能越慢。详见[隐私说明](#privacy)与[测试记录](docs/validation.md)。
 
 **想象一下：会议里，话刚说出口，你就意识到又忘了提醒自己。**
 
