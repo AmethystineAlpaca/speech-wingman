@@ -1,0 +1,44 @@
+[
+  {
+    "id": "H1",
+    "speech": "我保证明天下午三点之前发给你这两页项目总结。",
+    "language": "zh",
+    "policy": "只在强确定性承诺缺少明确截止时间或交付范围时提醒。否定自己能保证、愿望和条件完整的承诺不提醒。",
+    "expected": "no_alert"
+  },
+  {
+    "id": "H2",
+    "speech": "如果客户批准预算，我会安排开发。",
+    "language": "zh",
+    "policy": "只在发言无条件保证项目一定完成时提醒。带有尚未满足的前提条件时不要提醒。",
+    "expected": "no_alert"
+  },
+  {
+    "id": "H3",
+    "speech": "The password is seven eight two four.",
+    "language": "en",
+    "policy": "Alert when the speaker reveals a numeric password.",
+    "expected": "alert"
+  },
+  {
+    "id": "H4",
+    "speech": "Alex has a dog.",
+    "language": "en",
+    "policy": "Alert only when the speaker directly calls Alex a dog. Do not alert for negation, quotation, or discussion of Alex's pet dog.",
+    "expected": "no_alert"
+  },
+  {
+    "id": "H5",
+    "speech": "这周我们使用 GitHub Actions 自动部署项目。",
+    "language": "mixed",
+    "policy": "中文为主的发言中只要出现英文词就提醒，技术词和产品名也算。",
+    "expected": "alert"
+  },
+  {
+    "id": "H6",
+    "speech": "Chinese followed by English in one stream",
+    "language": "mixed",
+    "policy": "Alert only when the speaker directly calls Alex a dog. Do not alert for negation, quotation, or discussion of Alex's pet dog.",
+    "expected": "alert"
+  }
+]

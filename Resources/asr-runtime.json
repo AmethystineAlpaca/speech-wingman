@@ -1,0 +1,36 @@
+{
+  "version": "1.13.8",
+  "onnxruntime": "1.28.2",
+  "archive_url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/v1.13.8/sherpa-onnx-v1.13.8-osx-arm64-shared-no-tts-lib.tar.bz2",
+  "archive_sha256": "f3e0cbd86cc3f38dad30c97921b40e9a8bcc6f2c943777eb76ad77176993e417",
+  "files": [
+    {
+      "file": "lib/libonnxruntime.dylib",
+      "sha256": "3567d114f7299d559993e536d605a6f46d7bc9d2542004accc80ee9bf5457f0b"
+    },
+    {
+      "file": "lib/libsherpa-onnx-c-api.dylib",
+      "sha256": "ae729669633008692c670d4e4c942db7ea5bdc38abc2f479516062d48849e9d1"
+    },
+    {
+      "file": "c-api.h",
+      "sha256": "2a1b95084be8fd1deb3228fcad2fd3f7f0258b64582f7402281ec174c7b7f4ce",
+      "url": "https://raw.githubusercontent.com/k2-fsa/sherpa-onnx/v1.13.8/sherpa-onnx/c-api/c-api.h"
+    },
+    {
+      "file": "LICENSE",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "url": "https://raw.githubusercontent.com/k2-fsa/sherpa-onnx/v1.13.8/LICENSE"
+    },
+    {
+      "file": "LICENSE-onnxruntime",
+      "sha256": "2f07c72751aed99790b8a4869cf2311df85a860b22ded05fa22803587a48922c",
+      "url": "https://raw.githubusercontent.com/microsoft/onnxruntime/v1.28.2/LICENSE"
+    },
+    {
+      "file": "ThirdPartyNotices-onnxruntime.txt",
+      "sha256": "0e07b95f3a8d6230037707c5c4a2b554d12c4cb67369669ac255635528ffcee2",
+      "url": "https://raw.githubusercontent.com/microsoft/onnxruntime/v1.28.2/ThirdPartyNotices.txt"
+    }
+  ]
+}

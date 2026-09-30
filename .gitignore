@@ -1,0 +1,47 @@
+# Generated builds, dependency checkouts, and tools
+.build/
+.tools/
+build/
+Vendor/
+.DS_Store
+__pycache__/
+*.pyc
+
+# Downloaded model weights / tokenizer data (only manifests and licenses are source)
+Models/*
+!Models/manifest-*.json
+!Models/LICENSE-*.txt
+
+# Local recordings, exported sessions, benchmarks, backups and machine-specific notes
+local-evaluation/
+Tests/Recordings/
+docs/*
+!docs/architecture.md
+!docs/validation.md
+!docs/assets/
+*.wav
+*.aiff
+*.aif
+*.mp3
+*.m4a
+*.flac
+*.pcm
+*.log
+*.app/
+*.dSYM/
+*.gguf
+*.onnx
+*.dylib
+*.part
+
+# Credentials and editor/machine settings
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.mobileprovision
+.ssh/
+.vscode/
+.idea/
+.swiftpm/

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["transcript", "decision", "quote", "suggestion"],
+  "properties": {
+    "transcript": {"type": "string", "maxLength": 4000},
+    "decision": {"enum": ["alert", "no_alert", "defer", "inconclusive"]},
+    "quote": {"type": "string", "maxLength": 500},
+    "suggestion": {"type": "string", "maxLength": 160}
+  }
+}

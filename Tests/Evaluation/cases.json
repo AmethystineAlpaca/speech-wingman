@@ -1,0 +1,10 @@
+[
+  {"id":"A1","speech":"这件事包在我身上，我肯定全部搞定。","language":"zh","policy":"只在强确定性承诺缺少明确截止时间或交付范围时提醒。否定自己能保证、愿望和条件完整的承诺不提醒。","expected":"alert"},
+  {"id":"A2","speech":"我不能保证周五之前完成。","language":"zh","policy":"只在强确定性承诺缺少明确截止时间或交付范围时提醒。否定自己能保证、愿望和条件完整的承诺不提醒。","expected":"no_alert"},
+  {"id":"A3","speech":"我保证周五下午六点前完成这三张报表。","language":"zh","policy":"只在强确定性承诺缺少明确截止时间或交付范围时提醒。否定自己能保证、愿望和条件完整的承诺不提醒。","expected":"no_alert"},
+  {"id":"B1","speech":"Alex is a dog.","language":"en","policy":"Alert only when the speaker directly calls Alex a dog. Do not alert for negation, quotation, or discussion of Alex's pet dog.","expected":"alert"},
+  {"id":"B2","speech":"Alex is a dog.","language":"en","policy":"Alert only if the speaker reveals a numeric password. Calling Alex a dog must not trigger an alert.","expected":"no_alert"},
+  {"id":"B3","speech":"Alex is not a dog.","language":"en","policy":"Alert only when the speaker directly calls Alex a dog. Do not alert for negation, quotation, or discussion of Alex's pet dog.","expected":"no_alert"},
+  {"id":"C1","speech":"我们用 BigQuery 做 reconciliation。","language":"zh","policy":"只在强确定性承诺缺少明确截止时间或交付范围时提醒。使用技术名词或夹英文不提醒。","expected":"no_alert"},
+  {"id":"C2","speech":"我们用 BigQuery 做 reconciliation。","language":"zh","policy":"中文为主的发言中只要出现英文词就提醒，技术词和产品名也算。","expected":"alert"}
+]

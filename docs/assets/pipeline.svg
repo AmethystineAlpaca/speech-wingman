@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="470" viewBox="0 0 1200 470" role="img" aria-labelledby="title desc">
+<title id="title">Speech Wingman — on-device speech to contextual alerts</title>
+<desc id="desc">Microphone audio passes through Silero voice activity detection and SenseVoice transcription. Final text and the user's rule go to a local Qwen3 text model. A match can show an alert; other results stay quiet. Everything runs on the Mac.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/></marker></defs>
+<rect width="1200" height="470" rx="24" fill="#0f172a"/>
+<g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Arial,sans-serif">
+<text x="42" y="58" fill="#f8fafc" font-size="28" font-weight="700">Speech Wingman</text>
+<text x="42" y="92" fill="#cbd5e1" font-size="18">Listen locally. Check your rule. Surface a useful reminder.</text>
+<rect x="944" y="32" width="214" height="44" rx="22" fill="#134e4a"/>
+<text x="1051" y="60" text-anchor="middle" fill="#99f6e4" font-size="16" font-weight="600">ON YOUR MAC · OFFLINE</text>
+<g fill="#1e293b" stroke="#475569" stroke-width="1.5">
+<rect x="42" y="156" width="178" height="128" rx="16"/>
+<rect x="256" y="156" width="244" height="128" rx="16"/>
+<rect x="536" y="156" width="268" height="128" rx="16"/>
+<rect x="860" y="145" width="298" height="64" rx="14" fill="#134e4a" stroke="#2dd4bf"/>
+<rect x="860" y="236" width="298" height="64" rx="14"/>
+</g>
+<g fill="#f1f5f9" font-size="20" font-weight="600" text-anchor="middle">
+<text x="131" y="204">Microphone</text><text x="378" y="204">VAD + transcription</text><text x="670" y="204">Rule evaluation</text>
+<text x="1009" y="184">Match → Show a reminder</text><text x="1009" y="275">No match → Stay quiet</text>
+</g>
+<g fill="#cbd5e1" font-size="16" text-anchor="middle">
+<text x="131" y="238">16 kHz mono</text><text x="378" y="238">Silero + SenseVoiceSmall</text><text x="670" y="238">Qwen3 4B + your rule</text>
+</g>
+<g stroke="#94a3b8" stroke-width="2.5" fill="none" marker-end="url(#arrow)">
+<path d="M220 220 H250"/><path d="M500 220 H530"/><path d="M804 220 H832 V177 H854"/><path d="M832 220 V268 H854"/>
+</g>
+<rect x="42" y="338" width="1116" height="91" rx="14" fill="#172554"/>
+<text x="64" y="372" fill="#bfdbfe" font-size="18" font-weight="600">Chinese, English, and mixed speech — no recognition-language switch</text>
+<text x="64" y="404" fill="#cbd5e1" font-size="16">Preview updates as you speak. Evaluation uses finalized text. Alerts respect mute, cooldown, and rate limits.</text>
+</g></svg>

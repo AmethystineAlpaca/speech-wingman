@@ -1,0 +1,30 @@
+{
+  "model": "SenseVoiceSmall",
+  "source": "csukuangfj/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-2024-07-17",
+  "revision": "2365baeacb507f821a0c8120fcee3d484dba7a07",
+  "license": "FunASR MODEL_LICENSE (original weights); conversion license included",
+  "files": [
+    {
+      "file": "model.int8.onnx",
+      "size": 239233841,
+      "sha256": "c71f0ce00bec95b07744e116345e33d8cbbe08cef896382cf907bf4b51a2cd51"
+    },
+    {
+      "file": "tokens.txt",
+      "size": 315894,
+      "sha256": "f449eb28dc567533d7fa59be34e2abca8784f771850c78a47fb731a31429a1dc"
+    },
+    {
+      "file": "LICENSE-SenseVoiceSmall.txt",
+      "url": "https://raw.githubusercontent.com/modelscope/FunASR/main/MODEL_LICENSE",
+      "size": 5306,
+      "sha256": "7dba975a2069691db4992b0592d70828b330d2f8a30a71450f4e152a554e84f8"
+    },
+    {
+      "file": "LICENSE-SenseVoice-ONNX.txt",
+      "url": "https://huggingface.co/csukuangfj/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-2024-07-17/resolve/2365baeacb507f821a0c8120fcee3d484dba7a07/LICENSE",
+      "size": 71,
+      "sha256": "221c6df10b0931a5629adad671ea48fb7747e034c414b6d2bfa275bc3dd4ea17"
+    }
+  ]
+}
