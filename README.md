@@ -1,16 +1,48 @@
 # Speech Wingman
 
+**Imagine a meeting where you catch yourself one sentence too late.**
+
+You promised yourself you would stop making personal digs. Then one slips out. You meant to clarify the deadline before saying “I'll handle it”—but the conversation has already moved on. During an interview rehearsal, you keep forgetting the same point you wanted to watch for. You know what you want to change. Remembering it while speaking is the hard part.
+
+A sticky note cannot listen for the moment you need it. Stopping to paste every sentence into a chatbot breaks your flow. You want something that listens, notices **your** chosen trigger, and gives you a small nudge—then gets out of the way.
+
+**Meet Speech Wingman: your own rules, a timely reminder, and speech that stays on your Mac.**
+
+Tell it what to watch for in plain language. Speak Chinese, English, or both in the same sentence. It transcribes locally, checks finalized speech with a small on-device language model, and shows a reminder when your rule matches. Otherwise, it stays quiet.
+
+**Fast speech previews · Custom contextual alerts · Chinese + English mixed speech · Offline on Apple Silicon**
+
 [![Core checks](https://github.com/AmethystineAlpaca/speech-wingman/actions/workflows/core-checks.yml/badge.svg)](https://github.com/AmethystineAlpaca/speech-wingman/actions/workflows/core-checks.yml)
 
 **[Try the source preview](https://github.com/AmethystineAlpaca/speech-wingman/releases/tag/v0.2.1) · [Share an alert recipe](https://github.com/AmethystineAlpaca/speech-wingman/discussions) · [Report a bug](https://github.com/AmethystineAlpaca/speech-wingman/issues/new/choose)**
 
-**Fast speech previews. Chinese + English in one conversation. Useful reminders, entirely on your Mac.**
-
-Speak Chinese, English, or a mix of both. Speech Wingman transcribes microphone audio on your Mac, evaluates finalized text with a local language model, and shows a short reminder when your rule matches. Otherwise, it stays quiet.
-
 **English UI by default · 中文界面可选 · Apple Silicon · No cloud inference**
 
 [Getting started](#getting-started) · [Requirements](#requirements) · [How it works](#how-it-works) · [Limitations](#limitations) · [中文介绍](#中文介绍)
+
+## Chinese. English. Both in the same sentence.
+
+**No recognition-language switch. No need to stick to one language.** Speak Chinese, English, or switch between them naturally—even within a sentence. The display language is a separate setting.
+
+These two screenshots were shared from actual app use. Each pairs an unaltered crop of the configured rule with an unaltered crop of the resulting alert; the surrounding desktop and image metadata have been removed.
+
+### English speech → an English reminder
+
+**Rule:** “if i say bad thing about Tom, alert me in English”
+
+The app transcribed “Yeah, Tom is a very mean person. In my opinion.” and suggested more constructive or neutral wording, in English.
+
+![Actual app example: an English rule detects negative English speech and displays an English reminder](docs/assets/live-english-alert.png)
+
+### English rule → Chinese + English mixed speech
+
+**Rule:** “if i mentioned banana, alert me”
+
+The quote reads “香蕉的英文叫做banana，你知道吗?”—Chinese and English in the same sentence. The English rule triggered a reminder with a Chinese suggestion, while the interface remained in English.
+
+![Actual app example: an English banana rule triggers on a sentence mixing Chinese and English](docs/assets/live-mixed-language-alert.png)
+
+*These are two observed examples, separate from the illustrative demos below. See [validation](docs/validation.md) for measured results and known misses.*
 
 ## Why Speech Wingman?
 
@@ -272,11 +304,21 @@ The application source is MIT licensed. Third-party code and model weights keep 
 
 ## 中文介绍
 
+**想象一下：会议里，话刚说出口，你就意识到又忘了提醒自己。**
+
+明明想改掉对人下负面评价的习惯，却还是脱口而出；明明打算先确认截止时间和交付范围，却已经答应了“交给我”；面试练习时，那条反复告诉自己要注意的表达习惯，又被忘在脑后。知道自己想改什么不难，难的是一边说话，一边记得留意。
+
+便签不会在关键时刻主动提醒你，停下来把每句话粘进聊天机器人又会打断思路。你需要的是：听到你自己设定的触发点，给一个简短提醒，然后继续安静待着。
+
+**这就是 Speech Wingman：你来定义规则，它在本机听懂并提醒。中文、英文、中英混说，都可以自然开口。**
+
 **Speech Wingman 是一个完全在本机处理语音的 macOS 菜单栏提醒助手。** 它会转录麦克风听到的发言，用本地小语言模型判断是否符合你写下的提醒条件。命中条件且未被静音、去重或限流时弹出简短建议；其他情况下保持安静。
 
 ### 快速反馈，中英自然混说
 
 短句本地测试中，**约 1 秒出现转录预览**，通常在**说完后约 1.5–3.3 秒完成判断**。你可以说中文、英文，也可以在同一段话里混用两种语言，不需要切换识别模式。提醒依据自然语言规则和上下文，引用实际转录中的原话，并给出简短建议。
+
+**中文、英文、中英混搭，都用同一个识别器，开口就说。** [页面前面的两张实际使用截图](#chinese-english-both-in-the-same-sentence)分别展示了英文发言触发英文提醒，以及英文规则识别“香蕉的英文叫做banana，你知道吗?”这句中英混合发言。界面语言、发言语言和规则语言不必一致。
 
 目前 **14 条合成语音回归用例中有 13 条判断符合预期**。这是有明确范围的早期结果，不代表真实场景准确率保证；已知漏报仍公开记录。所有数字来自 Apple M4 / 16 GB、本地模型已加载后的短句测试，长发言可能有更长延迟。
 
@@ -313,4 +355,4 @@ The application source is MIT licensed. Third-party code and model weights keep 
 
 默认提醒冷却时间为 30 秒，十分钟最多三条。专有名词、口音、多人重叠、复杂规则和中英混合都可能出现错误。小规模合成语音回放中，基础组 8/8、补充组 5/6 符合预期；仍存在“中文中出现英文词就提醒”的漏报，不能把这一结果当作真实场景准确率。
 
-应用源码采用 MIT；模型和依赖适用各自许可证，尤其 SenseVoiceSmall 使用 FunASR 模型协议。详细依赖许可、架构和测试方法见上方英文说明及对应文档。页面中的配图均为英文虚构演示内容，不包含真实录音、用户偏好或个人资料。
+应用源码采用 MIT；模型和依赖适用各自许可证，尤其 SenseVoiceSmall 使用 FunASR 模型协议。详细依赖许可、架构和测试方法见上方英文说明及对应文档。页面开头两张配图为开发者提供的实际使用截图；其余标注为演示的界面图片使用虚构内容。
