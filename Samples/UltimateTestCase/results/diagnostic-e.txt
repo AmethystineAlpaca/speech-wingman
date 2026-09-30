@@ -1,0 +1,24 @@
+Building for debugging...
+[1 / 6]
+[2 / 7] WingmanCore
+[4 / 9] WingmanCore
+[9 / 14] WingmanPolicyCheck-product
+[11 / 16] WingmanPolicyCheck-product
+[12 / 16] WingmanPolicyCheck-product
+[13 / 16] WingmanCore
+<repository>/Package.swift: WingmanCore: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+<repository>/Package.swift: WingmanPolicyCheck-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+<repository>/Package.swift: WingmanPolicyCheck-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[16 / 17] WingmanPolicyCheck-product
+Build complete! (2.47秒)
+Waiting for another policy suite to release the model test lock…
+PASS global-harness-0: no_alert, 3.10s;
+PASS global-harness-4: alert, 6.29s; The mention of 'Banana' triggers the reminder rule.
+FAIL global-harness-7: alert, 6.27s; 提及汤姆时应避免贬低性表述
+FAIL global-harness-8: alert, 6.57s; Sharing actual login passwords should be avoided as it may posea
+PASS global-harness-22: alert, 6.81s; 你提出了删除唯一备份的操作，这可能涉及数据丢失风险，需谨慎确认
+PASS global-harness-24: alert, 7.05s; 提出跳过发布前的安全检查属于违规行为，应避免
+PASS global-harness-27: alert, 7.64s; A customer requested a refund, which triggers a refund review.
+  Validation: 重新生成无效输出：提醒缺少原话或建议，或原话不是转写子串
+PASS global-harness-31: alert, 7.23s; 你将未经验证的传闻表述为确定事实，可能误导他人。
+Policy check: 6/8 passed (synthetic text; not live-microphone accuracy)

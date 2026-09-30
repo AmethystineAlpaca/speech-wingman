@@ -1,0 +1,701 @@
+{
+  "scope": "Frozen pipeline labels for the 12-second grouping. W9 must recover the immediately preceding unfinished statement; failure to carry it is a pipeline miss. ASR corruption and source-event coverage are reported separately.",
+  "windows": [
+    {
+      "index": 0,
+      "text_sha256": "0d3ec3abf52615711c4b54b3f3f5a325040bebb18fdb246493c60ffb8402590c",
+      "expected_rules": {
+        "low": [],
+        "medium": [],
+        "high": []
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": ""
+    },
+    {
+      "index": 1,
+      "text_sha256": "5c1a9aeda0b1d0756c00795903dd4e49363626fcea21991dbd7e8c7a8f3ec0a3",
+      "expected_rules": {
+        "low": [],
+        "medium": [],
+        "high": []
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": ""
+    },
+    {
+      "index": 2,
+      "text_sha256": "9fa6f95e4884493fef21db602a490a9f232a61fbbdbe7aaf249e54c9273fdf1c",
+      "expected_rules": {
+        "low": [],
+        "medium": [],
+        "high": []
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": ""
+    },
+    {
+      "index": 3,
+      "text_sha256": "c5c38a8ec5631a7f64f070fdae57cb5cc358125e988ac3862b9960c07ad4511d",
+      "expected_rules": {
+        "low": [],
+        "medium": [],
+        "high": []
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": ""
+    },
+    {
+      "index": 4,
+      "text_sha256": "a7806de9e162bbcf2b0d5eb621aee490eddadb980143dc3dc8ec4491c470084e",
+      "expected_rules": {
+        "low": [
+          "R01"
+        ],
+        "medium": [
+          "R01"
+        ],
+        "high": [
+          "R01"
+        ]
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": ""
+    },
+    {
+      "index": 5,
+      "text_sha256": "5b2a423604a99c29fa33ce685ddfc7c11f844f2980ef85880e29fb4fd862b62e",
+      "expected_rules": {
+        "low": [],
+        "medium": [],
+        "high": []
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": ""
+    },
+    {
+      "index": 6,
+      "text_sha256": "ec7af1602c693b24c8daa11cb3961596a13361f3b289b36ee57103ac5dc6c800",
+      "expected_rules": {
+        "low": [
+          "R02"
+        ],
+        "medium": [
+          "R02"
+        ],
+        "high": [
+          "R02"
+        ]
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": ""
+    },
+    {
+      "index": 7,
+      "text_sha256": "4f09c4994584073f3c04a53a8f714bb8d426fd092c5c5bf5ccbdff9c77018be6",
+      "expected_rules": {
+        "low": [],
+        "medium": [],
+        "high": []
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": ""
+    },
+    {
+      "index": 8,
+      "text_sha256": "f0c45a9f13eb3d243ed8cc465bad3e1f50249b28c5841460b550a002fe6c71de",
+      "expected_rules": {
+        "low": [],
+        "medium": [],
+        "high": []
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": "Incomplete password preamble: digits occur in the next window. Quiet/defer here does not imply source-event coverage."
+    },
+    {
+      "index": 9,
+      "text_sha256": "b79e2dc1aa2eb8e2934f6974dcd6af472148fb2db32d33d7aea3b8a396515c99",
+      "expected_rules": {
+        "low": [
+          "R03"
+        ],
+        "medium": [
+          "R03"
+        ],
+        "high": [
+          "R03"
+        ]
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": "Pipeline oracle: numeric continuation must join the immediately preceding incomplete statement via the generic defer mechanism; no keyword-based stitching."
+    },
+    {
+      "index": 10,
+      "text_sha256": "99a8901f2c828aba3043902d849686a8943bb2a5cc6c8d2586e05e28445520b1",
+      "expected_rules": {
+        "low": [],
+        "medium": [],
+        "high": []
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": ""
+    },
+    {
+      "index": 11,
+      "text_sha256": "1a2cb067c78fb6ae1e4c575e16b8e1df9ea9d738fd70c7672fc86094027ab517",
+      "expected_rules": {
+        "low": [],
+        "medium": [
+          "R04"
+        ],
+        "high": [
+          "R04"
+        ]
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": "ASR omitted guarantee and corrupted all to over; low remains quiet, medium/high can still interpret will finish as commitment."
+    },
+    {
+      "index": 12,
+      "text_sha256": "5af0ec8cf1410036c9312539ca740d3848c9bec0a2396c458e878acc1572d7f8",
+      "expected_rules": {
+        "low": [],
+        "medium": [],
+        "high": []
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": ""
+    },
+    {
+      "index": 13,
+      "text_sha256": "88ea9e4b820a8c0d04ff0d4943e1fd39cc8c37af324f971d4f0dc5c5df9f253a",
+      "expected_rules": {
+        "low": [
+          "R05"
+        ],
+        "medium": [
+          "R05"
+        ],
+        "high": [
+          "R05"
+        ]
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": ""
+    },
+    {
+      "index": 14,
+      "text_sha256": "a2d3b6c30b4703dd2bcfd4d619072a0e31ca38b54653511e1846146045e66b6d",
+      "expected_rules": {
+        "low": [],
+        "medium": [],
+        "high": []
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": ""
+    },
+    {
+      "index": 15,
+      "text_sha256": "dfaab7299fdaf620f9808e49737dba71812256558633883cf1ed9e1d356685c9",
+      "expected_rules": {
+        "low": [],
+        "medium": [],
+        "high": []
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": ""
+    },
+    {
+      "index": 16,
+      "text_sha256": "114b53b19279a5eb7a168b1cbb46ea21fb8759f3b8d1d34a6766954ea724caa4",
+      "expected_rules": {
+        "low": [],
+        "medium": [],
+        "high": []
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": "API became ATI, but its plain-language explanation survived."
+    },
+    {
+      "index": 17,
+      "text_sha256": "6e661d5b0935b75b954b331c5ea68f8d07a715dd364e54f0d8dc2e1d597b7dc5",
+      "expected_rules": {
+        "low": [],
+        "medium": [],
+        "high": []
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": ""
+    },
+    {
+      "index": 18,
+      "text_sha256": "2eb15af728100d154e2dcfa9595071bd09146d8b69cd8f30389bdbf45428548a",
+      "expected_rules": {
+        "low": [
+          "R06"
+        ],
+        "medium": [
+          "R06"
+        ],
+        "high": [
+          "R06"
+        ]
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": ""
+    },
+    {
+      "index": 19,
+      "text_sha256": "d2b0670efe05b120d2de933f8bc43745c53a930ef891dcccb74bb9e3dbc49373",
+      "expected_rules": {
+        "low": [
+          "R07"
+        ],
+        "medium": [
+          "R07"
+        ],
+        "high": [
+          "R07"
+        ]
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": ""
+    },
+    {
+      "index": 20,
+      "text_sha256": "c5cdda66650dd1428cf01cdfe85898970d0ecaf8dda280b6c170582cc2c4ffc6",
+      "expected_rules": {
+        "low": [],
+        "medium": [],
+        "high": []
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": ""
+    },
+    {
+      "index": 21,
+      "text_sha256": "70e26e27a8fedc73585c5541261364b88f14f2e654a7b99aa662e749e3819f17",
+      "expected_rules": {
+        "low": [],
+        "medium": [],
+        "high": []
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": ""
+    },
+    {
+      "index": 22,
+      "text_sha256": "fd19ff6727d2a18007f5b9c52f2b99f6fafe2ff5d385c8beb65dfa24a177b15f",
+      "expected_rules": {
+        "low": [
+          "R08"
+        ],
+        "medium": [
+          "R08"
+        ],
+        "high": [
+          "R08"
+        ]
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": ""
+    },
+    {
+      "index": 23,
+      "text_sha256": "32aeb9c179f86e192821185ad8fd179bf323f095bcece5a3d16795f4b0ae5cf5",
+      "expected_rules": {
+        "low": [],
+        "medium": [],
+        "high": []
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": ""
+    },
+    {
+      "index": 24,
+      "text_sha256": "1e0ad9e408c0d02c9b62cdfaf56b60a3ce1930d8dff91a113f776f80d04fe8f3",
+      "expected_rules": {
+        "low": [
+          "R09"
+        ],
+        "medium": [
+          "R09"
+        ],
+        "high": [
+          "R09"
+        ]
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": ""
+    },
+    {
+      "index": 25,
+      "text_sha256": "bbab5222cefabc3b407915b80f1d191a2f98b21f1321a4a9bf71b9d882158751",
+      "expected_rules": {
+        "low": [],
+        "medium": [],
+        "high": []
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": ""
+    },
+    {
+      "index": 26,
+      "text_sha256": "86e695b29c212a2417cb5a1455d66cb779311110d1f225eb7dd8ebf2f24b1b4c",
+      "expected_rules": {
+        "low": [],
+        "medium": [],
+        "high": []
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": "ASR hallucinated Bs. after a truncated neutral sentence; not intentional jargon."
+    },
+    {
+      "index": 27,
+      "text_sha256": "d696e5af8a3e212b5e7aca6751923bddff2d5a3870e4b3f5b50a48a69a8df8e0",
+      "expected_rules": {
+        "low": [
+          "R10"
+        ],
+        "medium": [
+          "R10"
+        ],
+        "high": [
+          "R10"
+        ]
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": ""
+    },
+    {
+      "index": 28,
+      "text_sha256": "08a1abe9443ae4bb2c1b02311eda34e415f9933528737e39baa68e824f87a142",
+      "expected_rules": {
+        "low": [],
+        "medium": [],
+        "high": []
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": ""
+    },
+    {
+      "index": 29,
+      "text_sha256": "9f19555b59809d0c3c7bc1fb9c55cf0719db5fb0be8c3b597e3aa3f609bfeb13",
+      "expected_rules": {
+        "low": [],
+        "medium": [],
+        "high": []
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": ""
+    },
+    {
+      "index": 30,
+      "text_sha256": "fe0174807db95808f82d8ef7708603c0bab5604ce96505a131759a8d5307f16c",
+      "expected_rules": {
+        "low": [],
+        "medium": [],
+        "high": []
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": ""
+    },
+    {
+      "index": 31,
+      "text_sha256": "e5712100173d42623ac412ff0a232cc1d7d2e43e208a1764a7a39630919e20f4",
+      "expected_rules": {
+        "low": [
+          "R11"
+        ],
+        "medium": [
+          "R11"
+        ],
+        "high": [
+          "R11"
+        ]
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": ""
+    },
+    {
+      "index": 32,
+      "text_sha256": "f78012640e177de6fb1095e9b0e9938085f1a1aff88dfcba3492afae56eff538",
+      "expected_rules": {
+        "low": [],
+        "medium": [],
+        "high": []
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": "Later Chinese clause names an owner for the same next meeting; accept this as a correction inside the same window."
+    },
+    {
+      "index": 33,
+      "text_sha256": "cb47966dafb04acb5e84811f94e472a224d0643870f02c8774c63b5f8495776f",
+      "expected_rules": {
+        "low": [],
+        "medium": [],
+        "high": []
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": ""
+    },
+    {
+      "index": 34,
+      "text_sha256": "8c10faf19e6b306f52561d6e4e98a32c3ffd626f8714033609d72393cc29f63d",
+      "expected_rules": {
+        "low": [],
+        "medium": [],
+        "high": [
+          "R05"
+        ]
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": ""
+    },
+    {
+      "index": 35,
+      "text_sha256": "1f3acc7c3a88648a2370dda37a80c74bc2e6e2ca4b2cf9f00a3b52f25b12bbdb",
+      "expected_rules": {
+        "low": [],
+        "medium": [],
+        "high": [
+          "R02"
+        ]
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": ""
+    },
+    {
+      "index": 36,
+      "text_sha256": "ea5bce0ab48d96ae34209bc4d1419124462698d531e882ce882b9ce910aae267",
+      "expected_rules": {
+        "low": [],
+        "medium": [],
+        "high": []
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": ""
+    },
+    {
+      "index": 37,
+      "text_sha256": "532d7c1e6f294d1106bfbc7fff7e829986b83cbf84f4d27efa7a3f8fbea7802f",
+      "expected_rules": {
+        "low": [],
+        "medium": [],
+        "high": []
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": ""
+    },
+    {
+      "index": 38,
+      "text_sha256": "98e94d68f4d0e1b86c2245c309397acc6fa203c238b2946e34cfca88ac1bbfc7",
+      "expected_rules": {
+        "low": [],
+        "medium": [],
+        "high": []
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": ""
+    },
+    {
+      "index": 39,
+      "text_sha256": "7f48236dabce369e925a1ecf65538ced03395b57a3053dc1457589fee0762328",
+      "expected_rules": {
+        "low": [
+          "R02"
+        ],
+        "medium": [
+          "R02"
+        ],
+        "high": [
+          "R02"
+        ]
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": "Second banana became banner; Tom criticism survives. Do not credit the banana rule."
+    },
+    {
+      "index": 40,
+      "text_sha256": "6342fbd0ad5a4914a167874103fd035d4bcfe59fd43722e82b0e2769426b8578",
+      "expected_rules": {
+        "low": [
+          "R12"
+        ],
+        "medium": [
+          "R12"
+        ],
+        "high": [
+          "R12"
+        ]
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": ""
+    },
+    {
+      "index": 41,
+      "text_sha256": "8c716a894b771b0026287e0bd7fa023f7df155d19ff66118972ac53fe49d6a4c",
+      "expected_rules": {
+        "low": [],
+        "medium": [],
+        "high": []
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": ""
+    },
+    {
+      "index": 42,
+      "text_sha256": "0ddaac4d8e456a36a30ee633272d30b81287706d252b9bfc535b4e78bdf7ffb9",
+      "expected_rules": {
+        "low": [],
+        "medium": [],
+        "high": []
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": ""
+    },
+    {
+      "index": 43,
+      "text_sha256": "63f051b2f12dd1da87f17dcf5ef5c0d558389cd7558d3fbc09d68740c12a9011",
+      "expected_rules": {
+        "low": [],
+        "medium": [],
+        "high": []
+      },
+      "acceptable_quiet_decisions": [
+        "no_alert",
+        "defer"
+      ],
+      "note": ""
+    }
+  ]
+}

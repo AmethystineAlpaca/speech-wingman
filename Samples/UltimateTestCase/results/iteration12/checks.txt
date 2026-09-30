@@ -1,0 +1,5 @@
+PASS: 18 core groups (strict output, trusted ASR text, policy, calibrated sensitivity, alert controls, resources, worker and ASR lifecycle)
+PASS: production controller joins speech and explicit deferrals, preserves FIFO work, records mute, and cancels on pause
+PASS: built build/Speech Wingman.app from the calibrated production sources
+PASS: runtime source, native network symbols, sandbox entitlements, packaged signatures
+This is a scoped audit, not proof that all OS services make no network requests. Use evaluate-streaming.py for network-denied inference.

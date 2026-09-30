@@ -1,0 +1,12 @@
+Waiting for another policy suite to release the model test lock…
+PASS mapped-low-W0: no_alert, 3.63s;
+PASS mapped-low-W27: alert, 10.35s; A customer requested a refund, which triggers a refund review process.
+  Validation: 重新生成无效输出：提醒缺少原话或建议，或原话不是转写子串
+PASS mapped-medium-W0: no_alert, 2.95s;
+FAIL mapped-medium-W27: inconclusive, 2.88s;
+  Validation: 重新生成无效输出：提醒缺少原话或建议，或原话不是转写子串
+  Validation: 提醒缺少原话或建议，或原话不是转写子串
+PASS mapped-high-W0: no_alert, 3.72s;
+PASS mapped-high-W27: alert, 9.64s; A customer requested a refund due to late delivery
+  Validation: 重新生成无效输出：提醒缺少原话或建议，或原话不是转写子串
+Policy check: 5/6 passed (synthetic text; not live-microphone accuracy)

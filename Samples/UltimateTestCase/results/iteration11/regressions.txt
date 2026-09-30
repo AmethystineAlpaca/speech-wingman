@@ -1,0 +1,75 @@
+Waiting for another policy suite to release the model test lock…
+PASS A1: alert, 4.90s; 承诺了会全部搞定，但缺少明确的截止时间或交付范围
+PASS A2: no_alert, 1.65s;
+FAIL A3: alert, 5.06s; 承诺了具体完成时间但未明确交付范围，建议补充说明报表的具体内容或范围。
+PASS B1: alert, 3.68s; The speaker directly calls Alex a dog.
+PASS B2: no_alert, 1.69s;
+PASS B3: no_alert, 1.39s;
+PASS C1: no_alert, 1.41s;
+PASS C2: alert, 3.98s; 提到 BigQuery 和 reconciliation，属于技术术语，需注意
+PASS banana-order-0: alert, 3.55s; 提到香蕉，需注意相关提醒。
+PASS tom-order-0: alert, 5.51s; 你说了汤姆的坏话，建议注意言辞，避免对他人造成伤害。
+PASS banana-order-1: alert, 8.74s; 提到香蕉，需注意相关提醒。
+PASS tom-order-1: alert, 5.39s; 你说了汤姆的坏话，建议注意言辞，避免对他人造成伤害。
+PASS banana-order-2: alert, 8.31s; 提到香蕉，需注意相关提醒。
+PASS tom-order-2: alert, 9.63s; 你说了汤姆的坏话，建议注意言辞，避免对他人造成伤害。
+PASS third-rule: alert, 6.51s; 透露了具体数字密码，存在安全风险。
+PASS fourth-rule: alert, 8.79s; 承诺完成所有工作且无截止时间，属于没有截止时间的强确定性承诺，需提醒。
+PASS last-rule: alert, 9.15s; 你提到自己很疲惫，建议注意休息，避免过度劳累。
+PASS english-speech-chinese-rules: alert, 5.00s; You are saying negative things about Tom.
+PASS english-banana: alert, 5.71s; The mention of banana has been detected.
+PASS single-word: alert, 3.75s; The mention of 'banana' has triggered the alert.
+PASS positive-tom: no_alert, 7.60s;
+PASS negative-negation: no_alert, 6.92s;
+PASS no-match: no_alert, 8.48s;
+PASS old-trigger: no_alert, 7.96s;
+PASS two-matches: alert, 3.77s; 提到banana，应提醒
+PASS exception-does-not-veto: alert, 3.79s; The mention of banana is detected in the statement.
+PASS chinese-speech-english-rules: alert, 5.54s; 你对汤姆的评价非常负面，提到他自私，属于贬低言论。
+PASS chinese-banana-english-rules: alert, 4.67s; 您提到吃了香蕉，需注意发言中包含敏感词'banana'，建议确认是否为误输入或特定语境下的表达。
+PASS direct-criticism-low: alert, 3.39s; You are speaking negatively about Tom.
+PASS direct-criticism-medium: alert, 4.69s; Avoid speaking negatively about Tom.
+PASS direct-criticism-high: alert, 5.28s; The statement uses negative language to describe Tom, indicating criticism.
+FAIL implied-criticism-low: no_alert, 4.46s;
+PASS implied-criticism-medium: alert, 5.13s; This statement expresses a negative opinion about Tom's ability, which violates the rule against speaking badly of him.
+PASS implied-criticism-high: alert, 4.96s; Avoid making negative comments about Tom, especially regarding his abilities or reliability.
+PASS borderline-criticism-low: no_alert, 1.74s;
+PASS borderline-criticism-medium: no_alert, 1.49s;
+PASS borderline-criticism-high: alert, 4.97s; The phrase 'classic Tom moment' may imply a negative judgment about Tom, warranting caution.
+PASS praise-exception-low: no_alert, 1.42s;
+PASS praise-exception-medium: no_alert, 1.62s;
+PASS praise-exception-high: no_alert, 1.61s;
+PASS negated-criticism-low: no_alert, 1.35s;
+PASS negated-criticism-medium: no_alert, 1.51s;
+PASS negated-criticism-high: no_alert, 1.55s;
+PASS unrelated-person-low: no_alert, 2.20s;
+PASS unrelated-person-medium: no_alert, 1.67s;
+PASS unrelated-person-high: no_alert, 1.61s;
+FAIL indirect-fatigue-low: alert, 5.36s; You may be feeling tired.
+PASS indirect-fatigue-medium: alert, 4.31s; You may be feeling tired.
+PASS indirect-fatigue-high: alert, 5.49s; This suggests fatigue, as difficulty keeping the head up and eyes closing may indicate drowsiness or tiredness.
+PASS borderline-fatigue-low: no_alert, 1.53s;
+FAIL borderline-fatigue-medium: defer, 5.32s;
+PASS borderline-fatigue-high: alert, 4.09s; This suggests fatigue or exhaustion, possibly indicating the user is tired.
+PASS direct-fatigue-zh-low: alert, 4.44s; 您提到自己很疲惫，建议适当休息，保障身心健康。
+PASS direct-fatigue-zh-medium: alert, 4.32s; 你提到自己很疲惫，建议注意休息，避免过度劳累。
+PASS direct-fatigue-zh-high: alert, 4.52s; 您提到自己非常疲惫，建议注意休息和调整作息。
+PASS borderline-fatigue-zh-low: no_alert, 1.39s;
+FAIL borderline-fatigue-zh-medium: alert, 4.44s; 你提到想歇一会儿，可能意味着你感到疲惫，建议注意休息以恢复精力。
+PASS borderline-fatigue-zh-high: alert, 4.62s; 提到想歇一会儿，可能暗示身体或精神疲惫，建议关注是否伴随疲劳感。
+FAIL unexplained-acronym-low: no_alert, 1.65s;
+FAIL unexplained-acronym-medium: no_alert, 1.80s;
+FAIL unexplained-acronym-high: no_alert, 1.71s;
+PASS explained-acronym-low: no_alert, 1.99s;
+PASS explained-acronym-medium: no_alert, 1.89s;
+PASS explained-acronym-high: no_alert, 2.54s;
+FAIL unexplained-acronym-mixed-low: no_alert, 6.06s;
+FAIL unexplained-acronym-mixed-medium: no_alert, 6.06s;
+PASS unexplained-acronym-mixed-high: alert, 6.49s; ETL 和 OLAP 是技术术语，建议在使用时进行解释，例如说明 ETL 是数据抽取、转换和加载的过程，OLAP 是在线分析处理。
+PASS unrelated-weather-low: no_alert, 1.29s;
+PASS unrelated-weather-medium: no_alert, 1.30s;
+PASS unrelated-weather-high: no_alert, 1.48s;
+FAIL incomplete-low: no_alert, 4.38s;
+FAIL incomplete-medium: alert, 4.00s; A firm commitment without a clear deadline has been made. Consider specifying a deadline to avoid ambiguity.
+FAIL incomplete-high: no_alert, 3.78s;
+Policy check: 60/73 passed (synthetic text; not live-microphone accuracy)

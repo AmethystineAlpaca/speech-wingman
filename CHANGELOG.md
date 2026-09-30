@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.4.0 — Continuous speech, live transcript UI and calibrated sensitivity (2026-09-30)
+
+- Show recent and live speech in the floating control, follow revised/final text, retain text when paused, and collapse after clearing. Add a settings shortcut and native dragging from the title or transcript.
+- Redesign settings with a larger fixed-height editor, character count, expandable examples, sensitivity cards, scrollable content, a pinned save footer, save feedback and Command-S. Cover small windows and bilingual light/dark layouts.
+- Publish the complete Ultimate Test Case history and measured latency tradeoffs. Before remapping, complete-run correct windows improved from 35/35/31 to 38/36/36 out of 44 during development; these are synthetic development results, not general accuracy claims.
+- Verify 18 core groups and retain the independent model regression result of 63/73, plus a 5/6 mapping smoke test and known failures. Extend grammar bounds for suggestions and distinguish invalid generated output from worker failure.
+
+- Calibrate the actual sensitivity mapping by inference path: for eight or more rules, High uses the previous Medium profile and Medium uses the previous High profile; small-rule configurations keep their measured ordering. Record the mapping version in exports and evaluation runs.
+- Withdraw the added quote-only veto from small-rule configurations after independent regressions showed additional missed alerts.
+
+- Join adjacent speech fragments before judging, allowing short continuations and corrections to finish.
+- Let in-flight judgments finish while keeping a bounded FIFO of four waiting statements; retain freshness and session-cancellation checks.
+- Export configuration snapshots, actual statement inputs, source segment IDs, evaluation status, and alert disposition.
+- Add production-controller scheduling checks. Long pauses and grouping bounds can still separate a continuation from the preceding statement.
+- Add a standalone bilingual Ultimate Test Case: 12 rules, one continuous 11-minute recording, all three sensitivities, immutable run artifacts, and a Markdown history retaining failed iterations.
+- Route large rule sets before independent checks, separate rule configuration from speech, constrain intermediate output, and retry malformed model output within a fixed bound.
+- Allow one explicitly deferred input to continue into the next evaluated window; export the actual inference input and matched rule identity. Extend freshness to 30 seconds for the multi-stage checks.
+
 ## 0.3.0 — Multiple rules and floating control (2026-09-30)
 
 - Independent rules on separate lines, evaluated individually until the first match.

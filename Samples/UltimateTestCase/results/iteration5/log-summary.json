@@ -1,0 +1,18 @@
+{
+  "decisions_from_log": {
+    "low": {
+      "no_alert": 10,
+      "alert": 3,
+      "defer": 2,
+      "inconclusive": 1,
+      "invalid": 9
+    },
+    "medium": {
+      "invalid": 44
+    },
+    "high": {
+      "invalid": 44
+    }
+  },
+  "limitation": "Low-level raw JSON was overwritten by the subsequent run before archival; use preserved output only. Do not infer rule-identity accuracy from these log lines. Medium/high never obtained a ready worker."
+}

@@ -1,0 +1,5 @@
+PASS long-window-4: alert, 9.21s; The mention of 'Banana' triggers the rule.
+FAIL long-window-7: alert, 10.14s; 避免对汤姆进行负面评价
+FAIL long-window-10: inconclusive, 22.33s;
+FAIL long-window-12: alert, 15.57s; You made a firm commitment without clearly defining the scope beyond the meeting summary, which may lack sufficient boundaries.
+Policy check: 1/4 passed (synthetic text; not live-microphone accuracy)

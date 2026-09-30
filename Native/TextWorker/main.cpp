@@ -14,6 +14,7 @@
 #include <vector>
 
 using json = nlohmann::json;
+struct OutputError : std::runtime_error { using std::runtime_error::runtime_error; };
 static volatile sig_atomic_t interrupted = 0;
 static void cancel_signal(int) { interrupted = 1; }
 static bool should_abort(void *) { return interrupted != 0; }
@@ -23,8 +24,26 @@ static void log_sink(ggml_log_level, const char * text, void *) { std::cerr << t
 static const char * grammar = R"GBNF(
 root ::= "{" ws "\"decision\"" ws ":" ws (quiet | alert) ws "}" ws
 quiet ::= "\"no_alert\"" | "\"defer\"" | "\"inconclusive\""
-alert ::= "\"alert\"" ws "," ws "\"quote\"" ws ":" ws string ws "," ws "\"suggestion\"" ws ":" ws string
-string ::= "\"" char* "\""
+alert ::= "\"alert\"" ws "," ws "\"quote\"" ws ":" ws quote ws "," ws "\"suggestion\"" ws ":" ws suggestion
+quote ::= "\"" char{1,96} "\""
+suggestion ::= "\"" char{1,160} "\""
+char ::= [^"\\\x00-\x1F] | "\\" (["\\/bfnrt] | "u" [0-9a-fA-F]{4})
+ws ::= [ \t\n\r]*
+)GBNF";
+static const char * screen_grammar = R"GBNF(
+root ::= "{" ws "\"decision\"" ws ":" ws ("\"no_alert\"" | "\"defer\"" | "\"inconclusive\"" | "\"alert\"") ws "}" ws
+ws ::= [ \t\n\r]*
+)GBNF";
+static const char * route_grammar = R"GBNF(
+root ::= "{" ws "\"candidates\"" ws ":" ws "[" ws (index (ws "," ws index){0,11})? ws "]" ws "}" ws
+index ::= "0" | [1-9] [0-9]?
+ws ::= [ \t\n\r]*
+)GBNF";
+static const char * evidence_grammar = R"GBNF(
+root ::= "{" ws "\"decision\"" ws ":" ws (quiet | alert) ws "}" ws
+quiet ::= "\"no_alert\"" | "\"defer\"" | "\"inconclusive\""
+alert ::= "\"alert\"" ws "," ws "\"quote\"" ws ":" ws string
+string ::= "\"" char{1,96} "\""
 char ::= [^"\\\x00-\x1F] | "\\" (["\\/bfnrt] | "u" [0-9a-fA-F]{4})
 ws ::= [ \t\n\r]*
 )GBNF";
@@ -73,7 +92,7 @@ struct Engine {
         if (count >= 0) throw std::runtime_error("tokenization failed");
         std::vector<llama_token> tokens(-count);
         count = llama_tokenize(vocab, prompt.data(), prompt.size(), tokens.data(), tokens.size(), true, true);
-        if (count <= 0 || count + 160 >= 8192) throw std::runtime_error("context capacity exceeded");
+        if (count <= 0 || count + 256 >= 8192) throw std::runtime_error("context capacity exceeded");
         llama_pos past = count;
         const auto prefill_start = std::chrono::steady_clock::now();
         for (int offset = 0; offset < count; offset += 512) {
@@ -87,12 +106,14 @@ struct Engine {
             ~DecodeTimer() { elapsed = std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count(); }
         } decode_timer{decode_seconds, decode_start};
         auto sampler = std::unique_ptr<llama_sampler, decltype(&llama_sampler_free)>(llama_sampler_chain_init(llama_sampler_chain_default_params()), llama_sampler_free);
-        auto constrained = llama_sampler_init_grammar(vocab, grammar, "root");
+        const auto mode = request.value("output_mode", std::string("final"));
+        if (mode != "screen" && mode != "route" && mode != "evidence" && mode != "final") throw std::runtime_error("invalid output mode");
+        auto constrained = llama_sampler_init_grammar(vocab, mode == "route" ? route_grammar : (mode == "screen" ? screen_grammar : (mode == "evidence" ? evidence_grammar : grammar)), "root");
         if (!constrained) throw std::runtime_error("invalid output grammar");
         llama_sampler_chain_add(sampler.get(), constrained);
         llama_sampler_chain_add(sampler.get(), llama_sampler_init_greedy());
         std::string output;
-        for (int generated = 0; generated < 160; ++generated) {
+        for (int generated = 0; generated < 256; ++generated) {
             if (interrupted) throw std::runtime_error("cancelled");
             auto token = llama_sampler_sample(sampler.get(), context, -1);
             if (llama_vocab_is_eog(vocab, token)) return output;
@@ -101,14 +122,14 @@ struct Engine {
             if (length < 0) { piece.resize(-length); length = llama_token_to_piece(vocab, token, piece.data(), piece.size(), 0, false); }
             if (length < 0) throw std::runtime_error("token decoding failed");
             output.append(piece.data(), length);
-            if (output.size() > 32'768) throw std::runtime_error("output too long");
+            if (output.size() > 32'768) throw OutputError("output too long");
             // Finish as soon as a complete object is available; never salvage truncated JSON.
             if (!json::parse(output, nullptr, false).is_discarded()) return output;
             auto batch = llama_batch_get_one(&token, 1);
             if (llama_decode(context, batch) != 0) throw std::runtime_error(interrupted ? "cancelled" : "decode failed");
             ++past;
         }
-        throw std::runtime_error("output token budget exceeded");
+        throw OutputError("output token budget exceeded");
     }
 };
 
@@ -137,7 +158,7 @@ int main(int argc, char ** argv) {
                     {"prefill_seconds", engine.prefill_seconds}, {"decode_seconds", engine.decode_seconds},
                     {"peak_rss_bytes", usage.ru_maxrss}}).dump() << std::endl;
             } catch (const std::exception & e) {
-                std::cout << json({{"type", "error"}, {"id", id}, {"message", e.what()}}).dump() << std::endl;
+                std::cout << json({{"type", "error"}, {"id", id}, {"kind", dynamic_cast<const OutputError *>(&e) ? "invalid_output" : "worker"}, {"message", e.what()}}).dump() << std::endl;
             }
             line.clear();
         }

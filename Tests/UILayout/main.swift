@@ -52,17 +52,44 @@ struct UILayoutCheck {
             precondition(controller.prompt == originalPrompt && controller.transcript.map(\.text) == originalTranscript)
             let restored = SessionController(preferences: preferences)
             precondition(restored.language == language)
-            try snapshot(SettingsView(controller: controller), width: 620, height: 760, to: output.appendingPathComponent("settings-\(language.rawValue).png"))
+            try snapshot(SettingsView(controller: controller), width: 680, height: 820, to: output.appendingPathComponent("settings-\(language.rawValue).png"))
+            if !publicDemo {
+                try snapshot(SettingsView(controller: controller), width: 540, height: 520, to: output.appendingPathComponent("settings-small-\(language.rawValue).png"))
+                let originalSensitivity = controller.sensitivity
+                controller.sensitivity = .high
+                app.appearance = NSAppearance(named: .darkAqua)
+                try snapshot(SettingsView(controller: controller), width: 680, height: 820, to: output.appendingPathComponent("settings-dark-\(language.rawValue).png"))
+                app.appearance = NSAppearance(named: .aqua)
+                controller.sensitivity = originalSensitivity
+            }
             try snapshot(SessionView(controller: controller), width: 470, height: 720, to: output.appendingPathComponent("session-\(language.rawValue).png"))
-            try snapshot(FloatingControlView(controller: controller), width: 244, height: 80, to: output.appendingPathComponent(publicDemo ? "floating-listening-en.png" : "floating-\(language.rawValue).png"))
+            try snapshot(FloatingControlView(controller: controller), width: 244, height: 164, to: output.appendingPathComponent(publicDemo ? "floating-listening-en.png" : "floating-\(language.rawValue).png"))
             panel.displayIfNeeded()
             try await Task.sleep(for: .milliseconds(150))
             if let view = panel.contentView { try save(view, to: output.appendingPathComponent("alert-\(language.rawValue).png")) }
         }
         let floating = FloatingControlPresenter()
         floating.install(controller: controller)
+        try await Task.sleep(for: .milliseconds(150))
         let floatingPanel = app.windows.first { $0 is NSPanel && $0.title == "Speech Wingman" }!
         precondition(floatingPanel.isVisible && floatingPanel.level == .floating)
+        precondition(floatingPanel.frame.size == NSSize(width: 244, height: 164))
+        let savedPreview = controller.preview
+        controller.preview = String(repeating: "这是连续发言。 We are checking the latest lines. ", count: 80) + "最新一句 / Latest words."
+        try await Task.sleep(for: .milliseconds(150))
+        try save(floatingPanel.contentView!, to: output.appendingPathComponent("floating-long-preview.png"))
+        checkFloatingTranscript(floatingPanel, ending: "最新一句 / Latest words.", overflows: true)
+        // ASR can replace a long preview with a shorter correction.
+        controller.preview = "修正后的短句 / Corrected words."
+        try await Task.sleep(for: .milliseconds(150))
+        checkFloatingTranscript(floatingPanel, ending: controller.preview)
+        let finalized = TranscriptEntry(id: UUID(), date: Date(), text: controller.preview, decision: .deferDecision, configurationVersion: 1)
+        controller.transcript.append(finalized)
+        controller.preview = ""
+        try await Task.sleep(for: .milliseconds(150))
+        checkFloatingTranscript(floatingPanel, ending: finalized.text)
+        controller.transcript.removeLast()
+        controller.preview = savedPreview
         controller.floatingControlVisible = false
         precondition(!floatingPanel.isVisible)
         precondition(!SessionController(preferences: preferences).floatingControlVisible)
@@ -70,7 +97,7 @@ struct UILayoutCheck {
         precondition(floatingPanel.isVisible)
         for state in (publicDemo ? [SessionController.State.idle] : [.idle, .loading, .paused, .failed]) {
             controller.state = state
-            try snapshot(FloatingControlView(controller: controller), width: 244, height: 80, to: output.appendingPathComponent(publicDemo ? "floating-idle-en.png" : "floating-\(state).png"))
+            try snapshot(FloatingControlView(controller: controller), width: 244, height: 164, to: output.appendingPathComponent("floating-\(state)-retained.png"))
         }
         controller.state = .listening
         await controller.toggleListening()
@@ -79,6 +106,13 @@ struct UILayoutCheck {
         controller.state = .loading
         await controller.toggleListening()
         precondition(controller.state == .idle && controller.transcript.isEmpty)
+        try await Task.sleep(for: .milliseconds(150))
+        precondition(floatingPanel.frame.size == NSSize(width: 244, height: 80))
+        try snapshot(FloatingControlView(controller: controller), width: 244, height: 80, to: output.appendingPathComponent("floating-idle-en.png"))
+        controller.state = .listening
+        try await Task.sleep(for: .milliseconds(150))
+        try save(floatingPanel.contentView!, to: output.appendingPathComponent("floating-waiting.png"))
+        checkFloatingTranscript(floatingPanel, ending: controller.t("等待语音…"), overflows: false)
         floating.close()
         if publicDemo {
             // README-only examples. These are rendered UI illustrations, not inference results.
@@ -99,7 +133,25 @@ struct UILayoutCheck {
         }
         presenter.close()
         precondition(!panel.isVisible)
-        print("PASS: language preference reload, preserved transcript/policy/listening state, and existing alert panel update. Floating panel visibility and toggle stop/cancel passed; rendered layouts use synthetic content.")
+        print("PASS: language preference reload, preserved transcript/policy/listening state, and existing alert panel update. Floating panel visibility, sizing, auto-follow on long/revised/final text, empty state, and toggle stop/cancel passed; rendered layouts use synthetic content.")
+    }
+    @MainActor static func checkFloatingTranscript(_ panel: NSWindow, ending: String, overflows: Bool? = nil) {
+        panel.contentView!.layoutSubtreeIfNeeded()
+        func findScroll(_ view: NSView) -> FloatingTranscriptScrollView? {
+            if let scroll = view as? FloatingTranscriptScrollView { return scroll }
+            return view.subviews.lazy.compactMap { findScroll($0) }.first
+        }
+        let scroll = findScroll(panel.contentView!)!
+        scroll.layoutSubtreeIfNeeded()
+        let text = scroll.documentView as! NSTextView
+        precondition(text.string.hasSuffix(ending))
+        precondition(text.string.count <= 1800)
+        let bottom = max(0, text.frame.height - scroll.contentView.bounds.height)
+        precondition(abs(scroll.contentView.bounds.minY - bottom) < 1, "Latest line must remain visible")
+        if let overflows {
+            if overflows { precondition(bottom > 0) }
+            else { precondition(bottom == 0) }
+        }
     }
     @MainActor static func snapshot<V: View>(_ view: V, width: CGFloat, height: CGFloat, to url: URL) throws {
         let host = NSHostingView(rootView: view.background(Color(nsColor: .windowBackgroundColor)))

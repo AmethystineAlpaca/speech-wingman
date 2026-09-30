@@ -1,0 +1,7 @@
+FAIL long-window-4: no_alert, 6.00s;
+FAIL long-window-7: inconclusive, 10.60s;
+  Validation: 中间判断缺少连续原文证据
+PASS long-window-10: no_alert, 14.18s;
+FAIL long-window-12: inconclusive, 11.25s;
+  Validation: 中间判断缺少连续原文证据
+Policy check: 1/4 passed (synthetic text; not live-microphone accuracy)

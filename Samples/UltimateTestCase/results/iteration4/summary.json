@@ -1,0 +1,395 @@
+{
+  "low": {
+    "windows": 44,
+    "completed": 15,
+    "correct": 11,
+    "accuracy": 0.25,
+    "tp": 3,
+    "fp": 3,
+    "fn": 9,
+    "tn": 8,
+    "precision": 0.5,
+    "recall": 0.25,
+    "presented_true_positives": 3,
+    "presentation_recall": 0.25,
+    "statuses": {
+      "evaluated": 15,
+      "pending": 29
+    },
+    "decisions": {
+      "no_alert": 9,
+      "alert": 6
+    },
+    "inference_wall_p50": 9.712499976158142,
+    "inference_wall_p95": 17.930126070976257,
+    "presented_after_final_p50": 24.434746535778046,
+    "presented_after_final_p95": 29.615720023155205,
+    "validation_diagnostics": 1,
+    "continuations": 0,
+    "failures": [
+      {
+        "window": 7,
+        "expected": [
+          "quiet"
+        ],
+        "actual": "alert",
+        "matched_rule": "R02",
+        "presented": true,
+        "correct": false,
+        "note": ""
+      },
+      {
+        "window": 8,
+        "expected": [
+          "quiet"
+        ],
+        "actual": "alert",
+        "matched_rule": "R03",
+        "presented": true,
+        "correct": false,
+        "note": "Incomplete password preamble: digits occur in the next window. Quiet/defer here does not imply source-event coverage."
+      },
+      {
+        "window": 9,
+        "expected": [
+          "R03"
+        ],
+        "actual": "no_alert",
+        "matched_rule": null,
+        "presented": false,
+        "correct": false,
+        "note": "Pipeline oracle: numeric continuation must join the immediately preceding incomplete statement via the generic defer mechanism; no keyword-based stitching."
+      },
+      {
+        "window": 12,
+        "expected": [
+          "quiet"
+        ],
+        "actual": "alert",
+        "matched_rule": "R04",
+        "presented": true,
+        "correct": false,
+        "note": ""
+      },
+      {
+        "window": 15,
+        "expected": [
+          "quiet"
+        ],
+        "actual": "pending",
+        "matched_rule": null,
+        "presented": false,
+        "correct": false,
+        "note": ""
+      },
+      {
+        "window": 16,
+        "expected": [
+          "quiet"
+        ],
+        "actual": "pending",
+        "matched_rule": null,
+        "presented": false,
+        "correct": false,
+        "note": "API became ATI, but its plain-language explanation survived."
+      },
+      {
+        "window": 17,
+        "expected": [
+          "quiet"
+        ],
+        "actual": "pending",
+        "matched_rule": null,
+        "presented": false,
+        "correct": false,
+        "note": ""
+      },
+      {
+        "window": 18,
+        "expected": [
+          "R06"
+        ],
+        "actual": "pending",
+        "matched_rule": null,
+        "presented": false,
+        "correct": false,
+        "note": ""
+      },
+      {
+        "window": 19,
+        "expected": [
+          "R07"
+        ],
+        "actual": "pending",
+        "matched_rule": null,
+        "presented": false,
+        "correct": false,
+        "note": ""
+      },
+      {
+        "window": 20,
+        "expected": [
+          "quiet"
+        ],
+        "actual": "pending",
+        "matched_rule": null,
+        "presented": false,
+        "correct": false,
+        "note": ""
+      },
+      {
+        "window": 21,
+        "expected": [
+          "quiet"
+        ],
+        "actual": "pending",
+        "matched_rule": null,
+        "presented": false,
+        "correct": false,
+        "note": ""
+      },
+      {
+        "window": 22,
+        "expected": [
+          "R08"
+        ],
+        "actual": "pending",
+        "matched_rule": null,
+        "presented": false,
+        "correct": false,
+        "note": ""
+      },
+      {
+        "window": 23,
+        "expected": [
+          "quiet"
+        ],
+        "actual": "pending",
+        "matched_rule": null,
+        "presented": false,
+        "correct": false,
+        "note": ""
+      },
+      {
+        "window": 24,
+        "expected": [
+          "R09"
+        ],
+        "actual": "pending",
+        "matched_rule": null,
+        "presented": false,
+        "correct": false,
+        "note": ""
+      },
+      {
+        "window": 25,
+        "expected": [
+          "quiet"
+        ],
+        "actual": "pending",
+        "matched_rule": null,
+        "presented": false,
+        "correct": false,
+        "note": ""
+      },
+      {
+        "window": 26,
+        "expected": [
+          "quiet"
+        ],
+        "actual": "pending",
+        "matched_rule": null,
+        "presented": false,
+        "correct": false,
+        "note": "ASR hallucinated Bs. after a truncated neutral sentence; not intentional jargon."
+      },
+      {
+        "window": 27,
+        "expected": [
+          "R10"
+        ],
+        "actual": "pending",
+        "matched_rule": null,
+        "presented": false,
+        "correct": false,
+        "note": ""
+      },
+      {
+        "window": 28,
+        "expected": [
+          "quiet"
+        ],
+        "actual": "pending",
+        "matched_rule": null,
+        "presented": false,
+        "correct": false,
+        "note": ""
+      },
+      {
+        "window": 29,
+        "expected": [
+          "quiet"
+        ],
+        "actual": "pending",
+        "matched_rule": null,
+        "presented": false,
+        "correct": false,
+        "note": ""
+      },
+      {
+        "window": 30,
+        "expected": [
+          "quiet"
+        ],
+        "actual": "pending",
+        "matched_rule": null,
+        "presented": false,
+        "correct": false,
+        "note": ""
+      },
+      {
+        "window": 31,
+        "expected": [
+          "R11"
+        ],
+        "actual": "pending",
+        "matched_rule": null,
+        "presented": false,
+        "correct": false,
+        "note": ""
+      },
+      {
+        "window": 32,
+        "expected": [
+          "quiet"
+        ],
+        "actual": "pending",
+        "matched_rule": null,
+        "presented": false,
+        "correct": false,
+        "note": "Later Chinese clause names an owner for the same next meeting; accept this as a correction inside the same window."
+      },
+      {
+        "window": 33,
+        "expected": [
+          "quiet"
+        ],
+        "actual": "pending",
+        "matched_rule": null,
+        "presented": false,
+        "correct": false,
+        "note": ""
+      },
+      {
+        "window": 34,
+        "expected": [
+          "quiet"
+        ],
+        "actual": "pending",
+        "matched_rule": null,
+        "presented": false,
+        "correct": false,
+        "note": ""
+      },
+      {
+        "window": 35,
+        "expected": [
+          "quiet"
+        ],
+        "actual": "pending",
+        "matched_rule": null,
+        "presented": false,
+        "correct": false,
+        "note": ""
+      },
+      {
+        "window": 36,
+        "expected": [
+          "quiet"
+        ],
+        "actual": "pending",
+        "matched_rule": null,
+        "presented": false,
+        "correct": false,
+        "note": ""
+      },
+      {
+        "window": 37,
+        "expected": [
+          "quiet"
+        ],
+        "actual": "pending",
+        "matched_rule": null,
+        "presented": false,
+        "correct": false,
+        "note": ""
+      },
+      {
+        "window": 38,
+        "expected": [
+          "quiet"
+        ],
+        "actual": "pending",
+        "matched_rule": null,
+        "presented": false,
+        "correct": false,
+        "note": ""
+      },
+      {
+        "window": 39,
+        "expected": [
+          "R02"
+        ],
+        "actual": "pending",
+        "matched_rule": null,
+        "presented": false,
+        "correct": false,
+        "note": "Second banana became banner; Tom criticism survives. Do not credit the banana rule."
+      },
+      {
+        "window": 40,
+        "expected": [
+          "R12"
+        ],
+        "actual": "pending",
+        "matched_rule": null,
+        "presented": false,
+        "correct": false,
+        "note": ""
+      },
+      {
+        "window": 41,
+        "expected": [
+          "quiet"
+        ],
+        "actual": "pending",
+        "matched_rule": null,
+        "presented": false,
+        "correct": false,
+        "note": ""
+      },
+      {
+        "window": 42,
+        "expected": [
+          "quiet"
+        ],
+        "actual": "pending",
+        "matched_rule": null,
+        "presented": false,
+        "correct": false,
+        "note": ""
+      },
+      {
+        "window": 43,
+        "expected": [
+          "quiet"
+        ],
+        "actual": "pending",
+        "matched_rule": null,
+        "presented": false,
+        "correct": false,
+        "note": ""
+      }
+    ]
+  }
+}

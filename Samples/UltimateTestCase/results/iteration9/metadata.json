@@ -1,0 +1,33 @@
+{
+  "scenario_sha256": "c5592410d5636183fd9c71e6246863c1f48c29e0b2683becf878f7c7927d8747",
+  "audio": {
+    "network_blocked": true,
+    "scenario_sha256": "c5592410d5636183fd9c71e6246863c1f48c29e0b2683becf878f7c7927d8747",
+    "wav_sha256": "3f473f6ad76b8c4f70ac02defb142a1a7531c98ef168d7248a62946b81b56f51",
+    "asr_worker_sha256": "9c5b41031b0167853c7ecd0aaed0c979e3cc07d91835dd2f338de1b1485bf5bf",
+    "asr_wall_seconds": 117.399741208,
+    "finals": 60,
+    "partials": 635,
+    "mode": "continuous PCM / accelerated ASR / audio-clock trace"
+  },
+  "sources": {
+    "Sources/WingmanCore/AlertGate.swift": "fad54c87d1f188f2c506993fe84e48f2c4b8abdfc7f6db770b66c2e06ee88bc1",
+    "Sources/WingmanCore/LocalModel.swift": "afff02443a0b19c1fae68b848930d4a2f3a68626528e2ff7a769cdf3f724c8a9",
+    "Sources/WingmanCore/SpeechLanguage.swift": "04ba239eac1ae547332eaf05838dd42de9021c3daa877b869eb37fe95fe5ab7e",
+    "Sources/WingmanCore/LocalTextBackend.swift": "7197f26e7675e2b05c0f8f32d8d6e917abbbcd226eb18b5ce9191b61a32b89d7",
+    "Sources/WingmanCore/CurrentSpeechWindow.swift": "28c4de2451b7afb7a9843f3625b6182b9b8144d96c095614bfec96bd14e840b2",
+    "Sources/WingmanCore/Models.swift": "697e85febac387015577b243b343b415e452c9a0e15f2668280f4dbdbb52afad",
+    "Sources/WingmanCore/SpeechStream.swift": "e9f1bbfe883a19f4f6ff2b239e606e7ec74041abbfd1e341b98c1c931d93ca6a",
+    "Sources/WingmanCore/ResultValidator.swift": "4fa3ae0882bc0df6c1feea8d837561b0f97436a946ef2f0915d8e709a07eb88e",
+    "Sources/WingmanCore/DisplayLanguage.swift": "10d3c42e3aeccd4e0c4d062f112cbca7ed0193f5d03b5bcd0e287bd82a21b6c6",
+    "Sources/WingmanCore/PromptBuilder.swift": "0009d86e4e264706a81eb573c561d351a442008e196395ffe11b36189ec7ea6c",
+    "Sources/WingmanApp/SessionController.swift": "148b846f74592ce388a508222c8919bcbfe83568c1df92208cdf9b67edcb1e3a",
+    "Native/TextWorker/main.cpp": "61cf8c38ec75c1820aee38c35a48f7baa0e5d292e298d9b4330253ac359a9767",
+    "Samples/UltimateTestCase/main.swift": "b9ec4a27d938eaf76ce71e52d84c5b4de90bdc1da8f0cb9a1a223ccb3b3a3ed5"
+  },
+  "text_worker_sha256": "414fcfbe1bd3cf20ace52947f2d95ac333dde938f663ee5970a9bfebf49c5f8a",
+  "model_sha256": "3605803b982cb64aead44f6c1b2ae36e3acdb41d8e46c8a94c6533bc4c67e597",
+  "events_sha256": "dd22fbd4d8b253003307d6d28a7db32748a4f9399adbf8927863438d67e002dc",
+  "hardware": "Apple M4",
+  "os": "27.0"
+}

@@ -1,0 +1,9 @@
+{"type":"ready"}
+
+{"decode_seconds":0.535598375,"elapsed_seconds":2.394044583,"id":"0","output":"{\"candidates\": []}","peak_rss_bytes":3879256064,"prefill_seconds":1.835279416,"type":"result"}
+
+{"decode_seconds":0.541243083,"elapsed_seconds":2.381952875,"id":"7","output":"{\"candidates\": [1]}","peak_rss_bytes":3879305216,"prefill_seconds":1.817457958,"type":"result"}
+
+{"decode_seconds":0.671936666,"elapsed_seconds":2.413758917,"id":"8","output":"{\"candidates\": [2]}","peak_rss_bytes":3879305216,"prefill_seconds":1.718942792,"type":"result"}
+
+{"decode_seconds":0.517392416,"elapsed_seconds":2.313617292,"id":"9","output":"{\"candidates\": [2]}","peak_rss_bytes":3879305216,"prefill_seconds":1.771864708,"type":"result"}

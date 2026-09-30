@@ -10,8 +10,8 @@ private enum AppSession {
 @MainActor
 final class WingmanAppDelegate: NSObject, NSApplicationDelegate {
     private let floatingControl = FloatingControlPresenter()
-    func applicationDidFinishLaunching(_ notification: Notification) {
-        floatingControl.install(controller: AppSession.controller)
+    func installFloatingControl(openSettings: @escaping () -> Void) {
+        floatingControl.install(controller: AppSession.controller, openSettings: openSettings)
     }
     func applicationWillTerminate(_ notification: Notification) { floatingControl.close() }
 }
@@ -21,11 +21,32 @@ struct WingmanApp: App {
     @NSApplicationDelegateAdaptor(WingmanAppDelegate.self) private var delegate
     @StateObject private var controller = AppSession.controller
     var body: some Scene {
-        MenuBarExtra("Speech Wingman", systemImage: controller.state == .listening ? "mic.fill" : "mic") {
+        MenuBarExtra {
             SessionView(controller: controller)
+        } label: {
+            WingmanMenuBarLabel(controller: controller, delegate: delegate)
         }.menuBarExtraStyle(.window)
         Window(Text(controller.t("提醒设置")), id: "settings") { SettingsView(controller: controller) }
-            .defaultSize(width: 620, height: 760)
+            .defaultSize(width: 680, height: 820)
+    }
+}
+
+/// Capture the scene's window action inside SwiftUI before passing it to the
+/// AppKit floating panel, which has no openWindow environment of its own.
+private struct WingmanMenuBarLabel: View {
+    @ObservedObject var controller: SessionController
+    let delegate: WingmanAppDelegate
+    @Environment(\.openWindow) private var openWindow
+
+    var body: some View {
+        Image(systemName: controller.state == .listening ? "mic.fill" : "mic")
+            .accessibilityLabel("Speech Wingman")
+            .onAppear {
+                delegate.installFloatingControl {
+                    openWindow(id: "settings")
+                    NSApp.activate(ignoringOtherApps: true)
+                }
+            }
     }
 }
 
@@ -121,43 +142,126 @@ struct SessionView: View {
     }
 }
 
+// Use the property wrapper explicitly when SDKs also expose a State macro.
+private typealias SettingsState<Value> = State<Value>
+
 struct SettingsView: View {
     @ObservedObject var controller: SessionController
+    @SettingsState private var saved = false
+
+    private var validPrompt: Bool {
+        !controller.prompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && controller.prompt.count <= 4_000
+    }
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            Picker(controller.t("界面语言"), selection: $controller.language) {
-                ForEach(DisplayLanguage.allCases, id: \.self) { language in
-                    Text(language.name).tag(language)
+        VStack(spacing: 0) {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 24) {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text(controller.t("提醒条件")).font(.title2.bold())
+                        help("每行一条规则，命中任意一条就提醒。每条的例外条件写在同一行。提醒语言跟随当前发言。")
+                        TextEditor(text: $controller.prompt)
+                            .font(.body)
+                            .scrollContentBackground(.hidden)
+                            .padding(12)
+                            .frame(height: 240)
+                            .background(Color(nsColor: .textBackgroundColor), in: RoundedRectangle(cornerRadius: 10))
+                            .overlay(RoundedRectangle(cornerRadius: 10).stroke(.primary.opacity(0.15)))
+                            .accessibilityLabel(controller.t("提醒条件"))
+                        HStack(alignment: .top) {
+                            Text(controller.t("回车新建规则；长句会自动换行。"))
+                            Spacer()
+                            Text(controller.language.format("%d / 4000 字", controller.prompt.count))
+                                .foregroundStyle(controller.prompt.count > 4_000 ? Color.red : Color.secondary)
+                        }.font(.caption).foregroundStyle(.secondary)
+                        DisclosureGroup(controller.t("查看规则示例")) {
+                            help("例如：说到 banana 就提醒。\n说汤姆的坏话就提醒，赞扬他不提醒。")
+                                .padding(.top, 4)
+                        }.font(.caption)
+                    }
+
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text(controller.t("敏感度")).font(.headline)
+                        HStack(alignment: .top, spacing: 10) {
+                            ForEach(Sensitivity.allCases, id: \.self) { sensitivity in
+                                sensitivityButton(sensitivity)
+                            }
+                        }
+                        help(controller.sensitivity.descriptionKey)
+                        help("所有档位都遵守规则中的例外条件。高敏感度可能增加误报，也不能保证不漏报。")
+                    }
+                    Divider()
+                    VStack(alignment: .leading, spacing: 12) {
+                        Picker(controller.t("界面语言"), selection: $controller.language) {
+                            ForEach(DisplayLanguage.allCases, id: \.self) { language in
+                                Text(language.name).tag(language)
+                            }
+                        }
+                        help("只改变界面显示；录音始终自动识别中文、英文和中英混合。")
+                        Toggle(controller.t("桌面悬浮按钮"), isOn: $controller.floatingControlVisible)
+                    }
+                    VStack(alignment: .leading, spacing: 8) {
+                        Label(controller.t("本地语音处理"), systemImage: "desktopcomputer").font(.headline)
+                        Text(controller.t("中英自动 ASR + Qwen3 4B 文本判断")).font(.subheadline)
+                            .fixedSize(horizontal: false, vertical: true)
+                        help("中文、英文和混合发言自动识别，无需切换语言。模型已随应用打包，运行不联网。转录持续显示，判断在后台进行。")
+                    }
+                }.padding(24).frame(maxWidth: .infinity, alignment: .leading)
+            }
+            Divider()
+            VStack(alignment: .leading, spacing: 10) {
+                HStack {
+                    if !validPrompt {
+                        Text(controller.t("请填写最多 4000 字的提醒条件")).foregroundStyle(.red)
+                    } else if saved {
+                        Label(controller.t("提醒条件已保存"), systemImage: "checkmark.circle.fill").foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    Button(controller.t("保存并应用")) {
+                        Task {
+                            await controller.applySettings()
+                            saved = true
+                        }
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .keyboardShortcut("s", modifiers: .command)
+                    .disabled(controller.state == .loading || !validPrompt)
+                }.font(.callout)
+                help("应用新条件时会取消旧判断，并从新的音频片段开始。麦克风中的其他人声也会参与判断。")
+            }.padding(.horizontal, 24).padding(.vertical, 16)
+        }
+        .frame(minWidth: 540, minHeight: 520)
+        .environment(\.locale, controller.language.locale)
+        .onChange(of: controller.prompt) { _, _ in saved = false }
+        .onChange(of: controller.sensitivity) { _, _ in saved = false }
+    }
+
+    private func help(_ key: String) -> some View {
+        Text(controller.t(key)).font(.caption).foregroundStyle(.secondary)
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func sensitivityButton(_ value: Sensitivity) -> some View {
+        let selected = controller.sensitivity == value
+        return Button { controller.sensitivity = value } label: {
+            VStack(alignment: .leading, spacing: 6) {
+                HStack {
+                    Text(controller.t(value.titleKey)).font(.body.weight(.semibold))
+                    Spacer()
+                    Image(systemName: selected ? "checkmark.circle.fill" : "circle")
+                        .foregroundStyle(selected ? Color.accentColor : Color.secondary)
                 }
+                Text(controller.t(value.summaryKey)).font(.caption).foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
-            Text(controller.t("只改变界面显示；录音始终自动识别中文、英文和中英混合。"))
-                .font(.caption).foregroundStyle(.secondary)
-            Toggle(controller.t("桌面悬浮按钮"), isOn: $controller.floatingControlVisible)
-            Divider()
-            Text(controller.t("本地语音处理")).font(.title2)
-            Text(controller.t("中英自动 ASR + Qwen3 4B 文本判断"))
-            Text(controller.t("中文、英文和混合发言自动识别，无需切换语言。模型已随应用打包，运行不联网。转录持续显示，判断在后台进行。"))
-                .font(.caption).foregroundStyle(.secondary)
-            Divider()
-            Text(controller.t("提醒条件")).font(.title2)
-            Text(controller.t("每行一条规则，命中任意一条就提醒。每条的例外条件写在同一行。提醒语言跟随当前发言。")).foregroundStyle(.secondary)
-            Text(controller.t("例如：说到 banana 就提醒。\n说汤姆的坏话就提醒，赞扬他不提醒。"))
-                .font(.caption).foregroundStyle(.secondary)
-            TextEditor(text: $controller.prompt).font(.body)
-                .padding(8).overlay(RoundedRectangle(cornerRadius: 8).stroke(.gray.opacity(0.3)))
-            Picker(controller.t("敏感度"), selection: $controller.sensitivity) {
-                Text(controller.t("低")).tag(Sensitivity.low)
-                Text(controller.t("中")).tag(Sensitivity.medium)
-                Text(controller.t("高")).tag(Sensitivity.high)
-            }.pickerStyle(.segmented)
-            HStack {
-                Text(controller.language.format("%d / 4000 字", controller.prompt.count)).font(.caption).foregroundStyle(.secondary)
-                Spacer()
-                Button(controller.t("保存并应用")) { Task { await controller.applySettings() } }
-                    .disabled(controller.state == .loading)
-            }
-            Text(controller.t("应用新条件时会取消旧判断，并从新的音频片段开始。麦克风中的其他人声也会参与判断。")).font(.caption).foregroundStyle(.secondary)
-        }.padding(24)
-            .environment(\.locale, controller.language.locale)
+            .padding(12).frame(maxWidth: .infinity, minHeight: 58, alignment: .topLeading)
+            .background(selected ? Color.accentColor.opacity(0.09) : Color.primary.opacity(0.03), in: RoundedRectangle(cornerRadius: 10))
+            .overlay(RoundedRectangle(cornerRadius: 10).stroke(selected ? Color.accentColor : Color.primary.opacity(0.12), lineWidth: selected ? 2 : 1))
+            .contentShape(RoundedRectangle(cornerRadius: 10))
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(selected ? .isSelected : [])
+        .accessibilityHint(controller.t(value.descriptionKey))
     }
 }

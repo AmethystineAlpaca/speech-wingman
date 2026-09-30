@@ -1,0 +1,12 @@
+说到 banana 或香蕉就提醒，包括引用中的提及。
+Alert if I speak badly of Tom / 汤姆. Praise, negated insults, and criticism of other people do not count.
+透露实际的数字密码时提醒；明确说是假密码或拒绝透露时不提醒。
+Alert when I make a firm commitment without a clear deadline or scope. Negated guarantees, wishes, and commitments with both deadline and scope do not count.
+当我表达自己疲惫时提醒；说别人疲惫、否认疲惫不提醒。
+Alert when I use a technical or business acronym without explaining its meaning in the current statement. An explanation of one acronym does not explain another. Ordinary words and names do not count.
+提到有人把公款私吞或挪到自己账户的贪污行为时提醒；明确否认这种行为时不提醒。
+Alert when I propose deleting the only backup. Keeping a backup or deleting an extra copy does not count.
+我提出跳过发布前的安全检查时提醒；明确要求先做安全检查时不提醒。
+Alert when I state that a customer asked for a refund. Questions about the refund policy or saying nobody requested a refund do not count.
+我把未经验证的传闻当作确定事实传播时提醒；明确说尚未证实或只是传闻时不提醒。
+Alert when I say the meeting has no owner. A named meeting owner or a question asking who owns it does not count.

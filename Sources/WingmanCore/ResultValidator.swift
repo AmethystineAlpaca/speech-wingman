@@ -1,6 +1,32 @@
 import Foundation
 
 public enum ResultValidator {
+    public static func decodeCandidates(_ raw: String, ruleCount: Int) throws -> [Int] {
+        guard let data = raw.data(using: .utf8), data.count <= 1024,
+              let object = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              Set(object.keys) == Set(["candidates"]), let values = object["candidates"] as? [NSNumber],
+              values.allSatisfy({ CFGetTypeID($0) != CFBooleanGetTypeID() && $0.doubleValue == Double($0.intValue) && (0..<ruleCount).contains($0.intValue) }),
+              values.count <= ruleCount else { throw WingmanError.invalidResult("规则候选索引无效") }
+        let indices = values.map(\.intValue)
+        guard Set(indices).count == indices.count else { throw WingmanError.invalidResult("规则候选重复") }
+        return indices.sorted()
+    }
+    /// Internal stages never supply a presentable suggestion. Final alerts must
+    /// still pass decodeDecision, including quote and suggestion-language checks.
+    public static func decodeIntermediate(_ raw: String, transcript: String, evidence: Bool) throws -> VoiceResult {
+        guard let data = raw.data(using: .utf8), data.count <= 4096,
+              let object = try? JSONSerialization.jsonObject(with: data) as? [String: String],
+              let value = object["decision"], let decision = Decision(rawValue: value),
+              Set(object.keys) == (decision == .alert && evidence ? Set(["decision", "quote"]) : Set(["decision"])) else {
+            throw WingmanError.invalidResult("中间判断字段或类型错误")
+        }
+        let quote = object["quote"] ?? ""
+        if decision == .alert && evidence {
+            guard !quote.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+                  quote.count <= 500, transcript.contains(quote) else { throw WingmanError.invalidResult("中间判断缺少连续原文证据") }
+        }
+        return VoiceResult(transcript: transcript, decision: decision, quote: quote, suggestion: "")
+    }
     public static func decodeDecision(_ raw: String, transcript: String) throws -> VoiceResult {
         guard let data = raw.data(using: .utf8), data.count <= 4096,
               var object = try? JSONSerialization.jsonObject(with: data) as? [String: String],

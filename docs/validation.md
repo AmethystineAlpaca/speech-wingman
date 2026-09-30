@@ -44,6 +44,43 @@ Run the text suite against an unsigned local development worker (or a disposable
 swift run WingmanPolicyCheck build/native/bin/text-worker Models/Qwen3-4B-Instruct-2507-Q4_K_M.gguf Tests/Evaluation/cases.json Tests/Evaluation/multiple-rules.json
 ```
 
+## Statement continuity checks (2026-09-30)
+
+This update supersedes the single-pending-segment scheduling described above. Adjacent finals settle for 1.5 seconds; an active preview can extend the group up to 12 seconds. Four statements can wait in FIFO order, and new speech no longer cancels an in-flight judgment. Pause/rule changes still invalidate work, and the 20-second freshness bound remains.
+
+Core tests cover grouping, FIFO order, overflow/expiration, cancellation, and export diagnostics. `Scripts/check-statement-scheduling.sh` compiles the production controller with private access relaxed only in a temporary test copy. A delayed fake worker verifies continuation/correction grouping, retaining both in-flight and queued judgments, mute disposition, and pause cancellation. It uses isolated preferences without microphone capture or popups.
+
+This is a scheduling check, not a semantic accuracy benchmark. Long pauses and grouping limits can still split a statement. Slow inference or a full queue can still skip work; exports now identify those paths and worker/validation errors. No topic-specific prompt branches or acronym extraction are used.
+
+```bash
+bash Scripts/check-statement-scheduling.sh
+```
+
+## Settings and sensitivity checks
+
+The rule editor now retains 240 points of height inside a scrolling settings page, with a pinned save footer. The UI harness renders both languages at the previous window size, at 540 × 520, and in dark appearance at 680 × 820. Core worker checks verify that High reaches every independently evaluated rule through the system prompt.
+
+`Tests/Evaluation/sensitivity.json` compares 15 synthetic statements across all three levels (45 expectations). The expectations are regression targets, not a claim that every case passes. Checks found that Low can still infer fatigue from indirect symptoms, Medium can alert on an ambiguous request for a break, and incomplete statements or invalid generated evidence can produce an unexpected outcome. High/Low differed on requests for a break, and targeted High checks recognized both borderline criticism and unexplained ETL/OLAP. These are synthetic text observations, not live-speech accuracy measurements or calibrated confidence thresholds. Failed cases are retained.
+
+The policy harness accepts an optional `sensitivity` field per case (default `medium`) and serializes its own model suites with a process lock. Pause live listening before model checks; a running app does not participate in the test lock.
+
+```bash
+swift run WingmanPolicyCheck build/native/bin/text-worker Models/Qwen3-4B-Instruct-2507-Q4_K_M.gguf Tests/Evaluation/sensitivity.json
+```
+
+## Ultimate Test Case (2026-09-30)
+
+Runtime sensitivity calibration now ranks profiles on identical positive sets within each inference path. At eight or more rules, High selects the previous Medium profile and Medium selects the previous High profile; Low stays unchanged. Smaller rule lists retain their ordering, which performed better on the independent short-text suite. The evaluation report explicitly separates reclassification of recorded continuous outputs from fresh model checks. Mapping boundary/request checks pass as part of 18 core groups; the fresh independent regression suite is 63/73, with failures retained. The quote-only veto introduced three short-text regressions and was withdrawn from that path.
+
+The standalone [Ultimate Test Case](../Samples/UltimateTestCase/README.md) uses 12 simultaneous bilingual rules and one continuous 11 minute 26 second synthetic recording (1,462 Chinese characters and 1,197 English words). It runs real on-device ASR and text inference at all three sensitivities. Its audio-clock replay measures inference wall time and simulates queue scheduling; it does not measure live microphone acoustics or simultaneous ASR/model contention. The [evaluation report](../Samples/UltimateTestCase/EVALUATION.md) preserves every iteration, partial failures, frozen per-window labels, and complete three-level results.
+
+This implementation supersedes the earlier 20-second freshness setting with a 30-second limit. An explicit `defer` can carry one original preceding window forward, within 24 seconds and 1,500 characters; it never accumulates an arbitrary conversation history. Large rule lists use semantic routing followed by independent candidate checks, evidence validation and bounded output repair. These are global mechanisms with no topic-specific rule branches. The report, rather than earlier short-case totals, is the current evidence for this long-input scenario.
+
+```bash
+bash Samples/UltimateTestCase/run.sh all
+/usr/bin/python3 Samples/UltimateTestCase/score.py --run-dir "$(cat local-evaluation/ultimate/latest-run.txt)" --tag my-run --append
+```
+
 ## Reproducing checks
 
 Follow the README setup/build instructions first. Then run:

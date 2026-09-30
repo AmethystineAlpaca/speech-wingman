@@ -1,0 +1,6 @@
+FAIL long-window-4: inconclusive, 14.64s;
+  Validation: 提醒语言与当前发言不符
+FAIL long-window-7: alert, 7.09s; 避免对汤姆的负面评价
+PASS long-window-10: no_alert, 15.89s;
+FAIL long-window-12: alert, 30.14s; Specify scope and deadline clearly to avoid ambiguity
+Policy check: 1/4 passed (synthetic text; not live-microphone accuracy)

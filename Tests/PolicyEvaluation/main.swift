@@ -1,4 +1,5 @@
 import Foundation
+import Darwin
 import WingmanCore
 
 /// Uses the production prompt, language detection, worker, and output validator.
@@ -10,6 +11,7 @@ struct PolicyCheck {
         let policy: String
         let expected: String
         let history: String?
+        let sensitivity: Sensitivity?
     }
     static func log(_ text: String) { FileHandle.standardOutput.write(Data((text + "\n").utf8)) }
     static func main() async throws {
@@ -17,6 +19,16 @@ struct PolicyCheck {
         guard args.count >= 4 else {
             log("Usage: WingmanPolicyCheck TEXT_WORKER MODEL_FILE CASES_JSON [...]")
             exit(2)
+        }
+        // Model suites share the same GPU and memory. Concurrent suites can time out
+        // and invalidate each other's measurements, so serialize this test harness.
+        let lockPath = FileManager.default.temporaryDirectory.appendingPathComponent("speech-wingman-policy-check-\(getuid()).lock").path
+        let lock = open(lockPath, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR)
+        guard lock >= 0 else { throw POSIXError(.EIO) }
+        defer { flock(lock, LOCK_UN); close(lock) }
+        if flock(lock, LOCK_EX | LOCK_NB) != 0 {
+            log("Waiting for another policy suite to release the model test lock…")
+            guard flock(lock, LOCK_EX) == 0 else { throw POSIXError(.EIO) }
         }
         let backend = LocalTextBackend()
         try await backend.load(paths: BackendPaths(worker: URL(fileURLWithPath: args[1]), model: URL(fileURLWithPath: args[2])))
@@ -27,10 +39,11 @@ struct PolicyCheck {
                 total += 1
                 do {
                     let history = item.history.map { [TranscriptEntry(id: UUID(), date: Date(), text: $0, decision: .alert, configurationVersion: 1)] } ?? []
-                    let evaluation = try await backend.evaluate(text: item.speech, configuration: SessionConfiguration(prompt: item.policy), context: history)
+                    let evaluation = try await backend.evaluate(text: item.speech, configuration: SessionConfiguration(prompt: item.policy, sensitivity: item.sensitivity ?? .medium), context: history)
                     let correct = evaluation.result.decision.rawValue == item.expected
                     if correct { passed += 1 }
                     log("\(correct ? "PASS" : "FAIL") \(item.id): \(evaluation.result.decision.rawValue), \(String(format: "%.2f", evaluation.elapsedSeconds))s; \(evaluation.result.suggestion)")
+                    for reason in evaluation.validationErrors { log("  Validation: \(reason)") }
                 } catch { log("FAIL \(item.id): \(error.localizedDescription)") }
             }
         }

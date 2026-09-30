@@ -1,0 +1,63 @@
+{
+  "mapping_version": "routed-recall-v1",
+  "method": "Large-rule values reclassify recorded Iteration 11 outputs using the compiled production mapping; this is NOT a fresh continuous replay. Small-rule values come from a fresh regression run.",
+  "positive_definition": "Union of the frozen positive labels across sensitivities, identical for every strategy. No model outputs determine labels.",
+  "large_rule_path": {
+    "high": {
+      "source_sensitivity": "medium",
+      "profile": "legacy-medium",
+      "source_run_id": "D96652EA-FB5A-4A75-A55D-BB64B6F6BDA1",
+      "positive_windows": 15,
+      "tp": 12,
+      "fp": 3,
+      "fn": 3,
+      "recall": 0.8,
+      "precision": 0.8,
+      "presented_tp": 12
+    },
+    "low": {
+      "source_sensitivity": "low",
+      "profile": "legacy-low",
+      "source_run_id": "D96652EA-FB5A-4A75-A55D-BB64B6F6BDA1",
+      "positive_windows": 15,
+      "tp": 10,
+      "fp": 2,
+      "fn": 5,
+      "recall": 0.6666666666666666,
+      "precision": 0.8333333333333334,
+      "presented_tp": 10
+    },
+    "medium": {
+      "source_sensitivity": "high",
+      "profile": "legacy-high",
+      "source_run_id": "D96652EA-FB5A-4A75-A55D-BB64B6F6BDA1",
+      "positive_windows": 15,
+      "tp": 11,
+      "fp": 4,
+      "fn": 4,
+      "recall": 0.7333333333333333,
+      "precision": 0.7333333333333333,
+      "presented_tp": 11
+    }
+  },
+  "small_rule_path": {
+    "low": {
+      "profile": "legacy-low",
+      "positive_cases": 9,
+      "tp": 5,
+      "recall": 0.5555555555555556
+    },
+    "medium": {
+      "profile": "legacy-medium",
+      "positive_cases": 9,
+      "tp": 7,
+      "recall": 0.7777777777777778
+    },
+    "high": {
+      "profile": "legacy-high",
+      "positive_cases": 9,
+      "tp": 8,
+      "recall": 0.8888888888888888
+    }
+  }
+}

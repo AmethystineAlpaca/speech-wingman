@@ -1,0 +1,317 @@
+[
+  {
+    "id": "direct-criticism-low",
+    "speech": "Tom is a selfish idiot.",
+    "policy": "Alert if I speak badly of Tom. Stay quiet when I praise him.",
+    "sensitivity": "low",
+    "expected": "alert"
+  },
+  {
+    "id": "direct-criticism-medium",
+    "speech": "Tom is a selfish idiot.",
+    "policy": "Alert if I speak badly of Tom. Stay quiet when I praise him.",
+    "sensitivity": "medium",
+    "expected": "alert"
+  },
+  {
+    "id": "direct-criticism-high",
+    "speech": "Tom is a selfish idiot.",
+    "policy": "Alert if I speak badly of Tom. Stay quiet when I praise him.",
+    "sensitivity": "high",
+    "expected": "alert"
+  },
+  {
+    "id": "implied-criticism-low",
+    "speech": "I would not trust Tom to organize even a simple meeting.",
+    "policy": "Alert if I speak badly of Tom. Stay quiet when I praise him.",
+    "sensitivity": "low",
+    "expected": "alert"
+  },
+  {
+    "id": "implied-criticism-medium",
+    "speech": "I would not trust Tom to organize even a simple meeting.",
+    "policy": "Alert if I speak badly of Tom. Stay quiet when I praise him.",
+    "sensitivity": "medium",
+    "expected": "alert"
+  },
+  {
+    "id": "implied-criticism-high",
+    "speech": "I would not trust Tom to organize even a simple meeting.",
+    "policy": "Alert if I speak badly of Tom. Stay quiet when I praise him.",
+    "sensitivity": "high",
+    "expected": "alert"
+  },
+  {
+    "id": "borderline-criticism-low",
+    "speech": "Well, that was another classic Tom moment.",
+    "policy": "Alert if I speak badly of Tom. Stay quiet when I praise him.",
+    "sensitivity": "low",
+    "expected": "no_alert"
+  },
+  {
+    "id": "borderline-criticism-medium",
+    "speech": "Well, that was another classic Tom moment.",
+    "policy": "Alert if I speak badly of Tom. Stay quiet when I praise him.",
+    "sensitivity": "medium",
+    "expected": "no_alert"
+  },
+  {
+    "id": "borderline-criticism-high",
+    "speech": "Well, that was another classic Tom moment.",
+    "policy": "Alert if I speak badly of Tom. Stay quiet when I praise him.",
+    "sensitivity": "high",
+    "expected": "alert"
+  },
+  {
+    "id": "praise-exception-low",
+    "speech": "Tom is thoughtful and did an excellent job.",
+    "policy": "Alert if I speak badly of Tom. Stay quiet when I praise him.",
+    "sensitivity": "low",
+    "expected": "no_alert"
+  },
+  {
+    "id": "praise-exception-medium",
+    "speech": "Tom is thoughtful and did an excellent job.",
+    "policy": "Alert if I speak badly of Tom. Stay quiet when I praise him.",
+    "sensitivity": "medium",
+    "expected": "no_alert"
+  },
+  {
+    "id": "praise-exception-high",
+    "speech": "Tom is thoughtful and did an excellent job.",
+    "policy": "Alert if I speak badly of Tom. Stay quiet when I praise him.",
+    "sensitivity": "high",
+    "expected": "no_alert"
+  },
+  {
+    "id": "negated-criticism-low",
+    "speech": "Tom is not an idiot. He is very kind.",
+    "policy": "Alert if I speak badly of Tom. Stay quiet when I praise him.",
+    "sensitivity": "low",
+    "expected": "no_alert"
+  },
+  {
+    "id": "negated-criticism-medium",
+    "speech": "Tom is not an idiot. He is very kind.",
+    "policy": "Alert if I speak badly of Tom. Stay quiet when I praise him.",
+    "sensitivity": "medium",
+    "expected": "no_alert"
+  },
+  {
+    "id": "negated-criticism-high",
+    "speech": "Tom is not an idiot. He is very kind.",
+    "policy": "Alert if I speak badly of Tom. Stay quiet when I praise him.",
+    "sensitivity": "high",
+    "expected": "no_alert"
+  },
+  {
+    "id": "unrelated-person-low",
+    "speech": "Jerry is a selfish idiot.",
+    "policy": "Alert if I speak badly of Tom. Stay quiet when I praise him.",
+    "sensitivity": "low",
+    "expected": "no_alert"
+  },
+  {
+    "id": "unrelated-person-medium",
+    "speech": "Jerry is a selfish idiot.",
+    "policy": "Alert if I speak badly of Tom. Stay quiet when I praise him.",
+    "sensitivity": "medium",
+    "expected": "no_alert"
+  },
+  {
+    "id": "unrelated-person-high",
+    "speech": "Jerry is a selfish idiot.",
+    "policy": "Alert if I speak badly of Tom. Stay quiet when I praise him.",
+    "sensitivity": "high",
+    "expected": "no_alert"
+  },
+  {
+    "id": "indirect-fatigue-low",
+    "speech": "My eyes keep closing and I can barely keep my head up.",
+    "policy": "Alert when I say I am tired.",
+    "sensitivity": "low",
+    "expected": "no_alert"
+  },
+  {
+    "id": "indirect-fatigue-medium",
+    "speech": "My eyes keep closing and I can barely keep my head up.",
+    "policy": "Alert when I say I am tired.",
+    "sensitivity": "medium",
+    "expected": "alert"
+  },
+  {
+    "id": "indirect-fatigue-high",
+    "speech": "My eyes keep closing and I can barely keep my head up.",
+    "policy": "Alert when I say I am tired.",
+    "sensitivity": "high",
+    "expected": "alert"
+  },
+  {
+    "id": "borderline-fatigue-low",
+    "speech": "I could really use a break.",
+    "policy": "Alert when I say I am tired.",
+    "sensitivity": "low",
+    "expected": "no_alert"
+  },
+  {
+    "id": "borderline-fatigue-medium",
+    "speech": "I could really use a break.",
+    "policy": "Alert when I say I am tired.",
+    "sensitivity": "medium",
+    "expected": "no_alert"
+  },
+  {
+    "id": "borderline-fatigue-high",
+    "speech": "I could really use a break.",
+    "policy": "Alert when I say I am tired.",
+    "sensitivity": "high",
+    "expected": "alert"
+  },
+  {
+    "id": "direct-fatigue-zh-low",
+    "speech": "我现在非常疲惫。",
+    "policy": "当我说自己很疲惫时提醒。",
+    "sensitivity": "low",
+    "expected": "alert"
+  },
+  {
+    "id": "direct-fatigue-zh-medium",
+    "speech": "我现在非常疲惫。",
+    "policy": "当我说自己很疲惫时提醒。",
+    "sensitivity": "medium",
+    "expected": "alert"
+  },
+  {
+    "id": "direct-fatigue-zh-high",
+    "speech": "我现在非常疲惫。",
+    "policy": "当我说自己很疲惫时提醒。",
+    "sensitivity": "high",
+    "expected": "alert"
+  },
+  {
+    "id": "borderline-fatigue-zh-low",
+    "speech": "我想歇一会儿。",
+    "policy": "当我说自己很疲惫时提醒。",
+    "sensitivity": "low",
+    "expected": "no_alert"
+  },
+  {
+    "id": "borderline-fatigue-zh-medium",
+    "speech": "我想歇一会儿。",
+    "policy": "当我说自己很疲惫时提醒。",
+    "sensitivity": "medium",
+    "expected": "no_alert"
+  },
+  {
+    "id": "borderline-fatigue-zh-high",
+    "speech": "我想歇一会儿。",
+    "policy": "当我说自己很疲惫时提醒。",
+    "sensitivity": "high",
+    "expected": "alert"
+  },
+  {
+    "id": "unexplained-acronym-low",
+    "speech": "The ETL pipeline feeds our OLAP layer.",
+    "policy": "Alert when I use a technical acronym without explaining it in the current statement. Stay quiet if the current statement includes a plain-language explanation.",
+    "sensitivity": "low",
+    "expected": "alert"
+  },
+  {
+    "id": "unexplained-acronym-medium",
+    "speech": "The ETL pipeline feeds our OLAP layer.",
+    "policy": "Alert when I use a technical acronym without explaining it in the current statement. Stay quiet if the current statement includes a plain-language explanation.",
+    "sensitivity": "medium",
+    "expected": "alert"
+  },
+  {
+    "id": "unexplained-acronym-high",
+    "speech": "The ETL pipeline feeds our OLAP layer.",
+    "policy": "Alert when I use a technical acronym without explaining it in the current statement. Stay quiet if the current statement includes a plain-language explanation.",
+    "sensitivity": "high",
+    "expected": "alert"
+  },
+  {
+    "id": "explained-acronym-low",
+    "speech": "We use ETL, which means extracting data from sources, transforming it, and loading it into a database.",
+    "policy": "Alert when I use a technical acronym without explaining it in the current statement. Stay quiet if the current statement includes a plain-language explanation.",
+    "sensitivity": "low",
+    "expected": "no_alert"
+  },
+  {
+    "id": "explained-acronym-medium",
+    "speech": "We use ETL, which means extracting data from sources, transforming it, and loading it into a database.",
+    "policy": "Alert when I use a technical acronym without explaining it in the current statement. Stay quiet if the current statement includes a plain-language explanation.",
+    "sensitivity": "medium",
+    "expected": "no_alert"
+  },
+  {
+    "id": "explained-acronym-high",
+    "speech": "We use ETL, which means extracting data from sources, transforming it, and loading it into a database.",
+    "policy": "Alert when I use a technical acronym without explaining it in the current statement. Stay quiet if the current statement includes a plain-language explanation.",
+    "sensitivity": "high",
+    "expected": "no_alert"
+  },
+  {
+    "id": "unexplained-acronym-mixed-low",
+    "speech": "我们用 ETL 把数据送到 OLAP 层。",
+    "policy": "Alert when I use a technical acronym without explaining it in the current statement. Stay quiet if the current statement includes a plain-language explanation.",
+    "sensitivity": "low",
+    "expected": "alert"
+  },
+  {
+    "id": "unexplained-acronym-mixed-medium",
+    "speech": "我们用 ETL 把数据送到 OLAP 层。",
+    "policy": "Alert when I use a technical acronym without explaining it in the current statement. Stay quiet if the current statement includes a plain-language explanation.",
+    "sensitivity": "medium",
+    "expected": "alert"
+  },
+  {
+    "id": "unexplained-acronym-mixed-high",
+    "speech": "我们用 ETL 把数据送到 OLAP 层。",
+    "policy": "Alert when I use a technical acronym without explaining it in the current statement. Stay quiet if the current statement includes a plain-language explanation.",
+    "sensitivity": "high",
+    "expected": "alert"
+  },
+  {
+    "id": "unrelated-weather-low",
+    "speech": "It is sunny today.",
+    "policy": "Alert when I use a technical acronym without explaining it in the current statement. Stay quiet if the current statement includes a plain-language explanation.",
+    "sensitivity": "low",
+    "expected": "no_alert"
+  },
+  {
+    "id": "unrelated-weather-medium",
+    "speech": "It is sunny today.",
+    "policy": "Alert when I use a technical acronym without explaining it in the current statement. Stay quiet if the current statement includes a plain-language explanation.",
+    "sensitivity": "medium",
+    "expected": "no_alert"
+  },
+  {
+    "id": "unrelated-weather-high",
+    "speech": "It is sunny today.",
+    "policy": "Alert when I use a technical acronym without explaining it in the current statement. Stay quiet if the current statement includes a plain-language explanation.",
+    "sensitivity": "high",
+    "expected": "no_alert"
+  },
+  {
+    "id": "incomplete-low",
+    "speech": "I guarantee that",
+    "policy": "Alert when I make a firm commitment without a clear deadline. Stay quiet for conditional statements.",
+    "sensitivity": "low",
+    "expected": "defer"
+  },
+  {
+    "id": "incomplete-medium",
+    "speech": "I guarantee that",
+    "policy": "Alert when I make a firm commitment without a clear deadline. Stay quiet for conditional statements.",
+    "sensitivity": "medium",
+    "expected": "defer"
+  },
+  {
+    "id": "incomplete-high",
+    "speech": "I guarantee that",
+    "policy": "Alert when I make a firm commitment without a clear deadline. Stay quiet for conditional statements.",
+    "sensitivity": "high",
+    "expected": "defer"
+  }
+]

@@ -1,0 +1,44 @@
+[
+  {
+    "id": "mapped-low-W0",
+    "sensitivity": "low",
+    "speech": "大家早上好，我先把今天的讨论背景连起来说一下，我们正在准备一个小型的项目演示，会议室的白板上有三个栏目，分别记录已经完成的事情。",
+    "policy": "说到 banana 或香蕉就提醒，包括引用中的提及。\nAlert if I speak badly of Tom / 汤姆. Praise, negated insults, and criticism of other people do not count.\n透露实际的数字密码时提醒；明确说是假密码或拒绝透露时不提醒。\nAlert when I make a firm commitment without a clear deadline or scope. Negated guarantees, wishes, and commitments with both deadline and scope do not count.\n当我表达自己疲惫时提醒；说别人疲惫、否认疲惫不提醒。\nAlert when I use a technical or business acronym without explaining its meaning in the current statement. An explanation of one acronym does not explain another. Ordinary words and names do not count.\n提到有人把公款私吞或挪到自己账户的贪污行为时提醒；明确否认这种行为时不提醒。\nAlert when I propose deleting the only backup. Keeping a backup or deleting an extra copy does not count.\n我提出跳过发布前的安全检查时提醒；明确要求先做安全检查时不提醒。\nAlert when I state that a customer asked for a refund. Questions about the refund policy or saying nobody requested a refund do not count.\n我把未经验证的传闻当作确定事实传播时提醒；明确说尚未证实或只是传闻时不提醒。\nAlert when I say the meeting has no owner. A named meeting owner or a question asking who owns it does not count.",
+    "expected": "no_alert"
+  },
+  {
+    "id": "mapped-low-W27",
+    "sensitivity": "low",
+    "speech": "A customer asked for a refund yesterday, The customer said the delivery arrived late, and I am recording the request so that the support team can review it. I do not have the outcome of that review. The next step in our conversation is simply to organize the messages by date.",
+    "policy": "说到 banana 或香蕉就提醒，包括引用中的提及。\nAlert if I speak badly of Tom / 汤姆. Praise, negated insults, and criticism of other people do not count.\n透露实际的数字密码时提醒；明确说是假密码或拒绝透露时不提醒。\nAlert when I make a firm commitment without a clear deadline or scope. Negated guarantees, wishes, and commitments with both deadline and scope do not count.\n当我表达自己疲惫时提醒；说别人疲惫、否认疲惫不提醒。\nAlert when I use a technical or business acronym without explaining its meaning in the current statement. An explanation of one acronym does not explain another. Ordinary words and names do not count.\n提到有人把公款私吞或挪到自己账户的贪污行为时提醒；明确否认这种行为时不提醒。\nAlert when I propose deleting the only backup. Keeping a backup or deleting an extra copy does not count.\n我提出跳过发布前的安全检查时提醒；明确要求先做安全检查时不提醒。\nAlert when I state that a customer asked for a refund. Questions about the refund policy or saying nobody requested a refund do not count.\n我把未经验证的传闻当作确定事实传播时提醒；明确说尚未证实或只是传闻时不提醒。\nAlert when I say the meeting has no owner. A named meeting owner or a question asking who owns it does not count.",
+    "expected": "alert"
+  },
+  {
+    "id": "mapped-medium-W0",
+    "sensitivity": "medium",
+    "speech": "大家早上好，我先把今天的讨论背景连起来说一下，我们正在准备一个小型的项目演示，会议室的白板上有三个栏目，分别记录已经完成的事情。",
+    "policy": "说到 banana 或香蕉就提醒，包括引用中的提及。\nAlert if I speak badly of Tom / 汤姆. Praise, negated insults, and criticism of other people do not count.\n透露实际的数字密码时提醒；明确说是假密码或拒绝透露时不提醒。\nAlert when I make a firm commitment without a clear deadline or scope. Negated guarantees, wishes, and commitments with both deadline and scope do not count.\n当我表达自己疲惫时提醒；说别人疲惫、否认疲惫不提醒。\nAlert when I use a technical or business acronym without explaining its meaning in the current statement. An explanation of one acronym does not explain another. Ordinary words and names do not count.\n提到有人把公款私吞或挪到自己账户的贪污行为时提醒；明确否认这种行为时不提醒。\nAlert when I propose deleting the only backup. Keeping a backup or deleting an extra copy does not count.\n我提出跳过发布前的安全检查时提醒；明确要求先做安全检查时不提醒。\nAlert when I state that a customer asked for a refund. Questions about the refund policy or saying nobody requested a refund do not count.\n我把未经验证的传闻当作确定事实传播时提醒；明确说尚未证实或只是传闻时不提醒。\nAlert when I say the meeting has no owner. A named meeting owner or a question asking who owns it does not count.",
+    "expected": "no_alert"
+  },
+  {
+    "id": "mapped-medium-W27",
+    "sensitivity": "medium",
+    "speech": "A customer asked for a refund yesterday, The customer said the delivery arrived late, and I am recording the request so that the support team can review it. I do not have the outcome of that review. The next step in our conversation is simply to organize the messages by date.",
+    "policy": "说到 banana 或香蕉就提醒，包括引用中的提及。\nAlert if I speak badly of Tom / 汤姆. Praise, negated insults, and criticism of other people do not count.\n透露实际的数字密码时提醒；明确说是假密码或拒绝透露时不提醒。\nAlert when I make a firm commitment without a clear deadline or scope. Negated guarantees, wishes, and commitments with both deadline and scope do not count.\n当我表达自己疲惫时提醒；说别人疲惫、否认疲惫不提醒。\nAlert when I use a technical or business acronym without explaining its meaning in the current statement. An explanation of one acronym does not explain another. Ordinary words and names do not count.\n提到有人把公款私吞或挪到自己账户的贪污行为时提醒；明确否认这种行为时不提醒。\nAlert when I propose deleting the only backup. Keeping a backup or deleting an extra copy does not count.\n我提出跳过发布前的安全检查时提醒；明确要求先做安全检查时不提醒。\nAlert when I state that a customer asked for a refund. Questions about the refund policy or saying nobody requested a refund do not count.\n我把未经验证的传闻当作确定事实传播时提醒；明确说尚未证实或只是传闻时不提醒。\nAlert when I say the meeting has no owner. A named meeting owner or a question asking who owns it does not count.",
+    "expected": "alert"
+  },
+  {
+    "id": "mapped-high-W0",
+    "sensitivity": "high",
+    "speech": "大家早上好，我先把今天的讨论背景连起来说一下，我们正在准备一个小型的项目演示，会议室的白板上有三个栏目，分别记录已经完成的事情。",
+    "policy": "说到 banana 或香蕉就提醒，包括引用中的提及。\nAlert if I speak badly of Tom / 汤姆. Praise, negated insults, and criticism of other people do not count.\n透露实际的数字密码时提醒；明确说是假密码或拒绝透露时不提醒。\nAlert when I make a firm commitment without a clear deadline or scope. Negated guarantees, wishes, and commitments with both deadline and scope do not count.\n当我表达自己疲惫时提醒；说别人疲惫、否认疲惫不提醒。\nAlert when I use a technical or business acronym without explaining its meaning in the current statement. An explanation of one acronym does not explain another. Ordinary words and names do not count.\n提到有人把公款私吞或挪到自己账户的贪污行为时提醒；明确否认这种行为时不提醒。\nAlert when I propose deleting the only backup. Keeping a backup or deleting an extra copy does not count.\n我提出跳过发布前的安全检查时提醒；明确要求先做安全检查时不提醒。\nAlert when I state that a customer asked for a refund. Questions about the refund policy or saying nobody requested a refund do not count.\n我把未经验证的传闻当作确定事实传播时提醒；明确说尚未证实或只是传闻时不提醒。\nAlert when I say the meeting has no owner. A named meeting owner or a question asking who owns it does not count.",
+    "expected": "no_alert"
+  },
+  {
+    "id": "mapped-high-W27",
+    "sensitivity": "high",
+    "speech": "A customer asked for a refund yesterday, The customer said the delivery arrived late, and I am recording the request so that the support team can review it. I do not have the outcome of that review. The next step in our conversation is simply to organize the messages by date.",
+    "policy": "说到 banana 或香蕉就提醒，包括引用中的提及。\nAlert if I speak badly of Tom / 汤姆. Praise, negated insults, and criticism of other people do not count.\n透露实际的数字密码时提醒；明确说是假密码或拒绝透露时不提醒。\nAlert when I make a firm commitment without a clear deadline or scope. Negated guarantees, wishes, and commitments with both deadline and scope do not count.\n当我表达自己疲惫时提醒；说别人疲惫、否认疲惫不提醒。\nAlert when I use a technical or business acronym without explaining its meaning in the current statement. An explanation of one acronym does not explain another. Ordinary words and names do not count.\n提到有人把公款私吞或挪到自己账户的贪污行为时提醒；明确否认这种行为时不提醒。\nAlert when I propose deleting the only backup. Keeping a backup or deleting an extra copy does not count.\n我提出跳过发布前的安全检查时提醒；明确要求先做安全检查时不提醒。\nAlert when I state that a customer asked for a refund. Questions about the refund policy or saying nobody requested a refund do not count.\n我把未经验证的传闻当作确定事实传播时提醒；明确说尚未证实或只是传闻时不提醒。\nAlert when I say the meeting has no owner. A named meeting owner or a question asking who owns it does not count.",
+    "expected": "alert"
+  }
+]
