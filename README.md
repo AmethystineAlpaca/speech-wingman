@@ -12,19 +12,11 @@ Tell it what to watch for in plain language. Speak Chinese, English, or both in 
 
 **Fast speech previews · Custom contextual alerts · Chinese + English mixed speech · Offline on Apple Silicon**
 
-[![Core checks](https://github.com/AmethystineAlpaca/speech-wingman/actions/workflows/core-checks.yml/badge.svg)](https://github.com/AmethystineAlpaca/speech-wingman/actions/workflows/core-checks.yml)
-
-**[Try the source preview](https://github.com/AmethystineAlpaca/speech-wingman/releases/tag/v0.2.1) · [Share an alert recipe](https://github.com/AmethystineAlpaca/speech-wingman/discussions) · [Report a bug](https://github.com/AmethystineAlpaca/speech-wingman/issues/new/choose)**
-
-**English UI by default · 中文界面可选 · Apple Silicon · No cloud inference**
-
-[Getting started](#getting-started) · [Requirements](#requirements) · [How it works](#how-it-works) · [Limitations](#limitations) · [中文介绍](#中文介绍)
-
 ## Chinese. English. Both in the same sentence.
 
 **No recognition-language switch. No need to stick to one language.** Speak Chinese, English, or switch between them naturally—even within a sentence. The display language is a separate setting.
 
-These two screenshots were shared from actual app use. Each pairs an unaltered crop of the configured rule with an unaltered crop of the resulting alert; the surrounding desktop and image metadata have been removed.
+This is how Speech Wingman actually appears on the desktop. These are complete, uncropped screenshots from actual use, showing the settings and floating alert together. The visible images are unchanged; only embedded metadata was removed.
 
 ### English speech → an English reminder
 
@@ -43,6 +35,14 @@ The quote reads “香蕉的英文叫做banana，你知道吗?”—Chinese and 
 ![Actual app example: an English banana rule triggers on a sentence mixing Chinese and English](docs/assets/live-mixed-language-alert.png)
 
 *These are two observed examples, separate from the illustrative demos below. See [validation](docs/validation.md) for measured results and known misses.*
+
+[![Core checks](https://github.com/AmethystineAlpaca/speech-wingman/actions/workflows/core-checks.yml/badge.svg)](https://github.com/AmethystineAlpaca/speech-wingman/actions/workflows/core-checks.yml)
+
+**[Try the source preview](https://github.com/AmethystineAlpaca/speech-wingman/releases/tag/v0.2.1) · [Share an alert recipe](https://github.com/AmethystineAlpaca/speech-wingman/discussions) · [Report a bug](https://github.com/AmethystineAlpaca/speech-wingman/issues/new/choose)**
+
+**English UI by default · 中文界面可选 · Apple Silicon · No cloud inference**
+
+[Getting started](#getting-started) · [Requirements](#requirements) · [How it works](#how-it-works) · [Limitations](#limitations) · [中文介绍](#中文介绍)
 
 ## Why Speech Wingman?
 
