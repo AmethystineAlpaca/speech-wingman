@@ -27,7 +27,7 @@ public enum ResultValidator {
         }
         return VoiceResult(transcript: transcript, decision: decision, quote: quote, suggestion: "")
     }
-    public static func decodeDecision(_ raw: String, transcript: String) throws -> VoiceResult {
+    public static func decodeDecision(_ raw: String, transcript: String, language: DisplayLanguage? = nil) throws -> VoiceResult {
         guard let data = raw.data(using: .utf8), data.count <= 4096,
               var object = try? JSONSerialization.jsonObject(with: data) as? [String: String],
               let decision = object["decision"],
@@ -39,15 +39,15 @@ public enum ResultValidator {
         let full = try JSONSerialization.data(withJSONObject: object)
         let result = try decode(String(decoding: full, as: UTF8.self))
         if result.decision == .alert {
-            let wantsChinese = SpeechLanguage.detect(transcript) == .chinese
-            guard (SpeechLanguage.detect(result.suggestion) == .chinese) == wantsChinese else {
-                throw WingmanError.invalidResult("提醒语言与当前发言不符")
+            let target = language ?? SpeechLanguage.detect(transcript).displayLanguage
+            guard target.acceptsSuggestion(result.suggestion) else {
+                throw WingmanError.invalidResult("提醒语言与设置不符")
             }
         }
         return result
     }
     public static func decode(_ raw: String) throws -> VoiceResult {
-        guard let data = raw.data(using: .utf8), data.count <= 32_768,
+        guard let data = raw.data(using: .utf8), data.count <= 2_000_000,
               let object = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
               Set(object.keys) == Set(["transcript", "decision", "quote", "suggestion"]),
               object.values.allSatisfy({ $0 is String }) else {
@@ -56,7 +56,7 @@ public enum ResultValidator {
         let result: VoiceResult
         do { result = try JSONDecoder().decode(VoiceResult.self, from: data) }
         catch { throw WingmanError.invalidResult("无效的判断状态") }
-        guard result.transcript.count <= 4_000, result.quote.count <= 500,
+        guard result.transcript.count <= CurrentSpeechWindow.maximumBatchCharacters * CurrentSpeechWindow.maximumPending, result.quote.count <= 500,
               result.suggestion.count <= 160 else {
             throw WingmanError.invalidResult("输出过长")
         }

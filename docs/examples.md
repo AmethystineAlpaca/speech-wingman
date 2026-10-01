@@ -2,9 +2,29 @@
 
 [README](../README.md) · [Build and usage guide](guide.md)
 
+## Multilingual: five languages, one session
+
+English, Chinese, Japanese, Korean—even Cantonese. The current recorded replay uses one continuous synthetic audio track and the production app pipeline. Recognition remains automatic; reminders stay in the selected language.
+
+![Five languages in the current app](assets/multilingual-five-languages.gif)
+
+![Alternating languages in the same conversation](assets/multilingual-mixed.gif)
+
+[Full video with audio](assets/multilingual-continuous.mp4) · [Raw results](assets/multilingual-report.json) · [Method and limitations](../Tests/MultilingualDemo/README.md)
+
+Natural pauses help. A separate rapid within-utterance test lost words; the raw failure is retained.
+
+### New examples from the same recorded run
+
+| Japanese input | Korean input | Cantonese input |
+| --- | --- | --- |
+| ![Actual Japanese ASR and English reminder](assets/multilingual-ja.png) | ![Actual Korean ASR and English reminder](assets/multilingual-ko.png) | ![Actual Cantonese ASR and English reminder](assets/multilingual-yue.png) |
+
+These stills are frames from the same video, not separately scripted states. The older screenshots and illustrative examples below retain their original labels.
+
 ## Chinese. English. Both in the same sentence.
 
-**No recognition-language switch. No need to stick to one language.** Speak Chinese, English, or switch between them naturally—even within a sentence. The display language is a separate setting.
+**Historical examples.** These two captures show Chinese and English in an earlier version. Current recognition supports five languages, and current generated reminders follow the selected interface and alert language.
 
 These complete, uncropped screenshots record actual use of the earlier 0.2.1 interface, showing settings and a floating alert together. They are retained as observed bilingual examples; the current 0.4.0 controls are shown below. The visible images are unchanged; only embedded metadata was removed.
 

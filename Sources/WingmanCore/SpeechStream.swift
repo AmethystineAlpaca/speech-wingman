@@ -1,6 +1,6 @@
 import Foundation
 
-/// Self-contained bilingual streaming ASR. No OS speech service, language switch or network path.
+/// Self-contained multilingual streaming ASR. No OS speech service, language switch or network path.
 @MainActor
 public final class SpeechStream {
     private var process: Process?
@@ -45,7 +45,7 @@ public final class SpeechStream {
             Task { [weak self] in
                 try? await Task.sleep(for: .seconds(30))
                 guard let self, self.generation == current, self.ready != nil else { return }
-                self.fail("中英双语 ASR 加载超时")
+                self.fail("多语言转录加载超时")
             }
         }
     }
@@ -54,7 +54,7 @@ public final class SpeechStream {
         guard loaded, !didFinish, !samples.isEmpty, samples.count <= 16_000 else {
             throw WingmanError.unavailable("ASR 未就绪或音频块无效")
         }
-        guard outstanding < 128 else { throw WingmanError.unavailable("ASR 跟不上收音，已暂停；请继续重试") }
+        guard outstanding < 128 else { return } // Drop this chunk while the worker catches up.
         let pcm = samples.withUnsafeBytes { Data($0) }
         let object = ["type": "audio", "pcm_f32_base64": pcm.base64EncodedString()]
         let data = try JSONSerialization.data(withJSONObject: object) + Data([10])
@@ -126,7 +126,7 @@ public final class SpeechStream {
     }
     private func exited(generation current: UUID) {
         guard current == generation, !didFinish else { return }
-        fail("中英双语 ASR 已退出")
+        fail("多语言转录进程已退出")
     }
     private func fail(_ message: String) {
         let callback = onFailure

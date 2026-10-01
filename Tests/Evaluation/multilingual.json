@@ -1,0 +1,30 @@
+[
+  {
+    "id": "KO1-incomplete-promise",
+    "language": "ko",
+    "speech": "제가 반드시 다 끝내겠습니다. 걱정하지 마세요.",
+    "policy": "Alert when the speaker makes a firm promise without a specific deadline or delivery scope. Do not alert when both the deadline and delivery scope are explicit.",
+    "expected": "alert"
+  },
+  {
+    "id": "KO2-complete-promise",
+    "language": "ko",
+    "speech": "이번 금요일 오후 6시까지 이 보고서 세 개를 모두 완성하겠습니다.",
+    "policy": "Alert when the speaker makes a firm promise without a specific deadline or delivery scope. Do not alert when both the deadline and delivery scope are explicit.",
+    "expected": "no_alert"
+  },
+  {
+    "id": "JA1-incomplete-promise",
+    "language": "ja",
+    "speech": "私が必ず全部終わらせます。安心してください。",
+    "policy": "Alert when the speaker makes a firm promise without a specific deadline or delivery scope. Do not alert when both the deadline and delivery scope are explicit.",
+    "expected": "alert"
+  },
+  {
+    "id": "JA2-complete-promise",
+    "language": "ja",
+    "speech": "今週金曜日の午後6時までに、この3件の報告書をすべて完成させると約束します。",
+    "policy": "Alert when the speaker makes a firm promise without a specific deadline or delivery scope. Do not alert when both the deadline and delivery scope are explicit.",
+    "expected": "no_alert"
+  }
+]

@@ -11,7 +11,7 @@
   <key>LSMinimumSystemVersion</key><string>14.0</string>
   <key>LSUIElement</key><true/>
   <key>CFBundleDevelopmentRegion</key><string>en</string>
-  <key>CFBundleLocalizations</key><array><string>en</string><string>zh-Hans</string></array>
+  <key>CFBundleLocalizations</key><array><string>en</string><string>zh-Hans</string><string>ja</string><string>ko</string></array>
   <key>NSMicrophoneUsageDescription</key><string>After you start listening, microphone speech is processed on this device to check your alert rule. Audio is not saved by default.</string>
   <key>NSHighResolutionCapable</key><true/>
 </dict></plist>

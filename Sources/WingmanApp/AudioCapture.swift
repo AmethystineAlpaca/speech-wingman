@@ -2,10 +2,11 @@ import AVFoundation
 import Foundation
 
 final class AudioCapture: @unchecked Sendable {
-    private let engine = AVAudioEngine()
+    private var engine = AVAudioEngine()
     private var installed = false
     func start(onSamples: @escaping @Sendable ([Float]) -> Void) throws {
         stop()
+        engine = AVAudioEngine()
         let node = engine.inputNode
         let source = node.outputFormat(forBus: 0)
         guard source.sampleRate > 0, source.channelCount > 0,

@@ -43,6 +43,8 @@ public enum Sensitivity: String, Codable, Sendable, CaseIterable {
 public struct SessionConfiguration: Codable, Sendable {
     public static let routedRuleThreshold = 8
     public static let sensitivityMappingVersion = "routed-recall-v1"
+    /// App sessions always set this. Nil preserves legacy evaluation fixtures and exports.
+    public var responseLanguage: DisplayLanguage?
     public var prompt: String
     /// Each nonempty line is one independent rule, including its own exclusions.
     public var rules: [String] {
@@ -63,7 +65,8 @@ public struct SessionConfiguration: Codable, Sendable {
     }
     public var evaluationProfileID: String { "legacy-" + evaluationSensitivity.rawValue }
     public var version: Int
-    public init(prompt: String, sensitivity: Sensitivity = .medium, version: Int = 1) {
+    public init(prompt: String, sensitivity: Sensitivity = .medium, version: Int = 1, responseLanguage: DisplayLanguage? = nil) {
+        self.responseLanguage = responseLanguage
         self.prompt = prompt; self.sensitivity = sensitivity; self.version = version
     }
 }
@@ -128,5 +131,17 @@ public enum WingmanError: Error, LocalizedError, Sendable {
         case .worker(let reason): "本地模型错误：\(reason)"
         case .cancelled: "已取消"
         }
+    }
+}
+
+public extension Error {
+    var isContextCapacityExceeded: Bool {
+        guard let error = self as? WingmanError, case .worker(let message) = error else { return false }
+        return message == "context capacity exceeded" || message == "prompt too long"
+    }
+
+    var isWorkerBusy: Bool {
+        guard let error = self as? WingmanError, case .worker(let message) = error else { return false }
+        return message.localizedCaseInsensitiveContains("busy") || message.contains("worker 忙")
     }
 }

@@ -64,7 +64,7 @@ If the script reports a staged update, export any session you want to keep, quit
 ### 2. Set your rule
 
 1. Click the microphone icon in the macOS menu bar.
-2. Open **Settings** and enter one rule per line, keeping each rule’s exceptions on that same line. Rules may be written in Chinese or English.
+2. Open **Settings** and enter one rule per line, keeping each rule’s exceptions on that same line. Write rules in natural language; their language need not match the speech.
 3. Choose **Low**, **Medium**, or **High** sensitivity, then **Save and apply**.
 4. Click the floating microphone button or select **Start listening**, and grant microphone permission when macOS asks.
 5. Speak normally. No speech-language selector is required.
@@ -73,7 +73,7 @@ Example rule to experiment with:
 
 > Alert when I make a firm commitment without a clear deadline or delivery scope. Stay quiet for conditional statements and commitments that already specify both.
 
-The built-in rule retains its original Chinese text. The display-language switch translates interface controls, not user-authored rules, transcripts, or model-generated suggestions. Translating a rule can change model behavior, so test your own wording.
+The app defaults to English. The language setting controls interface text and newly generated reminders, including model prompts and output validation. The built-in rule has English, Chinese, Japanese, and Korean versions; custom rules, transcripts, and verbatim quotes retain their original wording. Changing language dismisses an existing alert and suppresses pending results generated for the previous language. Translating a rule can change model behavior, so test your own wording.
 
 ### 3. Control the session
 
@@ -96,7 +96,7 @@ Alert if I speak badly of Tom; stay quiet when I praise him.
 Alert if I reveal a numeric password.
 ```
 
-Any matching line can trigger an alert; the conditions do not all need to match. Rules are checked independently; the first match produces one concise reminder per speech segment. More rules can increase latency. Rules share the sensitivity and mute controls, with a total limit of 4,000 characters. Suggestions and popup labels follow the current speech language, independently of the rule and interface languages. Mixed speech uses an estimated dominant language.
+Any matching line can trigger an alert; the conditions do not all need to match. Rules are checked independently; the first match produces one concise reminder per speech segment. More rules can increase latency. Rules share the sensitivity and mute controls, with a total limit of 4,000 characters. Suggestions and popup labels use the selected interface and alert language, independently of the speech and custom rule languages.
 
 Sensitivity selects a local inference strategy: **Low** aims to minimize interruptions, **Medium** balances coverage, and **High** prioritizes recall. The runtime mapping is calibrated separately for the routed and independent rule paths, as described in the [sensitivity calibration notes](validation.md#ultimate-test-case-2026-09-30). Explicit rule exceptions still apply. These are measured strategy choices, not calibrated confidence thresholds: High can still miss matches and increase false alerts. Sensitivity does not change speech recognition. Click **Save and apply** after changing a rule or sensitivity.
 
@@ -105,12 +105,12 @@ The floating desktop button starts listening with one click and stops capture wi
 ## Features
 
 - **Local inference:** Silero VAD, SenseVoiceSmall ASR, and a quantized Qwen3 4B text model run on the Mac. No runtime API key, account, model download, or cloud fallback.
-- **Automatic bilingual speech recognition:** Chinese, English, and mixed speech use the same recognizer. Switching the interface language does not change recognition.
+- **Automatic multilingual speech recognition:** English, Chinese, Japanese, Korean, and Cantonese use the same recognizer. You can alternate languages in one session without switching recognition settings. Natural pauses help; rapid within-utterance switches can lose words. See the [recorded five-language replay](../Tests/MultilingualDemo/README.md). Switching the interface language does not change recognition.
 - **A live transcript:** the current preview is replaced as recognition improves; finalized segments enter the session history.
 - **Current-speech alerts:** evaluate a bounded current statement, with one explicitly deferred predecessor when applicable. Candidate rules are checked independently; no unbounded conversation history is included. Alert quotes must occur verbatim in the ASR text; malformed model output is rejected.
 - **Floating desktop control:** start or stop capture while preserving the session, with recent speech and the live preview in a fixed-height, auto-scrolling transcript. Drag to move; hide or restore it in settings.
 - **A quiet menu-bar app:** start manually, pause/resume, dismiss an alert, mute for an hour, or stop and clear the session.
-- **English and Chinese UI:** select **Settings → Display language → English / 中文**. The change is immediate and saved across launches.
+- **Four interface and alert languages:** select **Settings → Interface and alert language → English / 中文 / 日本語 / 한국어**. The change is immediate and saved across launches.
 - **Explicit export and diagnostics:** save transcript, reminders, configurations and evaluation records to JSON only when you choose to. Audio is not recorded to a file by the app.
 
 ## How it works

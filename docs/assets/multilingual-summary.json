@@ -1,0 +1,54 @@
+{
+  "synthetic_audio": true,
+  "live_microphone_test": false,
+  "audio_seconds": 38.4286875,
+  "languages": [
+    "English",
+    "Mandarin Chinese",
+    "Japanese",
+    "Korean",
+    "Cantonese"
+  ],
+  "recognition_language": "auto; unchanged throughout",
+  "response_language": "English",
+  "finalized_utterances": 10,
+  "alerts": 10,
+  "pipeline_errors": [],
+  "checks": [
+    "banana meaning retained in each of ten finalized utterances",
+    "each alert quote occurs verbatim in an actual ASR event",
+    "all ten reminders use English"
+  ],
+  "transcription_limitations": [
+    "Korean spacing/repeated syllables and Cantonese orthography are retained verbatim.",
+    "250 ms language switches in a single ASR segment lost words; see multilingual-rapid-stress.json."
+  ],
+  "method": "Production SpeechStream, SessionController, LocalTextBackend and SwiftUI views; PCM replay replaces microphone input only.",
+  "source_sha256": {
+    "Sources/WingmanApp/AlertPresenter.swift": "649692113b5334241ef30676297f6a9af7643454fb856501e9b3562ef5d2e00d",
+    "Sources/WingmanApp/AudioCapture.swift": "57b421cb0ab50a2255d0e4e5dec9479dfaca9b293ae121047b566105cbac314f",
+    "Sources/WingmanApp/FloatingControl.swift": "658e8a503f643c64dac3279708ff09f7e163bdca3e3f42e26c62f4d98aa66c8a",
+    "Sources/WingmanApp/SessionController.swift": "eb423509508603f1ab4b8f8f8f6a5b37b7af5c0806c06cd284f5fc7cc29e2d2a",
+    "Sources/WingmanApp/WingmanApp.swift": "9ad2f2b1e1f7579d41c71b7c42ea172e2c557610d22b40fb35a5ca517291ae2d",
+    "Sources/WingmanCore/AlertGate.swift": "fad54c87d1f188f2c506993fe84e48f2c4b8abdfc7f6db770b66c2e06ee88bc1",
+    "Sources/WingmanCore/CurrentSpeechWindow.swift": "86de40feb4350a1f8f17593b4d13968c53e4c842687dc1af42b11632eca40201",
+    "Sources/WingmanCore/DisplayLanguage.swift": "adcd2449770137a1465035a61c116478295f313609c1e889586d1a513145341e",
+    "Sources/WingmanCore/LocalModel.swift": "afff02443a0b19c1fae68b848930d4a2f3a68626528e2ff7a769cdf3f724c8a9",
+    "Sources/WingmanCore/LocalTextBackend.swift": "182eb8e42154479454399465a87119643f2be51432c87f2e629e612dd8be2a63",
+    "Sources/WingmanCore/Models.swift": "efe9261c75506bbba9c06c96b1058751053ec9fe26835871fc2f2d8991afb17c",
+    "Sources/WingmanCore/PromptBuilder.swift": "5e4590de4a6bac3c1546fdf9f8bc59927c0bf9b164883089013f6a8579c80808",
+    "Sources/WingmanCore/ResultValidator.swift": "af6c03d5d39ed548d67b97c6ce98be5107b30acb42fb7a224505548a519ba58f",
+    "Sources/WingmanCore/SpeechLanguage.swift": "7d9ab82329abdfee7e7acafbe1556a28e90dae7bf558a3c4bf9788c74f56f33c",
+    "Sources/WingmanCore/SpeechStream.swift": "d95f7844ee8b2326fc4e5e7d618b33780102e601f64ce5ce66c3393d1496c1de",
+    "Sources/WingmanEvaluate/main.swift": "c045baae69dbdbcb2a54a28d99ac4df284e71f3a045524376badff9c19d78b56"
+  },
+  "packaged_worker_sha256": {
+    "asr-worker": "990cf8fc19b235e28bb12f0d880d277451c1e9bf68477f8b62354f7e1e85688e",
+    "text-worker": "bb4cdae8063210c03e04e25c59ebb4dbfa5e05e1488e969f2ce4c1226807fa2c"
+  },
+  "media_sha256": {
+    "multilingual-five-languages.gif": "2fff240780209766463dcaf9a2f2dd27f09d6d1260731017b6bf1d40acdf726c",
+    "multilingual-mixed.gif": "efc8946cec373a86a4606c8b6ff7eced3bf0f08b4223820b009dfbbe7c24edd6",
+    "multilingual-continuous.mp4": "e1cf2e00632c8f106cc1542eb61f73cf0a29918974227313f0f859acc817f4b1"
+  }
+}

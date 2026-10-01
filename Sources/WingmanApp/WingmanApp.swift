@@ -10,8 +10,8 @@ private enum AppSession {
 @MainActor
 final class WingmanAppDelegate: NSObject, NSApplicationDelegate {
     private let floatingControl = FloatingControlPresenter()
-    func installFloatingControl(openSettings: @escaping () -> Void) {
-        floatingControl.install(controller: AppSession.controller, openSettings: openSettings)
+    func installFloatingControl(openMainPanel: @escaping () -> Void) {
+        floatingControl.install(controller: AppSession.controller, openMainPanel: openMainPanel)
     }
     func applicationWillTerminate(_ notification: Notification) { floatingControl.close() }
 }
@@ -26,6 +26,8 @@ struct WingmanApp: App {
         } label: {
             WingmanMenuBarLabel(controller: controller, delegate: delegate)
         }.menuBarExtraStyle(.window)
+        Window("Speech Wingman", id: "main-panel") { SessionView(controller: controller) }
+            .defaultSize(width: 680, height: 820)
         Window(Text(controller.t("提醒设置")), id: "settings") { SettingsView(controller: controller) }
             .defaultSize(width: 680, height: 820)
     }
@@ -43,7 +45,7 @@ private struct WingmanMenuBarLabel: View {
             .accessibilityLabel("Speech Wingman")
             .onAppear {
                 delegate.installFloatingControl {
-                    openWindow(id: "settings")
+                    openWindow(id: "main-panel")
                     NSApp.activate(ignoringOtherApps: true)
                 }
             }
@@ -59,7 +61,7 @@ struct SessionView: View {
                 Text(controller.t("Speech Wingman 实验版")).font(.headline)
                 Spacer()
                 if controller.processing { ProgressView().controlSize(.small) }
-                Text(controller.t("中英双语 · 离线")).foregroundStyle(.secondary)
+                Text(controller.t("多语言 · 离线")).foregroundStyle(.secondary)
             }
             Text(controller.t(controller.status)).font(.caption).foregroundStyle(.secondary)
             if controller.state == .listening {
@@ -89,7 +91,7 @@ struct SessionView: View {
                 Button(controller.t("设置")) { openWindow(id: "settings"); NSApp.activate(ignoringOtherApps: true) }
             }
             if let alert = controller.activeAlert {
-                let alertLanguage = controller.activeAlertLanguage
+                let alertLanguage = controller.language
                 VStack(alignment: .leading, spacing: 8) {
                     Text(alertLanguage.text("提醒")).font(.headline)
                     Text(alertLanguage.format("原话：%@", alert.quote)).textSelection(.enabled)
@@ -159,7 +161,7 @@ struct SettingsView: View {
                 VStack(alignment: .leading, spacing: 24) {
                     VStack(alignment: .leading, spacing: 12) {
                         Text(controller.t("提醒条件")).font(.title2.bold())
-                        help("每行一条规则，命中任意一条就提醒。每条的例外条件写在同一行。提醒语言跟随当前发言。")
+                        help("每行一条规则，命中任意一条就提醒。每条的例外条件写在同一行。提醒使用设置中选择的语言。")
                         TextEditor(text: $controller.prompt)
                             .font(.body)
                             .scrollContentBackground(.hidden)
@@ -197,14 +199,14 @@ struct SettingsView: View {
                                 Text(language.name).tag(language)
                             }
                         }
-                        help("只改变界面显示；录音始终自动识别中文、英文和中英混合。")
+                        help("设置界面与生成提醒的语言；转录与引用保留原文。")
                         Toggle(controller.t("桌面悬浮按钮"), isOn: $controller.floatingControlVisible)
                     }
                     VStack(alignment: .leading, spacing: 8) {
                         Label(controller.t("本地语音处理"), systemImage: "desktopcomputer").font(.headline)
-                        Text(controller.t("中英自动 ASR + Qwen3 4B 文本判断")).font(.subheadline)
+                        Text(controller.t("多语言自动转录 + Qwen3 4B 文本判断")).font(.subheadline)
                             .fixedSize(horizontal: false, vertical: true)
-                        help("中文、英文和混合发言自动识别，无需切换语言。模型已随应用打包，运行不联网。转录持续显示，判断在后台进行。")
+                        help("英语、中文、日语、韩语和粤语自动识别，可交替使用，无需切换语言。模型已随应用打包，运行不联网。转录持续显示，判断在后台进行。")
                     }
                 }.padding(24).frame(maxWidth: .infinity, alignment: .leading)
             }

@@ -21,6 +21,7 @@ struct UILayoutCheck {
             Alert when I make a firm commitment without a clear deadline or delivery scope. Stay quiet for conditional statements or complete commitments.
             """
         }
+        if !publicDemo { controller.prompt = "Alert on a firm commitment. 明确承诺时提醒。" }
         let originalPrompt = controller.prompt
         controller.transcript = [TranscriptEntry(id: UUID(), date: Date(), text: "我们用 BigQuery 做 reconciliation. Let's check the deadline.", decision: .noAlert, configurationVersion: 1)]
         controller.preview = "中文、English，都能识别。"
@@ -30,7 +31,7 @@ struct UILayoutCheck {
         }
         let originalTranscript = controller.transcript.map(\.text)
         controller.state = .listening
-        controller.status = "正在本机监听 · 中英自动识别"
+        controller.status = "正在本机监听 · 多语言自动识别"
         controller.processing = true
         controller.processingStartedAt = Date()
         controller.resultDelay = 2.4; controller.elapsed = 1.1
@@ -44,7 +45,18 @@ struct UILayoutCheck {
         let output = URL(fileURLWithPath: CommandLine.arguments[1], isDirectory: true)
         try FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
         for language in (publicDemo ? [DisplayLanguage.english] : DisplayLanguage.allCases) {
+            let previousLanguage = controller.language
             controller.language = language
+            if previousLanguage != language { precondition(controller.activeAlert == nil) }
+            let suggestion: String
+            switch language {
+            case .english: suggestion = "Please clarify the deadline and delivery scope."
+            case .chinese: suggestion = "请说明截止时间和交付范围。"
+            case .japanese: suggestion = "期限と提供範囲を明確にしてください。"
+            case .korean: suggestion = "기한과 제공 범위를 명확히 알려 주세요."
+            }
+            let localizedAlert = AlertEntry(id: UUID(), date: Date(), quote: alert.quote, suggestion: suggestion, configurationVersion: 1)
+            controller.activeAlert = localizedAlert
             presenter.updateLanguage(language)
             precondition(panel.title == language.text("Speech Wingman 提醒"))
             precondition(panel.windowNumber == panelID && panel.isVisible)
@@ -64,15 +76,20 @@ struct UILayoutCheck {
             }
             try snapshot(SessionView(controller: controller), width: 470, height: 720, to: output.appendingPathComponent("session-\(language.rawValue).png"))
             try snapshot(FloatingControlView(controller: controller), width: 244, height: 164, to: output.appendingPathComponent(publicDemo ? "floating-listening-en.png" : "floating-\(language.rawValue).png"))
-            panel.displayIfNeeded()
+            let snapshotPresenter = AlertPresenter()
+            snapshotPresenter.present(localizedAlert, language: language, dismiss: {}, mute: {})
+            let snapshotPanel = app.windows.first { $0 is NSPanel && $0.title == language.text("Speech Wingman 提醒") && $0.isVisible && $0 !== panel }!
+            snapshotPanel.displayIfNeeded()
             try await Task.sleep(for: .milliseconds(150))
-            if let view = panel.contentView { try save(view, to: output.appendingPathComponent("alert-\(language.rawValue).png")) }
+            if let view = snapshotPanel.contentView { try save(view, to: output.appendingPathComponent("alert-\(language.rawValue).png")) }
+            snapshotPresenter.close()
         }
         let floating = FloatingControlPresenter()
         floating.install(controller: controller)
         try await Task.sleep(for: .milliseconds(150))
         let floatingPanel = app.windows.first { $0 is NSPanel && $0.title == "Speech Wingman" }!
         precondition(floatingPanel.isVisible && floatingPanel.level == .floating)
+        precondition(floatingPanel.canBecomeKey && !floatingPanel.isMovableByWindowBackground)
         precondition(floatingPanel.frame.size == NSSize(width: 244, height: 164))
         let savedPreview = controller.preview
         controller.preview = String(repeating: "这是连续发言。 We are checking the latest lines. ", count: 80) + "最新一句 / Latest words."
@@ -144,6 +161,13 @@ struct UILayoutCheck {
         let scroll = findScroll(panel.contentView!)!
         scroll.layoutSubtreeIfNeeded()
         let text = scroll.documentView as! NSTextView
+        precondition(text.isSelectable && !text.isEditable && !text.mouseDownCanMoveWindow)
+        text.setSelectedRange(NSRange(location: 0, length: min(5, (text.string as NSString).length)))
+        let clipboard = NSPasteboard.withUniqueName()
+        precondition(text.writeSelection(to: clipboard, types: [.string]))
+        precondition(clipboard.string(forType: .string) == (text.string as NSString).substring(with: text.selectedRange()))
+        clipboard.releaseGlobally()
+        text.setSelectedRange(NSRange(location: 0, length: 0))
         precondition(text.string.hasSuffix(ending))
         precondition(text.string.count <= 1800)
         let bottom = max(0, text.frame.height - scroll.contentView.bounds.height)

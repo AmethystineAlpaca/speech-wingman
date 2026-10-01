@@ -4,11 +4,11 @@
 
 Speech Wingman is a private speech companion for your Mac. Tell it what to watch for in plain language, click the floating microphone, and speak. When a rule matches, it shows a short reminder with the words that triggered it—useful for meeting practice, interview rehearsals, and communication habits you want to improve.
 
-**Your rules · Chinese + English, even in one sentence · Fully offline on your Mac**
+**Your rules · Multilingual (English, Chinese, Japanese, Korean—even Cantonese) · Fully offline on your Mac**
 
 [![Core checks](https://github.com/AmethystineAlpaca/speech-wingman/actions/workflows/core-checks.yml/badge.svg)](https://github.com/AmethystineAlpaca/speech-wingman/actions/workflows/core-checks.yml)
 
-**[See it in action](#a-small-reminder-for-better-conversations) · [Build and try it](#getting-started) · [中文介绍](docs/README.zh-CN.md)**
+**[See it in action](#a-small-reminder-for-better-conversations) · [Build and try it](#getting-started) · [中文](docs/README.zh-CN.md) · [日本語](docs/README.ja.md) · [한국어](docs/README.ko.md) · [廣東話](docs/README.zh-HK.md)**
 
 *Open-source developer preview · Apple Silicon · macOS 14+ · Build required; no ready-to-install download yet.*
 
@@ -17,7 +17,7 @@ Speech Wingman is a private speech companion for your Mac. Tell it what to watch
 | What matters | What you get |
 | --- | --- |
 | **Remember what you want to change** | Write your own triggers and exceptions in everyday language. Each line is an independent rule; an accepted match gives you a quote and a short suggestion. |
-| **Speak in your own language** | Chinese, English, or both in the same sentence. No recognition-language switch; reminders follow the current speech language. |
+| **Speak in your own language** | English, Chinese, Japanese, Korean, and Cantonese—even alternating within a conversation. No recognition-language switch; reminders use your selected interface and alert language (English by default, Chinese, Japanese, or Korean). |
 | **Keep your speech private** | Recognition and AI checks run locally. The app and its helpers use macOS App Sandbox without network permissions. No account, API key, or automatic audio/transcript saving. |
 | **Stay in the conversation** | A floating microphone and live transcript keep controls close. Pause, resume, mute, or clear the session when you choose. |
 
@@ -31,15 +31,25 @@ In this actual example, the app transcribed **“Yeah, Tom is a very mean person
 
 *Actual use of the earlier 0.2.1 interface.*
 
-**You can also make it entirely your own—even something as odd as a banana alert.** Write a custom rule in everyday language, from communication habits to playful experiments. Here is one that also shows Chinese and English working together.
+## Multilingual. One conversation. No language switch.
 
-## Chinese. English. Both in the same sentence.
+**English, Chinese, Japanese, Korean—even Cantonese.** Alternate languages in the same listening session. The interface and reminders stay in your chosen language; recognized speech and verbatim quotes keep their original wording.
 
-An English rule—**“if i mentioned banana, alert me”**—matched **“香蕉的英文叫做banana，你知道吗?”** and produced a Chinese suggestion while the interface stayed in English.
+The rule in this new recording is **“Alert when the speaker mentions a banana, in any language.”** One continuous audio track moves through all five languages, then switches between them again with natural pauses. Recognition stays on automatic throughout; reminders stay in English.
 
-![Actual use: an English rule triggers on mixed Chinese and English speech, with a Chinese reminder](docs/assets/desktop-mixed-full.png)
+![Continuous five-language replay in the current app: English, Mandarin Chinese, Japanese, Korean, and Cantonese](docs/assets/multilingual-five-languages.gif)
 
-*Actual use of the earlier 0.2.1 interface, retained as an observed bilingual example. [Explore more rule ideas and the current UI gallery](docs/examples.md).*
+### Switching languages mid-conversation
+
+![The same session alternates between all five languages without changing recognition settings](docs/assets/multilingual-mixed.gif)
+
+**[Watch the full video with audio](docs/assets/multilingual-continuous.mp4)** · [Actual transcripts and decisions](docs/assets/multilingual-report.json) · [Reproduce the recording](Tests/MultilingualDemo/README.md)
+
+*Recorded from the production recognition, evaluation, controller, and UI code, using fictional macOS-generated voices fed at normal speed in place of the microphone. These are real model outputs, not scripted alert states. The video includes the original synthetic audio; GIFs are silent. This is a development demonstration, not a live-speaker accuracy benchmark.*
+
+**Natural pauses help.** Rapid switching inside one uninterrupted utterance can omit or distort words. The [250 ms pause stress-test output](docs/assets/multilingual-rapid-stress.json) retains that failure; support for multiple languages does not mean every mixed sentence is transcribed perfectly.
+
+[More rule ideas and the UI gallery](docs/examples.md)
 
 <table>
 <tr><td><strong>One click to start</strong></td><td><strong>Live text as you speak</strong></td></tr>
@@ -51,7 +61,7 @@ An English rule—**“if i mentioned banana, alert me”**—matched **“香�
 ## Evidence you can inspect
 
 - **About 1 second to first transcript preview** in short local audio tests on an Apple M4 / 16 GB Mac, with models loaded. Rule reminders take additional time after speech finalizes.
-- **18 core test groups pass; 63/73 model regression cases pass.** Known failures are retained in the published results.
+- **20 core test groups pass.** The separate earlier model regression run passed **63/73 cases**; known failures remain in the published results.
 - **12 bilingual rules, one continuous 11-minute-26-second recording.** The [Ultimate Test Case](Samples/UltimateTestCase/README.md) publishes the scenario, replay tools, raw results, and every evaluation iteration.
 
 These are development fixtures, not general accuracy guarantees. In the long-input replay, the current High mapping detected **12 of 15 positive windows (80% recall)** with **80% precision**; median simulated reminder delay was **21.05 seconds** after the last ASR final. Those figures reclassify recorded runs and exclude live ASR computation. [Full accuracy, timing, and methodology →](docs/validation.md#measured-accuracy-and-latency)
@@ -90,7 +100,7 @@ This is preview software: recognition and rule checks can miss or misinterpret s
 | --- | --- |
 | Installation, requirements, rules, controls, and privacy | [Build and usage guide](docs/guide.md) |
 | Rule inspiration and more screenshots | [Examples and app gallery](docs/examples.md) |
-| 中文功能介绍、安装说明与使用边界 | [中文指南](docs/README.zh-CN.md) |
+| Localized introductions | [中文](docs/README.zh-CN.md) · [日本語](docs/README.ja.md) · [한국어](docs/README.ko.md) · [廣東話](docs/README.zh-HK.md) |
 | Accuracy, latency, and reproducible evidence | [Validation](docs/validation.md) · [Ultimate evaluation](Samples/UltimateTestCase/EVALUATION.md) |
 | The local inference pipeline and developer checks | [Architecture](docs/architecture.md) · [Development](docs/development.md) |
 | What changed | [Changelog](CHANGELOG.md) · [0.4.0 release notes](docs/release-notes-0.4.0.md) |
@@ -99,7 +109,7 @@ This is preview software: recognition and rule checks can miss or misinterpret s
 
 ## Join in
 
-Share an alert recipe or a fictional example in [Discussions](https://github.com/AmethystineAlpaca/speech-wingman/discussions), [report a bug](https://github.com/AmethystineAlpaca/speech-wingman/issues/new/choose), or read the [contribution guide](CONTRIBUTING.md). English and Chinese are welcome. If you find it useful, star the project or watch Releases for updates.
+Share an alert recipe or a fictional example in [Discussions](https://github.com/AmethystineAlpaca/speech-wingman/discussions), [report a bug](https://github.com/AmethystineAlpaca/speech-wingman/issues/new/choose), or read the [contribution guide](CONTRIBUTING.md). Examples in any supported language are welcome. If you find it useful, star the project or watch Releases for updates.
 
 ## License
 

@@ -1,0 +1,19 @@
+{
+  "rule": "Alert when the speaker mentions a banana, in any language.",
+  "response_language": "en",
+  "synthetic_audio": true,
+  "segments": [
+    {"language":"English", "code":"en", "voice":"Samantha", "text":"I bought a banana for breakfast.", "pause":2.0},
+    {"language":"Mandarin Chinese", "code":"zh", "voice":"Tingting", "text":"我今天早上买了一根香蕉。", "pause":2.0},
+    {"language":"Japanese", "code":"ja", "voice":"Kyoko", "text":"朝ごはんにバナナを買いました。", "pause":2.0},
+    {"language":"Korean", "code":"ko", "voice":"Yuna", "text":"오늘 아침에 바나나를 샀어요.", "pause":2.0},
+    {"language":"Cantonese", "code":"yue", "voice":"Sinji", "text":"我今日朝早買咗條香蕉，好好食㗎。", "pause":2.0},
+    {"language":"English → Chinese → Japanese → Korean → Cantonese", "code":"mixed", "parts":[
+      {"voice":"Samantha", "text":"I like bananas."},
+      {"voice":"Tingting", "text":"我也喜欢香蕉。"},
+      {"voice":"Kyoko", "text":"バナナが好きです。"},
+      {"voice":"Yuna", "text":"바나나를 좋아해요."},
+      {"voice":"Sinji", "text":"我都鍾意食香蕉。"}
+    ], "pause":3.0}
+  ]
+}

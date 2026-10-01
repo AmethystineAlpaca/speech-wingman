@@ -36,7 +36,7 @@
   },
   {
     "id": "H6",
-    "speech": "Chinese followed by English in one stream",
+    "speech": "我不能保证周五之前完成。\nAlex is a dog.",
     "language": "mixed",
     "policy": "Alert only when the speaker directly calls Alex a dog. Do not alert for negation, quotation, or discussion of Alex's pet dog.",
     "expected": "alert"

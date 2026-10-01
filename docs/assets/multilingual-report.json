@@ -1,0 +1,493 @@
+{
+  "alerts" : [
+    {
+      "configurationVersion" : 1,
+      "date" : "2026-10-01T14:26:10Z",
+      "id" : "E3B97F44-25A1-4F56-B277-63480BD638F1",
+      "quote" : "I bought a banana for breakfast.",
+      "suggestion" : "The speaker mentioned a banana, which triggers the alert rule."
+    },
+    {
+      "configurationVersion" : 1,
+      "date" : "2026-10-01T14:26:14Z",
+      "id" : "2BE9D3DD-352E-41C0-9678-5D9637A0BFC2",
+      "quote" : "我今天早上买了一根香蕉。",
+      "suggestion" : "The speaker mentioned a banana."
+    },
+    {
+      "configurationVersion" : 1,
+      "date" : "2026-10-01T14:26:19Z",
+      "id" : "5785063D-6F69-4902-A296-F2A53CDCB2F2",
+      "quote" : "朝ごはんに バナナ を 買い ま した。",
+      "suggestion" : "The speaker mentioned a banana in their breakfast purchase."
+    },
+    {
+      "configurationVersion" : 1,
+      "date" : "2026-10-01T14:26:22Z",
+      "id" : "7617BA8F-0B5C-46C5-8B14-4E6807A1F28B",
+      "quote" : "오늘 아침 에 바나 나를.",
+      "suggestion" : "The speaker mentioned a banana."
+    },
+    {
+      "configurationVersion" : 1,
+      "date" : "2026-10-01T14:26:27Z",
+      "id" : "2E014AF7-34B3-4A81-8FB5-2C31A99E1FDA",
+      "quote" : "我今日朝早买咗条香蕉。",
+      "suggestion" : "The speaker mentioned a banana."
+    },
+    {
+      "configurationVersion" : 1,
+      "date" : "2026-10-01T14:26:31Z",
+      "id" : "7A37ED2B-B0CC-4DFC-A15F-C8CB61BB5D71",
+      "quote" : "I like bananas.",
+      "suggestion" : "The speaker mentions a banana."
+    },
+    {
+      "configurationVersion" : 1,
+      "date" : "2026-10-01T14:26:34Z",
+      "id" : "191DC09E-90DB-4F8A-BC11-2417D3E706AC",
+      "quote" : "我也喜欢香蕉。",
+      "suggestion" : "The speaker mentions a banana."
+    },
+    {
+      "configurationVersion" : 1,
+      "date" : "2026-10-01T14:26:37Z",
+      "id" : "FC68C23D-7415-4250-8461-B2EE67460030",
+      "quote" : "バナナ が 好き です。",
+      "suggestion" : "The speaker mentions a banana."
+    },
+    {
+      "configurationVersion" : 1,
+      "date" : "2026-10-01T14:26:39Z",
+      "id" : "97124747-2826-4D6A-8B56-97B4AF55AEA1",
+      "quote" : "바나 나를 좋아해요.",
+      "suggestion" : "The speaker mentioned a banana."
+    },
+    {
+      "configurationVersion" : 1,
+      "date" : "2026-10-01T14:26:41Z",
+      "id" : "E9C9C4C2-A804-4996-B490-FC3B6EC67AB8",
+      "quote" : "我都钟意食香蕉。",
+      "suggestion" : "The speaker mentions banana in the statement."
+    }
+  ],
+  "audio_sha256" : "cf271fb4e78a71bb2b6bda1d47529108fce049f644857a5b17790d7e0b95f938",
+  "errors" : [
+
+  ],
+  "evaluations" : [
+    {
+      "alertDisposition" : "presented",
+      "completedAt" : "2026-10-01T14:26:10Z",
+      "configurationVersion" : 1,
+      "decision" : "alert",
+      "id" : "E3B97F44-25A1-4F56-B277-63480BD638F1",
+      "inputText" : "I bought a banana for breakfast.",
+      "matchedRuleIndex" : 0,
+      "segmentIDs" : [
+        "E3B97F44-25A1-4F56-B277-63480BD638F1"
+      ],
+      "startedAt" : "2026-10-01T14:26:07Z",
+      "status" : "evaluated",
+      "text" : "I bought a banana for breakfast."
+    },
+    {
+      "alertDisposition" : "presented",
+      "completedAt" : "2026-10-01T14:26:14Z",
+      "configurationVersion" : 1,
+      "decision" : "alert",
+      "id" : "2BE9D3DD-352E-41C0-9678-5D9637A0BFC2",
+      "inputText" : "我今天早上买了一根香蕉。",
+      "matchedRuleIndex" : 0,
+      "segmentIDs" : [
+        "2BE9D3DD-352E-41C0-9678-5D9637A0BFC2"
+      ],
+      "startedAt" : "2026-10-01T14:26:12Z",
+      "status" : "evaluated",
+      "text" : "我今天早上买了一根香蕉。"
+    },
+    {
+      "alertDisposition" : "presented",
+      "completedAt" : "2026-10-01T14:26:19Z",
+      "configurationVersion" : 1,
+      "decision" : "alert",
+      "id" : "5785063D-6F69-4902-A296-F2A53CDCB2F2",
+      "inputText" : "朝ごはんに バナナ を 買い ま した。",
+      "matchedRuleIndex" : 0,
+      "segmentIDs" : [
+        "5785063D-6F69-4902-A296-F2A53CDCB2F2"
+      ],
+      "startedAt" : "2026-10-01T14:26:16Z",
+      "status" : "evaluated",
+      "text" : "朝ごはんに バナナ を 買い ま した。"
+    },
+    {
+      "alertDisposition" : "preview_presented",
+      "completedAt" : "2026-10-01T14:26:22Z",
+      "configurationVersion" : 1,
+      "decision" : "alert",
+      "id" : "7617BA8F-0B5C-46C5-8B14-4E6807A1F28B",
+      "matchedRuleIndex" : 0,
+      "segmentIDs" : [
+        "7617BA8F-0B5C-46C5-8B14-4E6807A1F28B"
+      ],
+      "status" : "evaluated",
+      "text" : "오늘 아침 에 바나 나를를 샀어요."
+    },
+    {
+      "alertDisposition" : "preview_presented",
+      "completedAt" : "2026-10-01T14:26:27Z",
+      "configurationVersion" : 1,
+      "decision" : "alert",
+      "id" : "2E014AF7-34B3-4A81-8FB5-2C31A99E1FDA",
+      "matchedRuleIndex" : 0,
+      "segmentIDs" : [
+        "2E014AF7-34B3-4A81-8FB5-2C31A99E1FDA"
+      ],
+      "status" : "evaluated",
+      "text" : "我今日朝早买咗条香蕉好好食嘎。"
+    },
+    {
+      "alertDisposition" : "presented",
+      "completedAt" : "2026-10-01T14:26:31Z",
+      "configurationVersion" : 1,
+      "decision" : "alert",
+      "id" : "7A37ED2B-B0CC-4DFC-A15F-C8CB61BB5D71",
+      "inputText" : "I like bananas.",
+      "matchedRuleIndex" : 0,
+      "segmentIDs" : [
+        "7A37ED2B-B0CC-4DFC-A15F-C8CB61BB5D71"
+      ],
+      "startedAt" : "2026-10-01T14:26:30Z",
+      "status" : "evaluated",
+      "text" : "I like bananas."
+    },
+    {
+      "alertDisposition" : "preview_presented",
+      "completedAt" : "2026-10-01T14:26:34Z",
+      "configurationVersion" : 1,
+      "decision" : "alert",
+      "id" : "191DC09E-90DB-4F8A-BC11-2417D3E706AC",
+      "matchedRuleIndex" : 0,
+      "segmentIDs" : [
+        "191DC09E-90DB-4F8A-BC11-2417D3E706AC"
+      ],
+      "status" : "evaluated",
+      "text" : "我也喜欢香蕉。"
+    },
+    {
+      "alertDisposition" : "preview_presented",
+      "completedAt" : "2026-10-01T14:26:37Z",
+      "configurationVersion" : 1,
+      "decision" : "alert",
+      "id" : "FC68C23D-7415-4250-8461-B2EE67460030",
+      "matchedRuleIndex" : 0,
+      "segmentIDs" : [
+        "FC68C23D-7415-4250-8461-B2EE67460030"
+      ],
+      "status" : "evaluated",
+      "text" : "バナナ が 好き です。"
+    },
+    {
+      "alertDisposition" : "preview_presented",
+      "completedAt" : "2026-10-01T14:26:39Z",
+      "configurationVersion" : 1,
+      "decision" : "alert",
+      "id" : "97124747-2826-4D6A-8B56-97B4AF55AEA1",
+      "matchedRuleIndex" : 0,
+      "segmentIDs" : [
+        "97124747-2826-4D6A-8B56-97B4AF55AEA1"
+      ],
+      "status" : "evaluated",
+      "text" : "바나 나를 좋아해요."
+    },
+    {
+      "alertDisposition" : "preview_presented",
+      "completedAt" : "2026-10-01T14:26:41Z",
+      "configurationVersion" : 1,
+      "decision" : "alert",
+      "id" : "E9C9C4C2-A804-4996-B490-FC3B6EC67AB8",
+      "matchedRuleIndex" : 0,
+      "segmentIDs" : [
+        "E9C9C4C2-A804-4996-B490-FC3B6EC67AB8"
+      ],
+      "status" : "evaluated",
+      "text" : "我都钟意食香蕉。"
+    }
+  ],
+  "events" : [
+    {
+      "audio_seconds" : 1.1639999999999999,
+      "final" : false,
+      "segment" : 0,
+      "text" : "I.",
+      "wall_seconds" : 1.1242769956588745
+    },
+    {
+      "audio_seconds" : 2.1640000000000001,
+      "final" : false,
+      "segment" : 0,
+      "text" : "I bought a banana for bread.",
+      "wall_seconds" : 2.1434429883956909
+    },
+    {
+      "audio_seconds" : 3.1640000000000001,
+      "final" : false,
+      "segment" : 0,
+      "text" : "I bought a banana for breakfast.",
+      "wall_seconds" : 3.1537759304046631
+    },
+    {
+      "audio_seconds" : 3.3639999999999999,
+      "final" : true,
+      "segment" : 0,
+      "text" : "I bought a banana for breakfast.",
+      "wall_seconds" : 3.372270941734314
+    },
+    {
+      "audio_seconds" : 5.0960000000000001,
+      "final" : false,
+      "segment" : 1,
+      "text" : "我。",
+      "wall_seconds" : 5.0448828935623169
+    },
+    {
+      "audio_seconds" : 6.0960000000000001,
+      "final" : false,
+      "segment" : 1,
+      "text" : "我今天早上。",
+      "wall_seconds" : 6.0503789186477661
+    },
+    {
+      "audio_seconds" : 7.0960000000000001,
+      "final" : false,
+      "segment" : 1,
+      "text" : "我今天早上买了一根香。",
+      "wall_seconds" : 7.0571209192276001
+    },
+    {
+      "audio_seconds" : 8.0960000000000001,
+      "final" : false,
+      "segment" : 1,
+      "text" : "我今天早上买了一根香蕉。",
+      "wall_seconds" : 8.1037899255752563
+    },
+    {
+      "audio_seconds" : 8.1319999999999997,
+      "final" : true,
+      "segment" : 1,
+      "text" : "我今天早上买了一根香蕉。",
+      "wall_seconds" : 8.1716039180755615
+    },
+    {
+      "audio_seconds" : 9.8320000000000007,
+      "final" : false,
+      "segment" : 2,
+      "text" : "あ。",
+      "wall_seconds" : 9.8257269859313965
+    },
+    {
+      "audio_seconds" : 10.832000000000001,
+      "final" : false,
+      "segment" : 2,
+      "text" : "朝ごはん に。",
+      "wall_seconds" : 10.869700908660889
+    },
+    {
+      "audio_seconds" : 11.832000000000001,
+      "final" : false,
+      "segment" : 2,
+      "text" : "朝ごはん に バナナ を 買い ま した。",
+      "wall_seconds" : 11.883513927459717
+    },
+    {
+      "audio_seconds" : 12.564,
+      "final" : true,
+      "segment" : 2,
+      "text" : "朝ごはんに バナナ を 買い ま した。",
+      "wall_seconds" : 12.598280906677246
+    },
+    {
+      "audio_seconds" : 14.231999999999999,
+      "final" : false,
+      "segment" : 3,
+      "text" : "おね。",
+      "wall_seconds" : 14.22830593585968
+    },
+    {
+      "audio_seconds" : 15.231999999999999,
+      "final" : false,
+      "segment" : 3,
+      "text" : "오늘 아침 에 바나 나를.",
+      "wall_seconds" : 15.268938899040222
+    },
+    {
+      "audio_seconds" : 16.231999999999999,
+      "final" : false,
+      "segment" : 3,
+      "text" : "오늘 아침 에 바나 나를를 샀어요.",
+      "wall_seconds" : 16.252209901809692
+    },
+    {
+      "audio_seconds" : 16.696000000000002,
+      "final" : true,
+      "segment" : 3,
+      "text" : "오늘 아침 에 바나 나를를 샀어요.",
+      "wall_seconds" : 16.663703918457031
+    },
+    {
+      "audio_seconds" : 18.396000000000001,
+      "final" : false,
+      "segment" : 4,
+      "text" : "の？",
+      "wall_seconds" : 18.345406889915466
+    },
+    {
+      "audio_seconds" : 19.396000000000001,
+      "final" : false,
+      "segment" : 4,
+      "text" : "我今日朝早晚。",
+      "wall_seconds" : 19.337861895561218
+    },
+    {
+      "audio_seconds" : 20.396000000000001,
+      "final" : false,
+      "segment" : 4,
+      "text" : "我今日朝早买咗条香蕉。",
+      "wall_seconds" : 20.386182904243469
+    },
+    {
+      "audio_seconds" : 21.396000000000001,
+      "final" : false,
+      "segment" : 4,
+      "text" : "我今日朝早买咗条香蕉好好食。",
+      "wall_seconds" : 21.40092396736145
+    },
+    {
+      "audio_seconds" : 22.396000000000001,
+      "final" : false,
+      "segment" : 4,
+      "text" : "我今日朝早买咗条香蕉好好食嘎。",
+      "wall_seconds" : 22.389200925827026
+    },
+    {
+      "audio_seconds" : 22.463999999999999,
+      "final" : true,
+      "segment" : 4,
+      "text" : "我今日朝早买咗条香蕉好好食嘎。",
+      "wall_seconds" : 22.49893593788147
+    },
+    {
+      "audio_seconds" : 24.164000000000001,
+      "final" : false,
+      "segment" : 5,
+      "text" : "Im.",
+      "wall_seconds" : 24.123642921447754
+    },
+    {
+      "audio_seconds" : 25.164000000000001,
+      "final" : false,
+      "segment" : 5,
+      "text" : "I like bananas.",
+      "wall_seconds" : 25.154834985733032
+    },
+    {
+      "audio_seconds" : 25.632000000000001,
+      "final" : true,
+      "segment" : 5,
+      "text" : "I like bananas.",
+      "wall_seconds" : 25.645399928092957
+    },
+    {
+      "audio_seconds" : 26.632000000000001,
+      "final" : false,
+      "segment" : 6,
+      "text" : "我也。",
+      "wall_seconds" : 26.631422996520996
+    },
+    {
+      "audio_seconds" : 27.632000000000001,
+      "final" : false,
+      "segment" : 6,
+      "text" : "我也喜欢香蕉。",
+      "wall_seconds" : 27.646620988845825
+    },
+    {
+      "audio_seconds" : 28.295999999999999,
+      "final" : true,
+      "segment" : 6,
+      "text" : "我也喜欢香蕉。",
+      "wall_seconds" : 28.270943999290466
+    },
+    {
+      "audio_seconds" : 29.295999999999999,
+      "final" : false,
+      "segment" : 7,
+      "text" : "まナな。",
+      "wall_seconds" : 29.230706930160522
+    },
+    {
+      "audio_seconds" : 30.295999999999999,
+      "final" : false,
+      "segment" : 7,
+      "text" : "バナナ が 好き です。",
+      "wall_seconds" : 30.257358908653259
+    },
+    {
+      "audio_seconds" : 30.564,
+      "final" : true,
+      "segment" : 7,
+      "text" : "バナナ が 好き です。",
+      "wall_seconds" : 30.582477927207947
+    },
+    {
+      "audio_seconds" : 31.564,
+      "final" : false,
+      "segment" : 8,
+      "text" : "はなら。",
+      "wall_seconds" : 31.548317909240723
+    },
+    {
+      "audio_seconds" : 32.564,
+      "final" : false,
+      "segment" : 8,
+      "text" : "바나 나를 좋아해요.",
+      "wall_seconds" : 32.559388995170593
+    },
+    {
+      "audio_seconds" : 33.095999999999997,
+      "final" : true,
+      "segment" : 8,
+      "text" : "바나 나를 좋아해요.",
+      "wall_seconds" : 33.056006908416748
+    },
+    {
+      "audio_seconds" : 34.095999999999997,
+      "final" : false,
+      "segment" : 9,
+      "text" : "我都。",
+      "wall_seconds" : 34.055269956588745
+    },
+    {
+      "audio_seconds" : 35.095999999999997,
+      "final" : false,
+      "segment" : 9,
+      "text" : "我都钟意食香蕉。",
+      "wall_seconds" : 35.052412986755371
+    },
+    {
+      "audio_seconds" : 35.896000000000001,
+      "final" : true,
+      "segment" : 9,
+      "text" : "我都钟意食香蕉。",
+      "wall_seconds" : 35.853307962417603
+    }
+  ],
+  "fps" : 2,
+  "frames" : 78,
+  "realtime" : true,
+  "response_language" : "en",
+  "rule" : "Alert when the speaker mentions a banana, in any language.",
+  "source" : "Production SpeechStream, SessionController, LocalTextBackend and SwiftUI views; PCM replay replaces microphone input only.",
+  "synthetic_audio" : true
+}

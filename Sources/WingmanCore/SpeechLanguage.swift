@@ -1,7 +1,7 @@
 import Foundation
 import NaturalLanguage
 
-/// Alert language follows speech, independently of the interface and policy languages.
+/// Legacy evaluation fallback for configurations without an explicit response language.
 public enum SpeechLanguage: Sendable {
     case chinese, english
 

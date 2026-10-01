@@ -41,12 +41,14 @@ final class CoreTests {
         suite.testDeferredContinuation()
         suite.testSensitivityCalibration()
         suite.testDisplayLanguagePreference()
+        try suite.testSelectedAlertLanguage()
         try suite.testResourcesAndMigration()
+        try await suite.testSelectedLanguageRepair()
         try await suite.testTextWorkerLifecycle()
         try await suite.testIndependentRuleRequests()
         try await suite.testLargeRuleScreening()
         try await suite.testASRStreamingLifecycle()
-        print("PASS: 18 core groups (strict output, trusted ASR text, policy, calibrated sensitivity, alert controls, resources, worker and ASR lifecycle)")
+        print("PASS: 20 core groups (strict output, trusted ASR text, policy, calibrated sensitivity, alert controls, resources, worker and ASR lifecycle)")
     }
     func testSensitivityCalibration() {
         for count in [1, 7, 8, 12, 24] {
@@ -81,6 +83,37 @@ final class CoreTests {
         XCTAssertEqual(DisplayLanguage.english.format("原话：%@", "中文 and English"), "Quote: 中文 and English")
         XCTAssertEqual(DisplayLanguage.english.format("%d / 4000 字", 42), "42 / 4000 characters")
         XCTAssertEqual(DisplayLanguage.chinese.format("%d / 4000 字", 42), "42 / 4000 字")
+    }
+    func testSelectedAlertLanguage() throws {
+        let suggestions: [DisplayLanguage: String] = [
+            .english: "Please clarify the deadline.", .chinese: "请说明截止时间。",
+            .japanese: "期限を明確にしてください。", .korean: "기한을 명확히 알려 주세요."
+        ]
+        for language in DisplayLanguage.allCases {
+            let config = SessionConfiguration(prompt: "说到承诺就提醒", responseLanguage: language)
+            let restored = try JSONDecoder().decode(SessionConfiguration.self, from: JSONEncoder().encode(config))
+            XCTAssertEqual(restored.responseLanguage, language)
+            for transcript in ["I guarantee it.", "我保证。"] {
+                XCTAssertTrue(PromptBuilder.user(text: transcript, configuration: config, context: []).contains(language.suggestionInstruction))
+                XCTAssertTrue(PromptBuilder.reviewUser(text: transcript, configuration: config, quote: transcript).contains(language.suggestionInstruction))
+                for (outputLanguage, suggestion) in suggestions {
+                    let data = try JSONSerialization.data(withJSONObject: ["decision": "alert", "quote": transcript, "suggestion": suggestion])
+                    let raw = String(decoding: data, as: UTF8.self)
+                    if outputLanguage == language {
+                        let result = try ResultValidator.decodeDecision(raw, transcript: transcript, language: language)
+                        XCTAssertEqual(result.quote, transcript)
+                    } else {
+                        XCTAssertThrowsError(try ResultValidator.decodeDecision(raw, transcript: transcript, language: language))
+                    }
+                }
+            }
+        }
+        XCTAssertFalse(DisplayLanguage.chinese.acceptsSuggestion("发言提到banana。"))
+        XCTAssertFalse(DisplayLanguage.japanese.acceptsSuggestion("bananaを食べました。"))
+        XCTAssertFalse(DisplayLanguage.korean.acceptsSuggestion("banana를 말했습니다."))
+        XCTAssertEqual(DisplayLanguage.english.text("静音一小时"), "Mute for one hour")
+        XCTAssertEqual(DisplayLanguage.japanese.text("静音一小时"), "1時間ミュート")
+        XCTAssertEqual(DisplayLanguage.korean.text("静音一小时"), "1시간 알림 끄기")
     }
     private func result(_ decision: String = "alert", transcript: String = "我不能保证周五完成", quote: String = "不能保证", suggestion: String = "请说明条件。") throws -> VoiceResult {
         let data = try JSONSerialization.data(withJSONObject: ["transcript": transcript, "decision": decision, "quote": quote, "suggestion": suggestion])
@@ -166,6 +199,7 @@ final class CoreTests {
         XCTAssertEqual(SpeechLanguage.detect("汤姆真是个笨蛋。"), .chinese)
         XCTAssertEqual(SpeechLanguage.detect("我们用 BigQuery 做 reconciliation。"), .chinese)
         XCTAssertThrowsError(try ResultValidator.decodeDecision(#"{"decision":"alert","quote":"banana","suggestion":"你说了 banana。"}"#, transcript: "banana"))
+        XCTAssertThrowsError(try ResultValidator.decodeDecision(#"{"decision":"alert","quote":"banana","suggestion":"The 发言 mentions banana."}"#, transcript: "banana"))
         XCTAssertThrowsError(try ResultValidator.decodeDecision(#"{"decision":"alert","quote":"汤姆","suggestion":"Be kind to Tom."}"#, transcript: "汤姆真是个笨蛋。"))
         var gate = AlertGate()
         let alert = try result()
@@ -191,14 +225,23 @@ final class CoreTests {
         var dropped = 0
         for index in 1...10000 { dropped += window.append(entry(index)).count }
         XCTAssertEqual(dropped, 10000 - CurrentSpeechWindow.maximumPending)
-        XCTAssertEqual(window.take(now: began.addingTimeInterval(10000))?.date, began.addingTimeInterval(9997))
-        XCTAssertEqual(window.removeExpired(now: began.addingTimeInterval(10000 + CurrentSpeechWindow.maximumAge + 1)).count, 3)
+        XCTAssertEqual(window.take(now: began.addingTimeInterval(10000))?.date, began.addingTimeInterval(9996))
+        XCTAssertEqual(window.removeExpired(now: began.addingTimeInterval(10000 + CurrentSpeechWindow.maximumAge + 1)).count, 4)
         XCTAssertNil(window.take(now: began.addingTimeInterval(10000 + CurrentSpeechWindow.maximumAge + 1)))
         XCTAssertFalse(window.canPresent(first, now: began.addingTimeInterval(CurrentSpeechWindow.maximumAge + 1)))
-        let oversized = entry(10001, text: String(repeating: "字", count: 1501))
+        let oversized = entry(10001, text: String(repeating: "字", count: CurrentSpeechWindow.maximumBatchCharacters + 1))
         XCTAssertEqual(window.append(oversized).first?.id, oversized.id)
         XCTAssertNil(window.take(now: oversized.date))
         window.append(first); window.reset()
+        window.append(second); window.append(third)
+        XCTAssertEqual(window.takeBatch(now: third.date).map(\.id), [second.id, third.id])
+        XCTAssertTrue(window.takeBatch(now: third.date).isEmpty)
+        let large = entry(4, text: String(repeating: "a", count: 1000))
+        let another = entry(5, text: String(repeating: "b", count: 1000))
+        window.append(large); window.append(another)
+        XCTAssertEqual(window.takeBatch(now: another.date).map(\.id), [large.id, another.id])
+        XCTAssertTrue(window.takeBatch(now: another.date).isEmpty)
+        window.reset()
         XCTAssertNil(window.latest)
         XCTAssertFalse(window.canPresent(first, now: began))
     }
@@ -278,6 +321,28 @@ final class CoreTests {
         try script.write(to: url, atomically: true, encoding: .utf8)
         try FileManager.default.setAttributes([.posixPermissions: 0o700], ofItemAtPath: url.path)
         return url
+    }
+    func testSelectedLanguageRepair() async throws {
+        let worker = try fixture(#"""
+        #!/usr/bin/python3
+        import sys,json
+        print('{"type":"ready"}',flush=True)
+        for line in sys.stdin:
+            r=json.loads(line)
+            assert 'suggestion必须只用简体中文' in r['system']
+            suggestion='提到了香蕉。' if '上次输出未通过' in r['system'] else '提到了banana。'
+            output={'decision':'alert','quote':'banana','suggestion':suggestion}
+            print(json.dumps({'type':'result','id':r['id'],'output':json.dumps(output),'elapsed_seconds':0.01}),flush=True)
+        """#)
+        defer { try? FileManager.default.removeItem(at: worker.deletingLastPathComponent()) }
+        let backend = LocalTextBackend()
+        try await backend.load(paths: BackendPaths(worker: worker, model: worker))
+        let evaluation = try await backend.evaluate(text: "I ate banana.", configuration: SessionConfiguration(prompt: "Alert on banana.", responseLanguage: .chinese), context: [])
+        XCTAssertEqual(evaluation.result.decision, .alert)
+        XCTAssertEqual(evaluation.result.suggestion, "提到了香蕉。")
+        XCTAssertEqual(evaluation.result.quote, "banana")
+        XCTAssertEqual(evaluation.validationErrors.count, 1)
+        await backend.shutdown()
     }
     func testTextWorkerLifecycle() async throws {
         let worker = try fixture(#"""

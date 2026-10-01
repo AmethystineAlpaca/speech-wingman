@@ -9,21 +9,21 @@ final class FloatingControlPresenter {
     private var visibility: AnyCancellable?
     private var sizing: AnyCancellable?
 
-    func install(controller: SessionController, openSettings: @escaping () -> Void = {}) {
+    func install(controller: SessionController, openMainPanel: @escaping () -> Void = {}) {
         guard panel == nil else { return }
         let height = FloatingControlView.height(state: controller.state, hasText: !controller.transcript.isEmpty || !controller.preview.isEmpty)
-        let panel = NSPanel(contentRect: NSRect(x: 0, y: 0, width: 244, height: height),
+        let panel = FloatingPanel(contentRect: NSRect(x: 0, y: 0, width: 244, height: height),
                             styleMask: [.borderless, .nonactivatingPanel], backing: .buffered, defer: false)
         panel.title = "Speech Wingman"
         panel.level = .floating
         panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
         panel.isReleasedWhenClosed = false
         panel.hidesOnDeactivate = false
-        panel.isMovableByWindowBackground = true
+        panel.isMovableByWindowBackground = false
         panel.backgroundColor = .clear
         panel.isOpaque = false
         panel.hasShadow = true
-        panel.contentView = FloatingHostingView(rootView: FloatingControlView(controller: controller, openSettings: openSettings))
+        panel.contentView = FloatingHostingView(rootView: FloatingControlView(controller: controller, openMainPanel: openMainPanel))
         let restored = panel.setFrameUsingName("SpeechWingmanFloatingControl")
         if !restored || !NSScreen.screens.contains(where: { $0.visibleFrame.contains(panel.frame) }) {
             if let frame = NSScreen.main?.visibleFrame {
@@ -58,8 +58,12 @@ final class FloatingControlPresenter {
     func close() { visibility = nil; sizing = nil; panel?.close(); panel = nil }
 }
 
+private final class FloatingPanel: NSPanel {
+    override var canBecomeKey: Bool { true }
+}
+
 private final class FloatingHostingView<Content: View>: NSHostingView<Content> {
-    override var mouseDownCanMoveWindow: Bool { true }
+    override var mouseDownCanMoveWindow: Bool { false }
 }
 
 /// Use native window dragging explicitly: SwiftUI content and NSTextView can
@@ -84,17 +88,29 @@ final class FloatingDragHandleView: NSView {
 private final class FloatingTranscriptTextView: NSTextView {
     override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
     override var mouseDownCanMoveWindow: Bool { false }
-    override func resetCursorRects() { addCursorRect(bounds, cursor: .openHand) }
-    override func mouseDown(with event: NSEvent) {
-        NSCursor.closedHand.push()
-        defer { NSCursor.pop() }
-        window?.performDrag(with: event)
+    override func copy(_ sender: Any?) {
+        _ = writeSelection(to: .general, types: [.string])
+    }
+    override func writeSelection(to pasteboard: NSPasteboard, types: [NSPasteboard.PasteboardType]) -> Bool {
+        let selection = selectedRange()
+        guard types.contains(.string), selection.length > 0,
+              NSMaxRange(selection) <= (string as NSString).length else { return false }
+        pasteboard.clearContents()
+        return pasteboard.setString((string as NSString).substring(with: selection), forType: .string)
+    }
+    override func performKeyEquivalent(with event: NSEvent) -> Bool {
+        if event.modifierFlags.intersection(.deviceIndependentFlagsMask) == .command,
+           event.charactersIgnoringModifiers == "c" {
+            copy(nil)
+            return true
+        }
+        return super.performKeyEquivalent(with: event)
     }
 }
 
 struct FloatingControlView: View {
     @ObservedObject var controller: SessionController
-    var openSettings: () -> Void = {}
+    var openMainPanel: () -> Void = {}
     static func height(state: SessionController.State, hasText: Bool) -> CGFloat {
         state == .listening || hasText ? 164 : 80
     }
@@ -167,8 +183,8 @@ struct FloatingControlView: View {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-            .overlay(FloatingDragHandle(help: controller.t("拖动标题或文字区移动；点击按钮开始或停止监听")))
-            Button(action: openSettings) {
+            .overlay(FloatingDragHandle(help: controller.t("拖动标题移动；选择文字后按 ⌘C 复制")))
+            Button(action: openMainPanel) {
                 Image(systemName: "gearshape")
                     .font(.system(size: 14))
                     .foregroundStyle(.secondary)
@@ -176,8 +192,8 @@ struct FloatingControlView: View {
                     .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            .accessibilityLabel(controller.t("设置"))
-            .help(controller.t("设置"))
+            .accessibilityLabel(controller.t("打开主面板"))
+            .help(controller.t("打开主面板"))
             .frame(maxHeight: .infinity, alignment: .top)
             .padding(.top, 12)
         }
@@ -212,7 +228,7 @@ final class FloatingTranscriptScrollView: NSScrollView {
         hasHorizontalScroller = false
         transcript.drawsBackground = false
         transcript.isEditable = false
-        transcript.isSelectable = false
+        transcript.isSelectable = true
         transcript.textContainerInset = .zero
         transcript.textContainer?.lineFragmentPadding = 0
         transcript.textContainer?.widthTracksTextView = true
@@ -227,8 +243,12 @@ final class FloatingTranscriptScrollView: NSScrollView {
         transcript.textColor = text.isEmpty ? .secondaryLabelColor : .labelColor
         let displayed = text.isEmpty ? placeholder : text
         guard transcript.string != displayed else { return }
+        let selection = transcript.selectedRange()
         transcript.string = displayed
-        followsLatest = true
+        if selection.length > 0, NSMaxRange(selection) <= (displayed as NSString).length {
+            transcript.setSelectedRange(selection)
+        }
+        followsLatest = selection.length == 0
         needsLayout = true
     }
 

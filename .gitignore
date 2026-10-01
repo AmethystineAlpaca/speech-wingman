@@ -50,3 +50,6 @@ docs/*
 .vscode/
 .idea/
 .swiftpm/
+!docs/README.ja.md
+!docs/README.ko.md
+!docs/README.zh-HK.md

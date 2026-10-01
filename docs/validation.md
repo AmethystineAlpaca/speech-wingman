@@ -116,3 +116,68 @@ bash Scripts/evaluate-bundle.sh
 The additional suite retains a known failing case and may exit nonzero. Fixtures require already-installed macOS voices; the generator blocks network access during synthesis and does not overwrite existing WAV files. The CLI evaluates a combined transcript after playback; the app's controller instead evaluates finalized segments and applies alert gating. Neither replay harness reproduces every live session scheduling edge case.
 
 Before publishing source changes, stage the intended files, inspect the staged diff, and run `python3 Scripts/audit-publication.py`. Its exact-index checks detect blocked artifact paths, oversized files, common secret patterns, home-directory paths, and textual image metadata. This is a guardrail, not a comprehensive secret detector or a substitute for reviewing content and commit identity.
+
+## Korean/Japanese text regression (2026-10-01)
+
+Added `Tests/Evaluation/multilingual.json`: two Korean and two Japanese statements,
+with one incomplete firm promise that should alert and one promise with an explicit
+Friday 6 p.m. deadline and three-report scope that should stay quiet per language.
+All four use the same English rule and the production Medium configuration.
+
+A fresh local Qwen3-4B-Instruct-2507-Q4_K_M run through the production prompt,
+backend and validator produced:
+
+| Text suite | Correct decisions |
+| --- | ---: |
+| Korean/Japanese | 4/4 |
+| Base cases | 8/8 |
+| Held-out | 5/6 |
+| Multiple rules | 20/20 |
+| Sensitivity | 36/45 |
+| **Total** | **73/83 (88.0%)** |
+
+Sensitivity results were Low 11/15, Medium 13/15, High 12/15. These are regression
+expectations, not a population accuracy estimate or a new sensitivity calibration.
+On the 73 cases shared with Iteration 12, this run passed 64/73 versus that run's
+63/73; case-level behavior changed, so the one-case difference is not evidence of
+an overall quality improvement.
+
+The initial raw run was 72/83. H6's `speech` was an audio-description placeholder
+(`Chinese followed by English in one stream`) rather than its actual utterances.
+Its text fixture now contains the exact Chinese and English utterances already
+used by `Scripts/generate-fixtures.py`. A separate H6 rerun passed, giving the
+corrected aggregate above. The initial raw log is retained in local evaluation
+artifacts; this correction did not change the expected label or production model.
+
+Known failures in this run:
+
+- H1: a promise with both deadline and scope incorrectly alerts; the suggestion
+  itself says no reminder is needed, contradicting the decision.
+- `unrelated-person-low`: language validation rejects the reminder, producing
+  `inconclusive`; this is not counted as correct silence.
+- `indirect-fatigue-low`: false positive; `borderline-fatigue-high`: false negative.
+- `unexplained-acronym-{low,medium,high}`: three missed alerts.
+- `incomplete-{low,medium,high}`: three premature alerts instead of `defer`.
+
+The Korean positive case generated an **English** reminder, and the Japanese
+positive case generated a **Chinese** reminder. That run used the legacy speech-based reminder-language
+classifier, which only distinguishes Chinese and English. Passing these four decisions
+does not establish native Korean/Japanese reminders, ASR accuracy, live-microphone
+accuracy, or end-to-end alert latency. No audio or Ultimate replay was rerun for that text suite.
+
+The subsequent selected-language implementation explicitly supports English, Chinese,
+Japanese, and Korean reminders. The [five-language recorded replay](../Tests/MultilingualDemo/README.md)
+separately exercises ASR and real English reminders with English, Mandarin, Japanese,
+Korean, and Cantonese audio, including natural sentence-by-sentence alternation. It
+also retains the rapid within-segment switching failure. Those audio results and
+the legacy text regression figures above are separate measurements.
+
+Reproduce with live listening paused to avoid competing local model processes:
+
+```bash
+swift run -c release WingmanPolicyCheck \
+  build/native/bin/text-worker Models/Qwen3-4B-Instruct-2507-Q4_K_M.gguf \
+  Tests/Evaluation/multilingual.json Tests/Evaluation/cases.json \
+  Tests/Evaluation/heldout.json Tests/Evaluation/multiple-rules.json \
+  Tests/Evaluation/sensitivity.json
+```

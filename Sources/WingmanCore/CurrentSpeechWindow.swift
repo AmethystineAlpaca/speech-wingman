@@ -4,7 +4,8 @@ import Foundation
 public struct CurrentSpeechWindow: Sendable {
     public static let maximumAge: TimeInterval = 30
     public static let maximumCharacters = 1500
-    public static let maximumPending = 4
+    public static let maximumPending = 5
+    public static let maximumBatchCharacters = 32_000
     private var waiting: [TranscriptEntry] = []
     private var inFlightID: UUID?
     public var latest: TranscriptEntry? { waiting.last }
@@ -14,7 +15,7 @@ public struct CurrentSpeechWindow: Sendable {
     @discardableResult public mutating func append(_ entry: TranscriptEntry) -> [TranscriptEntry] {
         guard entry.isFinal else { return [] }
         // Never truncate: that could remove an explanation or exclusion.
-        guard entry.text.count <= Self.maximumCharacters else { return [entry] }
+        guard entry.text.count <= Self.maximumBatchCharacters else { return [entry] }
         waiting.append(entry)
         return waiting.count > Self.maximumPending ? [waiting.removeFirst()] : []
     }
@@ -28,6 +29,26 @@ public struct CurrentSpeechWindow: Sendable {
         let entry = waiting.isEmpty ? nil : waiting.removeFirst()
         inFlightID = entry?.id
         return entry
+    }
+    /// Drain immediately; the worker's tokenizer enforces the actual context budget.
+    public mutating func takeBatch(now: Date, limit: Int = maximumPending) -> [TranscriptEntry] {
+        _ = removeExpired(now: now)
+        let result = Array(waiting.prefix(max(1, limit)))
+        waiting.removeFirst(result.count)
+        inFlightID = result.last?.id
+        return result
+    }
+    /// Preserve the oldest unfinished work when a token-limited batch must split.
+    public mutating func prepend(_ entries: [TranscriptEntry]) -> [TranscriptEntry] {
+        waiting.insert(contentsOf: entries, at: 0)
+        let overflow = Array(waiting.dropFirst(Self.maximumPending))
+        waiting = Array(waiting.prefix(Self.maximumPending))
+        return overflow
+    }
+    public mutating func remove(ids: Set<UUID>) -> [TranscriptEntry] {
+        let removed = waiting.filter { ids.contains($0.id) }
+        waiting.removeAll { ids.contains($0.id) }
+        return removed
     }
     public func canPresent(_ entry: TranscriptEntry, now: Date) -> Bool {
         inFlightID == entry.id && Self.isFresh(entry, now: now)

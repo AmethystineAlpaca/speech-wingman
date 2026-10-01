@@ -37,7 +37,7 @@ struct Recognizer {
         const std::string vad_path = dir + "/silero_vad.onnx";
         SherpaOnnxVadModelConfig v{};
         v.silero_vad.model = vad_path.c_str(); v.silero_vad.threshold = 0.5f;
-        v.silero_vad.min_silence_duration = 0.65f; v.silero_vad.min_speech_duration = 0.1f;
+        v.silero_vad.min_silence_duration = 0.55f; v.silero_vad.min_speech_duration = 0.1f;
         v.silero_vad.max_speech_duration = 12.0f; v.silero_vad.window_size = 512;
         v.sample_rate = 16000; v.num_threads = 1; v.provider = "cpu";
         vad = SherpaOnnxCreateVoiceActivityDetector(&v, 30);

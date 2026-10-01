@@ -42,6 +42,7 @@ public actor LocalTextBackend {
     private var outputBuffer = Data()
     private var ready: CheckedContinuation<Void, any Error>?
     private var pending: [String: CheckedContinuation<Evaluation, any Error>] = [:]
+    private var responseLanguages: [String: DisplayLanguage] = [:]
     private var texts: [String: String] = [:]
     private var outputModes: [String: String] = [:]
     private var routeRuleCounts: [String: Int] = [:]
@@ -90,7 +91,7 @@ public actor LocalTextBackend {
                          context: [TranscriptEntry]) async throws -> Evaluation {
         guard loaded, input != nil, process?.isRunning == true else { throw WingmanError.unavailable("本地模型未就绪") }
         guard pending.isEmpty else { throw WingmanError.worker("worker 忙，不能并行提交判断") }
-        guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty, text.count <= 4_000,
+        guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty, text.count <= CurrentSpeechWindow.maximumBatchCharacters * CurrentSpeechWindow.maximumPending,
               !configuration.prompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
               configuration.prompt.count <= 4_000 else { throw WingmanError.worker("文本或 prompt 无效") }
         guard !evaluating else { throw WingmanError.worker("worker 忙，不能并行提交判断") }
@@ -112,17 +113,17 @@ public actor LocalTextBackend {
             guard Date().timeIntervalSince(started) < CurrentSpeechWindow.maximumAge else {
                 return Evaluation(result: VoiceResult(transcript: text, decision: .inconclusive, quote: "", suggestion: ""), elapsedSeconds: elapsed, validationErrors: validationErrors)
             }
-            let single = SessionConfiguration(prompt: rule, sensitivity: configuration.sensitivity, version: configuration.version)
+            let single = SessionConfiguration(prompt: rule, sensitivity: configuration.sensitivity, version: configuration.version, responseLanguage: configuration.responseLanguage)
             var evaluation: Evaluation
             let needsReview = text.count > 240
             do {
                 var repaired = false
                 do { evaluation = try await evaluateRule(text: text, configuration: single, outputMode: needsReview ? "evidence" : "final") }
-                catch WingmanError.invalidResult(let reason) where needsReview {
+                catch WingmanError.invalidResult(let reason) where needsReview || (single.responseLanguage != nil && reason == "提醒语言与设置不符") {
                     // One bounded repair, using the original speech. Never salvage
                     // or display an invented/translated candidate quotation.
                     validationErrors.append("候选已复核：" + reason)
-                    evaluation = try await evaluateRule(text: text, configuration: single, reviewQuote: "")
+                    evaluation = try await evaluateRule(text: text, configuration: single, reviewQuote: "", repairOutput: reason == "提醒语言与设置不符")
                     repaired = true
                 }
                 elapsed += evaluation.elapsedSeconds
@@ -159,7 +160,7 @@ public actor LocalTextBackend {
             guard generation == current else { throw WingmanError.cancelled }
             guard Date().timeIntervalSince(started) < CurrentSpeechWindow.maximumAge else { quiet = .inconclusive; break }
             let end = min(start + 12, rules.count)
-            let group = SessionConfiguration(prompt: rules[start..<end].joined(separator: "\n"), sensitivity: configuration.evaluationSensitivity, version: configuration.version)
+            let group = SessionConfiguration(prompt: rules[start..<end].joined(separator: "\n"), sensitivity: configuration.evaluationSensitivity, version: configuration.version, responseLanguage: configuration.responseLanguage)
             let candidates: [Int]
             do {
                 let routed = try await evaluateRule(text: text, configuration: group, outputMode: "route")
@@ -174,7 +175,7 @@ public actor LocalTextBackend {
                     return Evaluation(result: VoiceResult(transcript: text, decision: .inconclusive, quote: "", suggestion: ""), elapsedSeconds: elapsed, validationErrors: errors)
                 }
                 let index = start + relative
-                let single = SessionConfiguration(prompt: rules[index], sensitivity: configuration.evaluationSensitivity, version: configuration.version)
+                let single = SessionConfiguration(prompt: rules[index], sensitivity: configuration.evaluationSensitivity, version: configuration.version, responseLanguage: configuration.responseLanguage)
                 do {
                     let checked: Evaluation
                     do { checked = try await evaluateRule(text: text, configuration: single, reviewQuote: "") }
@@ -214,6 +215,7 @@ public actor LocalTextBackend {
         let id = UUID().uuidString, current = generation
         let outputMode = reviewQuote == nil ? outputMode : "final"
         texts[id] = text
+        responseLanguages[id] = configuration.responseLanguage ?? SpeechLanguage.detect(text).displayLanguage
         outputModes[id] = outputMode
         if outputMode == "route" { routeRuleCounts[id] = configuration.rules.count }
         var system = reviewQuote == nil ? PromptBuilder.system(configuration: configuration) : PromptBuilder.reviewSystem(configuration: configuration)
@@ -231,7 +233,7 @@ public actor LocalTextBackend {
             user = String(decoding: try JSONSerialization.data(withJSONObject: ["quote": text], options: [.withoutEscapingSlashes]), as: UTF8.self).replacingOccurrences(of: "<", with: "\\u003c")
         }
         if outputMode == "evidence" { system += "\n此步只找证据：alert时只输出decision和quote，不生成suggestion。" }
-        if reviewQuote != nil { system += SpeechLanguage.detect(text) == .chinese ? "\n提醒必须用中文。" : "\nThe suggestion MUST be in English, even if the quote contains Chinese." }
+        if reviewQuote != nil { system += "\n" + (configuration.responseLanguage ?? SpeechLanguage.detect(text).displayLanguage).suggestionInstruction }
         if repairOutput { system += "\n上次输出未通过格式、原文或提醒语言校验。重新判断并输出：quote必须是当前发言中精确连续的一小段，不补标点、不纠正或翻译原文；suggestion遵守指定语言。不能编造证据。" }
         let request: [String: Any] = [
             "type": "evaluate", "id": id,
@@ -256,7 +258,7 @@ public actor LocalTextBackend {
     public func shutdown() {
         generation = UUID(); loaded = false; evaluating = false
         ready?.resume(throwing: WingmanError.cancelled); ready = nil
-        let continuations = pending.values; pending.removeAll(); texts.removeAll(); outputModes.removeAll(); routeRuleCounts.removeAll()
+        let continuations = pending.values; pending.removeAll(); texts.removeAll(); responseLanguages.removeAll(); outputModes.removeAll(); routeRuleCounts.removeAll()
         for continuation in continuations { continuation.resume(throwing: WingmanError.cancelled) }
         try? input?.close(); input = nil
         if let process, process.isRunning { process.terminate() }
@@ -276,7 +278,7 @@ public actor LocalTextBackend {
             if type == "ready" {
                 loaded = true; ready?.resume(); ready = nil
             } else if type == "error" {
-                if let id = object["id"] as? String { texts.removeValue(forKey: id); outputModes.removeValue(forKey: id); routeRuleCounts.removeValue(forKey: id) }
+                if let id = object["id"] as? String { texts.removeValue(forKey: id); responseLanguages.removeValue(forKey: id); outputModes.removeValue(forKey: id); routeRuleCounts.removeValue(forKey: id) }
                 let message = object["message"] as? String ?? "未知错误"
                 let error = object["kind"] as? String == "invalid_output" ? WingmanError.invalidResult(message) : WingmanError.worker(message)
                 if let id = object["id"] as? String, let continuation = pending.removeValue(forKey: id) {
@@ -286,6 +288,7 @@ public actor LocalTextBackend {
                       let continuation = pending.removeValue(forKey: id) {
                 do {
                     guard let raw = object["output"] as? String else { throw WingmanError.invalidResult("缺少输出") }
+                    let responseLanguage = responseLanguages.removeValue(forKey: id)
                     let original = texts.removeValue(forKey: id) ?? ""
                     let mode = outputModes.removeValue(forKey: id) ?? "final"
                     if mode == "route" {
@@ -293,7 +296,7 @@ public actor LocalTextBackend {
                         continuation.resume(returning: Evaluation(result: VoiceResult(transcript: original, decision: .noAlert, quote: "", suggestion: ""), elapsedSeconds: object["elapsed_seconds"] as? Double ?? 0, candidateRuleIndices: candidates))
                         continue
                     }
-                    let result = try mode == "final" ? ResultValidator.decodeDecision(raw, transcript: original)
+                    let result = try mode == "final" ? ResultValidator.decodeDecision(raw, transcript: original, language: responseLanguage)
                         : ResultValidator.decodeIntermediate(raw, transcript: original, evidence: mode == "evidence")
                     continuation.resume(returning: Evaluation(result: result, elapsedSeconds: object["elapsed_seconds"] as? Double ?? 0))
                 } catch { continuation.resume(throwing: error) }
