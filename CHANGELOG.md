@@ -2,6 +2,8 @@
 
 ## 0.4.0 — Continuous speech, live transcript UI and calibrated sensitivity (2026-09-30)
 
+[Detailed release notes / 完整中英文版本说明](docs/release-notes-0.4.0.md)
+
 - Show recent and live speech in the floating control, follow revised/final text, retain text when paused, and collapse after clearing. Add a settings shortcut and native dragging from the title or transcript.
 - Redesign settings with a larger fixed-height editor, character count, expandable examples, sensitivity cards, scrollable content, a pinned save footer, save feedback and Command-S. Cover small windows and bilingual light/dark layouts.
 - Publish the complete Ultimate Test Case history and measured latency tradeoffs. Before remapping, complete-run correct windows improved from 35/35/31 to 38/36/36 out of 44 during development; these are synthetic development results, not general accuracy claims.

@@ -11,7 +11,7 @@ Use [Discussions](https://github.com/AmethystineAlpaca/speech-wingman/discussion
 
 ## Development
 
-Follow the README build instructions. Core checks need no model weights:
+Follow the [build instructions](docs/guide.md#getting-started). See [Development and checks](docs/development.md) for the full command reference and repository layout. Core checks need no model weights:
 
 ```bash
 swift run WingmanCoreTests

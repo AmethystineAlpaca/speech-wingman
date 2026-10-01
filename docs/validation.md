@@ -6,6 +6,24 @@ Development checks were run locally on an Apple M4 Mac with 16 GB unified memory
 
 The repository contains only fictional case definitions and reproducible test tools. Local audio, logs, model outputs, machine-specific reports, and saved application preferences are excluded from version control.
 
+## Measured accuracy and latency
+
+The Ultimate Test Case contains **1,462 Chinese characters + 1,197 English words**, 12 simultaneous rules and 44 assembled ASR windows. Real local ASR/model inference runs offline; scheduling is an accelerated audio-clock replay. It does not measure microphone acoustics or simultaneous real-time ASR/LLM contention.
+
+During development, correct windows improved from **35/44 → 38/44**, **35/44 → 36/44**, and **31/44 → 36/44** for the original Low/Medium/High profiles between complete Iterations 9 and 11. That is a comparison within this development fixture, not a full accuracy comparison against the previous Git commit; the original implementation's run stopped early. Rule identity must match, and missing/invalid results never count as successful silence.
+
+For the current 12-rule mapping, all three strategies are compared on the **same 15 positive windows**:
+
+| Current sensitivity | Recall | Precision | Inference p50 / p95 | Presented delay p50 / p95 |
+|---|---:|---:|---:|---:|
+| Low | 10/15 (66.7%) | 83.3% | 4.33 / 10.46 s | 18.26 / 24.16 s |
+| Medium | 11/15 (73.3%) | 73.3% | 6.70 / 17.38 s | 21.05 / 27.01 s |
+| High | 12/15 (80.0%) | 80.0% | 4.83 / 11.99 s | 21.05 / 24.95 s |
+
+These values reclassify the recorded Iteration 11 runs using the actual production mapping; they are **not a fresh full replay after renaming profiles**. Presented delay starts at the window's last ASR final and includes grouping, queueing and inference, not live ASR computation or time since the triggering word. In the fresh small-rule regression, recall on its own common nine-positive set is **5/9, 7/9, 8/9** for Low/Medium/High, supporting the unchanged mapping on that path.
+
+**More context and verification have a latency cost; this is not an across-the-board speedup.** Earlier short clips showed roughly one-second transcript previews and 1.5–3.3-second post-speech judgments under a different pipeline. They do not describe the current long-input reminder delay. Incomplete claims, missed cross-window context, exceptions, transcription loss, invalid quotations and suggestion wording remain known failures. See the [complete bilingual evaluation](../Samples/UltimateTestCase/EVALUATION.md) for every iteration, denominators, raw outputs and limits.
+
 ## Checks completed before the initial source publication
 
 - Eleven core test groups cover JSON validation, trusted ASR transcripts, policy boundaries, alert deduplication/cooldown/mute, resource paths, worker shutdown/reload, ASR partial/final events, and display-language defaults/persistence.

@@ -18,6 +18,11 @@ Tests/Recordings/
 docs/*
 !docs/architecture.md
 !docs/validation.md
+!docs/guide.md
+!docs/examples.md
+!docs/development.md
+!docs/README.zh-CN.md
+!docs/release-notes-0.4.0.md
 !docs/assets/
 *.wav
 *.aiff
