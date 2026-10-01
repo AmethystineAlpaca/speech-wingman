@@ -26,7 +26,7 @@ for (x, label) in [(CGFloat(72), "OFFLINE INFERENCE"), (CGFloat(446), "MIXED-LAN
     text(label, x:x+20, y:221, size:18, color:accent, bold:true)
 }
 text("For meetings, rehearsals, and wonderfully specific ideas.", x:74, y:119, size:25, color:muted)
-text("v0.3.0  ·  macOS  ·  Apple Silicon  ·  Open source", x:74, y:64, size:20, color:muted)
+text("macOS 14+  ·  Apple Silicon  ·  Open-source preview", x:74, y:64, size:20, color:muted)
 NSGraphicsContext.restoreGraphicsState()
 let url = URL(fileURLWithPath: CommandLine.arguments[1])
 let encoded = NSMutableData()
