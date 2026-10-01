@@ -16,17 +16,24 @@ func text(_ value: String, x: CGFloat, y: CGFloat, size: CGFloat, color: NSColor
 }
 color(15,23,42).setFill(); NSBezierPath(rect: NSRect(x:0,y:0,width:width,height:height)).fill()
 let white = color(248,250,252), muted = color(203,213,225), accent = color(94,234,212)
-text("Speech Wingman", x:72, y:520, size:54, color:white, bold:true)
-text("ON-DEVICE SPEECH + CUSTOM AI REMINDERS", x:74, y:483, size:17, color:accent, bold:true)
-text("Your voice. Your rules.", x:72, y:359, size:58, color:white, bold:true)
-text("Multiple rules. One floating button.", x:74, y:302, size:30, color:muted)
-for (x, label) in [(CGFloat(72), "OFFLINE INFERENCE"), (CGFloat(446), "MIXED-LANGUAGE SPEECH"), (CGFloat(820), "ONE-CLICK LISTENING")] {
+text("Speech Wingman", x:64, y:554, size:30, color:white, bold:true)
+text("A SPEECH REMINDER APP FOR MAC", x:66, y:518, size:16, color:accent, bold:true)
+text("Set a rule. Get a reminder", x:64, y:429, size:52, color:white, bold:true)
+text("when your speech matches it.", x:64, y:368, size:52, color:white, bold:true)
+let cards: [(CGFloat, String, String, String)] = [
+    (64, "1  WRITE YOUR RULE", "Remind me if I speak", "badly about Tom."),
+    (456, "2  SPEAK", "Tom is a very", "mean person."),
+    (848, "3  SEE A REMINDER", "Try a more", "constructive phrasing.")
+]
+for (x, label, line1, line2) in cards {
     color(30,41,59).setFill()
-    NSBezierPath(roundedRect: NSRect(x:x,y:203,width:344,height:56), xRadius:12,yRadius:12).fill()
-    text(label, x:x+20, y:221, size:18, color:accent, bold:true)
+    NSBezierPath(roundedRect: NSRect(x:x,y:154,width:368,height:165), xRadius:16,yRadius:16).fill()
+    text(label, x:x+22, y:278, size:17, color:accent, bold:true)
+    text(line1, x:x+22, y:226, size:25, color:white, bold:true)
+    text(line2, x:x+22, y:191, size:25, color:white, bold:true)
 }
-text("For meetings, rehearsals, and wonderfully specific ideas.", x:74, y:119, size:25, color:muted)
-text("macOS 14+  ·  Apple Silicon  ·  Open-source preview", x:74, y:64, size:20, color:muted)
+text("Illustrative example · You write the rule; the app generates the reminder.", x:66, y:121, size:15, color:muted)
+text("Runs offline on your Mac  ·  Apple Silicon  ·  Open-source preview", x:66, y:61, size:22, color:muted)
 NSGraphicsContext.restoreGraphicsState()
 let url = URL(fileURLWithPath: CommandLine.arguments[1])
 let encoded = NSMutableData()
