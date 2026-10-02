@@ -1,8 +1,8 @@
 # Speech Wingman
 
-**Speak naturally. Get a nudge when your words match your own rules.**
+**Your own speech reminder rules. Five languages. All on your Mac.**
 
-Speech Wingman is a private speech companion for your Mac. Tell it what to watch for in plain language, click the floating microphone, and speak. When a rule matches, it shows a short reminder with the words that triggered it—useful for meeting practice, interview rehearsals, and communication habits you want to improve.
+Practice how you want to speak—with a private assistant that listens for the habits you want to change. Write a rule in everyday language, speak naturally, and get a short reminder with a quote when the rule matches.
 
 **Your rules · Multilingual (English, Chinese, Japanese, Korean—even Cantonese) · Fully offline on your Mac**
 
@@ -12,24 +12,21 @@ Speech Wingman is a private speech companion for your Mac. Tell it what to watch
 
 *Open-source developer preview · Apple Silicon · macOS 14+ · Build required; no ready-to-install download yet.*
 
-## Why Speech Wingman?
-
-| What matters | What you get |
-| --- | --- |
-| **Remember what you want to change** | Write your own triggers and exceptions in everyday language. Each line is an independent rule; an accepted match gives you a quote and a short suggestion. |
-| **Speak in your own language** | English, Chinese, Japanese, Korean, and Cantonese—even alternating within a conversation. No recognition-language switch; reminders use your selected interface and alert language (English by default, Chinese, Japanese, or Korean). |
-| **Keep your speech private** | Recognition and AI checks run locally. The app and its helpers use macOS App Sandbox without network permissions. No account, API key, or automatic audio/transcript saving. |
-| **Stay in the conversation** | A floating microphone and live transcript keep controls close. Pause, resume, mute, or clear the session when you choose. |
-
 ## A small reminder for better conversations
 
-Trying to avoid personal digs? Give yourself a rule: **“if i say bad thing about Tom, alert me in English”**.
+Here is an actual example of practicing more constructive wording:
 
-In this actual example, the app transcribed **“Yeah, Tom is a very mean person. In my opinion.”** and displayed an English reminder suggesting more constructive or neutral wording.
+1. **Write a rule:** “if i say bad thing about Tom, alert me in English”.
+2. **Speak:** “Yeah, Tom is a very mean person. In my opinion.”
+3. **See the reminder:** the app quotes the remark and suggests more constructive or neutral wording.
 
 ![Actual use: a rule about negative remarks toward Tom triggers an English reminder](docs/assets/desktop-english-full.png)
 
-*Actual use of the earlier 0.2.1 interface.*
+*Actual use of the earlier 0.2.1 interface. Recognition and reminders can be wrong or delayed; this example is not an accuracy guarantee.*
+
+**Want to support a private, offline speech assistant? Give Speech Wingman a ⭐ Star using the button at the top of this repository.** For release notifications, choose **Watch → Custom → Releases**.
+
+**[Build and try it](#getting-started)** · [See the five-language demo](#multilingual-one-conversation-no-language-switch) · [Explore reminder ideas](docs/examples.md)
 
 ## Multilingual. One conversation. No language switch.
 
@@ -58,14 +55,6 @@ The rule in this new recording is **“Alert when the speaker mentions a banana,
 
 *Current 0.4.0 views rendered with synthetic state; these two images demonstrate the UI.*
 
-## Evidence you can inspect
-
-- **About 1 second to first transcript preview** in short local audio tests on an Apple M4 / 16 GB Mac, with models loaded. Rule reminders take additional time after speech finalizes.
-- **20 core test groups pass.** The separate earlier model regression run passed **63/73 cases**; known failures remain in the published results.
-- **12 bilingual rules, one continuous 11-minute-26-second recording.** The [Ultimate Test Case](Samples/UltimateTestCase/README.md) publishes the scenario, replay tools, raw results, and every evaluation iteration.
-
-These are development fixtures, not general accuracy guarantees. In the long-input replay, the current High mapping detected **12 of 15 positive windows (80% recall)** with **80% precision**; median simulated reminder delay was **21.05 seconds** after the last ASR final. Those figures reclassify recorded runs and exclude live ASR computation. [Full accuracy, timing, and methodology →](docs/validation.md#measured-accuracy-and-latency)
-
 ## Getting started
 
 You need an **Apple Silicon Mac with macOS 14+**, Swift 6+, Apple Command Line Tools or Xcode, Git, and ARM64 Python 3.9+ with pip. **16 GB memory and 10 GB free disk** are recommended. The bootstrap script installs a compatible CMake; initial setup downloads dependencies and models.
@@ -79,14 +68,36 @@ bash Scripts/build-app.sh
 open 'build/Speech Wingman.app'
 ```
 
-Then open **Settings**, write one rule per line, click **Save and apply**, and click the floating microphone. Grant microphone access when prompted. For a simple first rule, try:
+### Your first reminder
 
-```text
-Alert if I speak badly of Tom; stay quiet when I praise him.
-Alert when I say banana.
-```
+1. Open **Settings** and start with just one easy-to-check rule:
+   ```text
+   Alert when I say banana.
+   ```
+2. Click **Save and apply**, then click the floating microphone. Grant microphone access when prompted.
+3. Say “I bought a banana today,” then pause. Look for your words in the transcript, followed by a rule reminder; AI evaluation takes additional time.
+4. Once that works, replace it with a habit you want to practice, such as “Alert if I speak badly of Tom; stay quiet when I praise him.”
+
+If no reminder appears, check microphone permission, the transcript, and whether alerts are muted. [Controls and troubleshooting](docs/guide.md#2-set-your-rule).
 
 The completed app runs offline and is locally signed, not notarized. **[Full setup instructions](docs/guide.md#getting-started) · [Updating an existing build](docs/guide.md#updating-an-existing-build) · [Rules and session controls](docs/guide.md#2-set-your-rule)**
+
+## Why Speech Wingman?
+
+| What matters | What you get |
+| --- | --- |
+| **Remember what you want to change** | Write your own triggers and exceptions in everyday language. Each line is an independent rule; an accepted match gives you a quote and a short suggestion. |
+| **Speak in your own language** | English, Chinese, Japanese, Korean, and Cantonese—even alternating within a conversation. No recognition-language switch; reminders use your selected interface and alert language (English by default, Chinese, Japanese, or Korean). |
+| **Keep your speech private** | Recognition and AI checks run locally. The app and its helpers use macOS App Sandbox without network permissions. No account, API key, or automatic audio/transcript saving. |
+| **Stay in the conversation** | A floating microphone and live transcript keep controls close. Pause, resume, mute, or clear the session when you choose. |
+
+## Evidence you can inspect
+
+- **About 1 second to first transcript preview** in short local audio tests on an Apple M4 / 16 GB Mac, with models loaded. Rule reminders take additional time after speech finalizes.
+- **20 core test groups pass.** The separate earlier model regression run passed **63/73 cases**; known failures remain in the published results.
+- **12 bilingual rules, one continuous 11-minute-26-second recording.** The [Ultimate Test Case](Samples/UltimateTestCase/README.md) publishes the scenario, replay tools, raw results, and every evaluation iteration.
+
+These are development fixtures, not general accuracy guarantees. In the long-input replay, the current High mapping detected **12 of 15 positive windows (80% recall)** with **80% precision**; median simulated reminder delay was **21.05 seconds** after the last ASR final. Those figures reclassify recorded runs and exclude live ASR computation. [Full accuracy, timing, and methodology →](docs/validation.md#measured-accuracy-and-latency)
 
 ## Know before you use it
 
@@ -109,7 +120,7 @@ This is preview software: recognition and rule checks can miss or misinterpret s
 
 ## Join in
 
-Share an alert recipe or a fictional example in [Discussions](https://github.com/AmethystineAlpaca/speech-wingman/discussions), [report a bug](https://github.com/AmethystineAlpaca/speech-wingman/issues/new/choose), or read the [contribution guide](CONTRIBUTING.md). Examples in any supported language are welcome. If you find it useful, star the project or watch Releases for updates.
+Share an alert recipe or a fictional example in [Discussions](https://github.com/AmethystineAlpaca/speech-wingman/discussions), [report a bug](https://github.com/AmethystineAlpaca/speech-wingman/issues/new/choose), or read the [contribution guide](CONTRIBUTING.md). Examples in any supported language are welcome.
 
 ## License
 

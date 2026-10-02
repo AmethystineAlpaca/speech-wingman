@@ -10,6 +10,22 @@ Speech Wingman 係一個喺 Mac 本機運行嘅語音提醒助手。用日常語
 
 *開源開發預覽版 · Apple Silicon · macOS 14 或以上 · 暫時需要喺本機自行建置。*
 
+## 寫條規則，睇吓佢點提醒
+
+一個真實使用例子：練習用更中性嘅方式評價人。
+
+1. **寫規則：** “if i say bad thing about Tom, alert me in English”（講 Tom 壞話時用英文提醒）。
+2. **講嘢：** “Yeah, Tom is a very mean person. In my opinion.”
+3. **睇提醒：** 應用引用呢句說話，建議改用更有建設性或中性嘅表達。
+
+![真實使用：講到 Tom 嘅說話觸發英文提醒](assets/desktop-english-full.png)
+
+*截圖係早期 0.2.1 介面嘅真實使用。識別同提醒可能出錯或延遲，呢個例子唔代表準確率保證。*
+
+**想支持呢個完全離線嘅語音助手？歡迎撳倉庫頂部嘅 ⭐ Star。** 新版本通知請揀 **Watch → Custom → Releases**。
+
+[建置並試用](../README.md#getting-started) · [試吓第一條提醒（英文）](../README.md#your-first-reminder)
+
 ## 五種語言，同一段對話
 
 今次嘅規則係：「無論用邊種語言，講到香蕉就提醒。」一條連續音訊順序講英文、普通話、日文、韓文同廣東話，再用自然停頓交替講一次。全程冇轉過識別語言，提醒一直用所選嘅英文。
